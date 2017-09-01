@@ -5,7 +5,11 @@ var should = require('should'),
   path = require('path'),
   mongoose = require('mongoose'),
   User = mongoose.model('User'),
-  Home = mongoose.model('Home'),
+  Shopmaster = mongoose.model('Shopmaster'),
+  Shippingmaster = mongoose.model('Shippingmaster'),
+  Categorymaster = mongoose.model('Categorymaster'),
+  Address = mongoose.model('Address'),
+  Productmaster = mongoose.model('Productmaster'),
   express = require(path.resolve('./config/lib/express'));
 
 /**
@@ -15,7 +19,11 @@ var app,
   agent,
   credentials,
   user,
-  home;
+  product,
+  shop,
+  shipping,
+  category,
+  address;
 
 /**
  * Home routes tests
@@ -48,300 +56,322 @@ describe('Home CRUD tests', function () {
       provider: 'local'
     });
 
+    address = new Address({
+      firstname: 'firstname',
+      lastname: 'lastname',
+      tel: 'tel',
+      address: 'address',
+      subdistrict: 'subdistrict',
+      district: 'district',
+      province: 'province',
+      postcode: 'postcode',
+      user: user
+    });
+
+    shop = new Shopmaster({
+      name: 'Shopmaster Name',
+      detail: 'Shop detail',
+      email: 'shop@email.com',
+      tel: '0999999999',
+      image: 'http://www.sportsdirect.com/images/marketing/nikelanding-tainers.jpg',
+      map: {
+        lat: '1000',
+        lng: '1000'
+      },
+      address: [{ address: address }],
+      user: user
+    });
+
+    shipping = new Shippingmaster({
+      name: 'ส่งธรรมดา',
+      detail: 'ส่งธรรมดาผ่านไปรษณีย์ (ฟรี)',
+      days: 7,
+      price: 0,
+      user: user
+    });
+
+    category = new Categorymaster({
+      name: 'เครื่องใช้ไฟฟ้า',
+      detail: 'เครื่องใช้ไฟฟ้าในบ้าน',
+      parent: '1'
+    });
+
     // Save a user to the test db and create new Home
     user.save(function () {
-      home = {
-        name: 'Home name'
-      };
+      address.save(function () {
+        shop.save(function () {
+          shipping.save(function () {
+            category.save(function () {
+              product = {
+                name: 'Productmaster name',
+                price: 1234,
+                image: [{
+                  url: 'http://www.sportsdirect.com/images/marketing/nikelanding-tainers.jpg'
+                }],
+                shop: shop,
+                shippings: [{
+                  shipping: shipping
+                }],
+                category: category,
+                user: user
+              };
 
-      done();
+              done();
+            });
+          });
+        });
+      });
     });
   });
 
   it('should be able to save a Home if logged in', function (done) {
-    agent.post('/api/auth/signin')
-      .send(credentials)
-      .expect(200)
-      .end(function (signinErr, signinRes) {
-        // Handle signin error
-        if (signinErr) {
-          return done(signinErr);
-        }
-
-        // Get the userId
-        var userId = user.id;
-
-        // Save a new Home
-        agent.post('/api/homes')
-          .send(home)
-          .expect(200)
-          .end(function (homeSaveErr, homeSaveRes) {
-            // Handle Home save error
-            if (homeSaveErr) {
-              return done(homeSaveErr);
-            }
-
-            // Get a list of Homes
-            agent.get('/api/homes')
-              .end(function (homesGetErr, homesGetRes) {
-                // Handle Homes save error
-                if (homesGetErr) {
-                  return done(homesGetErr);
-                }
-
-                // Get Homes list
-                var homes = homesGetRes.body;
-
-                // Set assertions
-                (homes[0].user._id).should.equal(userId);
-                (homes[0].name).should.match('Home name');
-
-                // Call the assertion callback
-                done();
-              });
-          });
-      });
-  });
-
-  it('should not be able to save an Home if not logged in', function (done) {
-    agent.post('/api/homes')
-      .send(home)
-      .expect(403)
-      .end(function (homeSaveErr, homeSaveRes) {
-        // Call the assertion callback
-        done(homeSaveErr);
-      });
-  });
-
-  it('should not be able to save an Home if no name is provided', function (done) {
-    // Invalidate name field
-    home.name = '';
-
-    agent.post('/api/auth/signin')
-      .send(credentials)
-      .expect(200)
-      .end(function (signinErr, signinRes) {
-        // Handle signin error
-        if (signinErr) {
-          return done(signinErr);
-        }
-
-        // Get the userId
-        var userId = user.id;
-
-        // Save a new Home
-        agent.post('/api/homes')
-          .send(home)
-          .expect(400)
-          .end(function (homeSaveErr, homeSaveRes) {
-            // Set message assertion
-            (homeSaveRes.body.message).should.match('Please fill Home name');
-
-            // Handle Home save error
-            done(homeSaveErr);
-          });
-      });
-  });
-
-  it('should be able to update an Home if signed in', function (done) {
-    agent.post('/api/auth/signin')
-      .send(credentials)
-      .expect(200)
-      .end(function (signinErr, signinRes) {
-        // Handle signin error
-        if (signinErr) {
-          return done(signinErr);
-        }
-
-        // Get the userId
-        var userId = user.id;
-
-        // Save a new Home
-        agent.post('/api/homes')
-          .send(home)
-          .expect(200)
-          .end(function (homeSaveErr, homeSaveRes) {
-            // Handle Home save error
-            if (homeSaveErr) {
-              return done(homeSaveErr);
-            }
-
-            // Update Home name
-            home.name = 'WHY YOU GOTTA BE SO MEAN?';
-
-            // Update an existing Home
-            agent.put('/api/homes/' + homeSaveRes.body._id)
-              .send(home)
-              .expect(200)
-              .end(function (homeUpdateErr, homeUpdateRes) {
-                // Handle Home update error
-                if (homeUpdateErr) {
-                  return done(homeUpdateErr);
-                }
-
-                // Set assertions
-                (homeUpdateRes.body._id).should.equal(homeSaveRes.body._id);
-                (homeUpdateRes.body.name).should.match('WHY YOU GOTTA BE SO MEAN?');
-
-                // Call the assertion callback
-                done();
-              });
-          });
-      });
-  });
-
-  it('should be able to get a list of Homes if not signed in', function (done) {
-    // Create new Home model instance
-    var homeObj = new Home(home);
-
-    // Save the home
-    homeObj.save(function () {
-      // Request Homes
-      request(app).get('/api/homes')
-        .end(function (req, res) {
-          // Set assertion
-          res.body.should.be.instanceof(Array).and.have.lengthOf(1);
-
-          // Call the assertion callback
-          done();
-        });
-
+    var productObj = new Productmaster({
+      name: 'Productmaster productObj',
+      price: 1234,
+      image: [{
+        url: 'http://www.sportsdirect.com/images/marketing/nikelanding-tainers.jpg'
+      }],
+      shop: shop,
+      shippings: [{
+        shipping: shipping
+      }],
+      category: category,
+      user: user
     });
-  });
-
-  it('should be able to get a single Home if not signed in', function (done) {
-    // Create new Home model instance
-    var homeObj = new Home(home);
-
-    // Save the Home
-    homeObj.save(function () {
-      request(app).get('/api/homes/' + homeObj._id)
-        .end(function (req, res) {
-          // Set assertion
-          res.body.should.be.instanceof(Object).and.have.property('name', home.name);
-
-          // Call the assertion callback
-          done();
-        });
+    var productObj2 = new Productmaster({
+      name: 'Productmaster productObj2',
+      price: 1234,
+      image: [{
+        url: 'http://www.sportsdirect.com/images/marketing/nikelanding-tainers.jpg'
+      }],
+      shop: shop,
+      shippings: [{
+        shipping: shipping
+      }],
+      historylog: [{
+        user: user,
+        date: new Date()
+      }],
+      category: category,
+      user: user
     });
-  });
-
-  it('should return proper error for single Home with an invalid Id, if not signed in', function (done) {
-    // test is not a valid mongoose Id
-    request(app).get('/api/homes/test')
-      .end(function (req, res) {
-        // Set assertion
-        res.body.should.be.instanceof(Object).and.have.property('message', 'Home is invalid');
-
-        // Call the assertion callback
-        done();
-      });
-  });
-
-  it('should return proper error for single Home which doesnt exist, if not signed in', function (done) {
-    // This is a valid mongoose Id but a non-existent Home
-    request(app).get('/api/homes/559e9cd815f80b4c256a8f41')
-      .end(function (req, res) {
-        // Set assertion
-        res.body.should.be.instanceof(Object).and.have.property('message', 'No Home with that identifier has been found');
-
-        // Call the assertion callback
-        done();
-      });
-  });
-
-  it('should be able to delete an Home if signed in', function (done) {
-    agent.post('/api/auth/signin')
-      .send(credentials)
-      .expect(200)
-      .end(function (signinErr, signinRes) {
-        // Handle signin error
-        if (signinErr) {
-          return done(signinErr);
-        }
-
-        // Get the userId
-        var userId = user.id;
-
-        // Save a new Home
-        agent.post('/api/homes')
-          .send(home)
-          .expect(200)
-          .end(function (homeSaveErr, homeSaveRes) {
-            // Handle Home save error
-            if (homeSaveErr) {
-              return done(homeSaveErr);
-            }
-
-            // Delete an existing Home
-            agent.delete('/api/homes/' + homeSaveRes.body._id)
-              .send(home)
-              .expect(200)
-              .end(function (homeDeleteErr, homeDeleteRes) {
-                // Handle home error error
-                if (homeDeleteErr) {
-                  return done(homeDeleteErr);
-                }
-
-                // Set assertions
-                (homeDeleteRes.body._id).should.equal(homeSaveRes.body._id);
-
-                // Call the assertion callback
-                done();
-              });
-          });
-      });
-  });
-
-  it('should not be able to delete an Home if not signed in', function (done) {
-    // Set Home user
-    home.user = user;
-
-    // Create new Home model instance
-    var homeObj = new Home(home);
-
-    // Save the Home
-    homeObj.save(function () {
-      // Try deleting Home
-      request(app).delete('/api/homes/' + homeObj._id)
-        .expect(403)
-        .end(function (homeDeleteErr, homeDeleteRes) {
-          // Set message assertion
-          (homeDeleteRes.body.message).should.match('User is not authorized');
-
-          // Handle Home error error
-          done(homeDeleteErr);
-        });
-
+    var productObj3 = new Productmaster({
+      name: 'Productmaster productObj3',
+      price: 1234,
+      image: [{
+        url: 'http://www.sportsdirect.com/images/marketing/nikelanding-tainers.jpg'
+      }],
+      shop: shop,
+      shippings: [{
+        shipping: shipping
+      }],
+      historylog: [{
+        user: user,
+        date: new Date()
+      },{
+        user: user,
+        date: new Date()
+      },{
+        user: user,
+        date: new Date()
+      }],
+      category: category,
+      user: user
     });
-  });
-
-  it('should be able to get a single Home that has an orphaned user reference', function (done) {
-    // Create orphan user creds
-    var _creds = {
-      username: 'orphan',
-      password: 'M3@n.jsI$Aw3$0m3'
-    };
-
-    // Create orphan user
-    var _orphan = new User({
-      firstName: 'Full',
-      lastName: 'Name',
-      displayName: 'Full Name',
-      email: 'orphan@test.com',
-      username: _creds.username,
-      password: _creds.password,
-      provider: 'local'
+    var productObj4 = new Productmaster({
+      name: 'Productmaster productObj4',
+      price: 1234,
+      image: [{
+        url: 'http://www.sportsdirect.com/images/marketing/nikelanding-tainers.jpg'
+      }],
+      shop: shop,
+      shippings: [{
+        shipping: shipping
+      }],
+      historylog: [{
+        user: user,
+        date: new Date()
+      },{
+        user: user,
+        date: new Date()
+      },{
+        user: user,
+        date: new Date()
+      },{
+        user: user,
+        date: new Date()
+      }],
+      category: category,
+      user: user
     });
-
-    _orphan.save(function (err, orphan) {
-      // Handle save error
-      if (err) {
-        return done(err);
-      }
-
+    var productObj5 = new Productmaster({
+      name: 'Productmaster productObj5',
+      price: 1234,
+      image: [{
+        url: 'http://www.sportsdirect.com/images/marketing/nikelanding-tainers.jpg'
+      }],
+      shop: shop,
+      shippings: [{
+        shipping: shipping
+      }],
+      historylog: [{
+        user: user,
+        date: new Date()
+      },{
+        user: user,
+        date: new Date()
+      },{
+        user: user,
+        date: new Date()
+      },{
+        user: user,
+        date: new Date()
+      }],
+      category: category,
+      user: user
+    });
+    var productObj6 = new Productmaster({
+      name: 'Productmaster productObj6',
+      price: 1234,
+      image: [{
+        url: 'http://www.sportsdirect.com/images/marketing/nikelanding-tainers.jpg'
+      }],
+      shop: shop,
+      shippings: [{
+        shipping: shipping
+      }],
+      historylog: [{
+        user: user,
+        date: new Date()
+      },{
+        user: user,
+        date: new Date()
+      },{
+        user: user,
+        date: new Date()
+      },{
+        user: user,
+        date: new Date()
+      }],
+      category: category,
+      user: user
+    });
+    var productObj7 = new Productmaster({
+      name: 'Productmaster productObj7',
+      price: 1234,
+      image: [{
+        url: 'http://www.sportsdirect.com/images/marketing/nikelanding-tainers.jpg'
+      }],
+      shop: shop,
+      shippings: [{
+        shipping: shipping
+      }],
+      historylog: [{
+        user: user,
+        date: new Date()
+      },{
+        user: user,
+        date: new Date()
+      },{
+        user: user,
+        date: new Date()
+      },{
+        user: user,
+        date: new Date()
+      }],
+      category: category,
+      user: user
+    });
+    var productObj8 = new Productmaster({
+      name: 'Productmaster productObj8',
+      price: 1234,
+      image: [{
+        url: 'http://www.sportsdirect.com/images/marketing/nikelanding-tainers.jpg'
+      }],
+      shop: shop,
+      shippings: [{
+        shipping: shipping
+      }],
+      historylog: [{
+        user: user,
+        date: new Date()
+      },{
+        user: user,
+        date: new Date()
+      },{
+        user: user,
+        date: new Date()
+      },{
+        user: user,
+        date: new Date()
+      }],
+      category: category,
+      user: user
+    });
+    var productObj9 = new Productmaster({
+      name: 'Productmaster productObj9',
+      price: 1234,
+      image: [{
+        url: 'http://www.sportsdirect.com/images/marketing/nikelanding-tainers.jpg'
+      }],
+      shop: shop,
+      shippings: [{
+        shipping: shipping
+      }],
+      historylog: [{
+        user: user,
+        date: new Date()
+      },{
+        user: user,
+        date: new Date()
+      },{
+        user: user,
+        date: new Date()
+      },{
+        user: user,
+        date: new Date()
+      }],
+      category: category,
+      user: user
+    });
+    var productObj10 = new Productmaster({
+      name: 'Productmaster productObj10',
+      price: 1234,
+      image: [{
+        url: 'http://www.sportsdirect.com/images/marketing/nikelanding-tainers.jpg'
+      }],
+      shop: shop,
+      shippings: [{
+        shipping: shipping
+      }],
+      historylog: [{
+        user: user,
+        date: new Date()
+      },{
+        user: user,
+        date: new Date()
+      },{
+        user: user,
+        date: new Date()
+      },{
+        user: user,
+        date: new Date()
+      }],
+      category: category,
+      user: user
+    });
+    productObj2.save();
+    productObj3.save();
+    productObj4.save();
+    productObj5.save();
+    productObj6.save();
+    productObj7.save();
+    productObj8.save();
+    productObj9.save();
+    productObj10.save();
+    productObj.save(function () {
       agent.post('/api/auth/signin')
-        .send(_creds)
+        .send(credentials)
         .expect(200)
         .end(function (signinErr, signinRes) {
           // Handle signin error
@@ -350,54 +380,24 @@ describe('Home CRUD tests', function () {
           }
 
           // Get the userId
-          var orphanId = orphan._id;
+          var userId = user.id;
 
-          // Save a new Home
-          agent.post('/api/homes')
-            .send(home)
-            .expect(200)
-            .end(function (homeSaveErr, homeSaveRes) {
-              // Handle Home save error
-              if (homeSaveErr) {
-                return done(homeSaveErr);
+          // Get a list of Homes
+          agent.get('/api/homes')
+            .end(function (homesGetErr, homesGetRes) {
+              // Handle Homes save error
+              if (homesGetErr) {
+                return done(homesGetErr);
               }
 
-              // Set assertions on new Home
-              (homeSaveRes.body.name).should.equal(home.name);
-              should.exist(homeSaveRes.body.user);
-              should.equal(homeSaveRes.body.user._id, orphanId);
+              // Get Homes list
+              var homes = homesGetRes.body;
 
-              // force the Home to have an orphaned user reference
-              orphan.remove(function () {
-                // now signin with valid user
-                agent.post('/api/auth/signin')
-                  .send(credentials)
-                  .expect(200)
-                  .end(function (err, res) {
-                    // Handle signin error
-                    if (err) {
-                      return done(err);
-                    }
+              // Set assertions
+              (homes.categorys[0].productpopular.length).should.equal(0);
 
-                    // Get the Home
-                    agent.get('/api/homes/' + homeSaveRes.body._id)
-                      .expect(200)
-                      .end(function (homeInfoErr, homeInfoRes) {
-                        // Handle Home error
-                        if (homeInfoErr) {
-                          return done(homeInfoErr);
-                        }
-
-                        // Set assertions
-                        (homeInfoRes.body._id).should.equal(homeSaveRes.body._id);
-                        (homeInfoRes.body.name).should.equal(home.name);
-                        should.equal(homeInfoRes.body.user, undefined);
-
-                        // Call the assertion callback
-                        done();
-                      });
-                  });
-              });
+              // Call the assertion callback
+              done();
             });
         });
     });
@@ -405,7 +405,15 @@ describe('Home CRUD tests', function () {
 
   afterEach(function (done) {
     User.remove().exec(function () {
-      Home.remove().exec(done);
+      Address.remove().exec(function () {
+        Shopmaster.remove().exec(function () {
+          Shippingmaster.remove().exec(function () {
+            Categorymaster.remove().exec(function () {
+              Productmaster.remove().exec(done);
+            });
+          });
+        });
+      });
     });
   });
 });

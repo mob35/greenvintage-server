@@ -5,113 +5,55 @@
  */
 var path = require('path'),
   mongoose = require('mongoose'),
-  Home = mongoose.model('Home'),
+  Productmaster = mongoose.model('Productmaster'),
   errorHandler = require(path.resolve('./modules/core/server/controllers/errors.server.controller')),
   _ = require('lodash');
 
-/**
- * Create a Home
- */
-exports.create = function(req, res) {
-  var home = new Home(req.body);
-  home.user = req.user;
+exports.setDefault = function (req, res, next) {
+  req.categorys = [];
+  next();
+};
 
-  home.save(function(err) {
+exports.getProduct = function (req, res, next) {
+  var startdate = new Date();
+  startdate.setDate(1);
+  startdate.setHours(0, 0, 0);
+  var enddate = new Date(new Date(startdate.getFullYear(), startdate.getMonth() + 1, 0).setHours(23, 59, 59, 999));
+
+  Productmaster.find({ created: { $gte: startdate, $lte: enddate } }).sort('-created').populate('user', 'displayName').populate('category').exec(function (err, productmasters) {
     if (err) {
       return res.status(400).send({
         message: errorHandler.getErrorMessage(err)
       });
     } else {
-      res.jsonp(home);
+      req.products = productmasters;
+      next();
     }
   });
 };
 
-/**
- * Show the current Home
- */
-exports.read = function(req, res) {
-  // convert mongoose document to JSON
-  var home = req.home ? req.home.toJSON() : {};
-
-  // Add a custom field to the Article, for determining if the current User is the "owner".
-  // NOTE: This field is NOT persisted to the database, since it doesn't exist in the Article model.
-  home.isCurrentUserOwner = req.user && home.user && home.user._id.toString() === req.user._id.toString();
-
-  res.jsonp(home);
-};
-
-/**
- * Update a Home
- */
-exports.update = function(req, res) {
-  var home = req.home;
-
-  home = _.extend(home, req.body);
-
-  home.save(function(err) {
-    if (err) {
-      return res.status(400).send({
-        message: errorHandler.getErrorMessage(err)
-      });
-    } else {
-      res.jsonp(home);
-    }
+exports.createHilight = function (req, res, next) {
+  var products = fliterCategory(req.products, null);
+  var productPopular = createPopular(products);
+  req.categorys.push({
+    productpopular: productPopular
   });
+  next();
 };
 
-/**
- * Delete an Home
- */
-exports.delete = function(req, res) {
-  var home = req.home;
-
-  home.remove(function(err) {
-    if (err) {
-      return res.status(400).send({
-        message: errorHandler.getErrorMessage(err)
-      });
-    } else {
-      res.jsonp(home);
-    }
-  });
+exports.returnData = function (req, res) {
+  res.jsonp({ categorys: req.categorys });
 };
 
-/**
- * List of Homes
- */
-exports.list = function(req, res) {
-  Home.find().sort('-created').populate('user', 'displayName').exec(function(err, homes) {
-    if (err) {
-      return res.status(400).send({
-        message: errorHandler.getErrorMessage(err)
-      });
-    } else {
-      res.jsonp(homes);
-    }
-  });
-};
-
-/**
- * Home middleware
- */
-exports.homeByID = function(req, res, next, id) {
-
-  if (!mongoose.Types.ObjectId.isValid(id)) {
-    return res.status(400).send({
-      message: 'Home is invalid'
-    });
+function fliterCategory(products, cateId) {
+  var category = products;
+  if (cateId !== null) {
+    category = products.filter(function (obj) { return obj.category.parent.toString() === cateId.toString(); });
   }
+  return category;
+}
 
-  Home.findById(id).populate('user', 'displayName').exec(function (err, home) {
-    if (err) {
-      return next(err);
-    } else if (!home) {
-      return res.status(404).send({
-        message: 'No Home with that identifier has been found'
-      });
-    }
-    req.home = home;
-    next();
-  });
-};
+function createPopular(products) {
+  var popular = products.sort(function (a, b) { return (a.historylog.length < b.historylog.length) ? 1 : ((b.historylog.length < a.historylog.length) ? -1 : 0); });
+  return popular.slice(0, 6);
+}
