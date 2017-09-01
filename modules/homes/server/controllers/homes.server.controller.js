@@ -33,6 +33,7 @@ exports.getProduct = function (req, res, next) {
 };
 
 exports.createHilight = function (req, res, next) {
+  // var slide = [null, '1', '2', 'ggt'];
   var products = fliterCategory(req.products, null);
   var productPopular = createPopular(products);
   req.categorys.push({
