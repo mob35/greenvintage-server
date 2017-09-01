@@ -1,0 +1,22 @@
+<section>
+  <div class="page-header">
+    <h1>Productmasters</h1>
+  </div>
+  <div class="list-group">
+    <a ng-repeat="productmaster in vm.productmasters"
+       ui-sref="productmasters.view({ productmasterId: productmaster._id })"
+       class="list-group-item">
+      <small class="list-group-item-text">
+        Posted on
+        <span ng-bind="productmaster.created | date:'mediumDate'"></span>
+        by
+        <span ng-if="productmaster.user" ng-bind="productmaster.user.displayName"></span>
+        <span ng-if="!productmaster.user">Deleted User</span>
+      </small>
+      <h4 class="list-group-item-heading" ng-bind="productmaster.name"></h4>
+    </a>
+  </div>
+  <div class="alert alert-warning text-center" ng-if="vm.productmasters.$resolved && !vm.productmasters.length">
+    No Productmasters yet, why don't you <a ui-sref="productmasters.create">create one</a>?
+  </div>
+</section>
