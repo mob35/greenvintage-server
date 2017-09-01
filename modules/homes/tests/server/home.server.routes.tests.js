@@ -394,7 +394,7 @@ describe('Home CRUD tests', function () {
               var homes = homesGetRes.body;
 
               // Set assertions
-              (homes.categorys[0].productpopular.length).should.equal(0);
+              (homes.categorys[0].productpopular.length).should.equal(6);
 
               // Call the assertion callback
               done();

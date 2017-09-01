@@ -9,12 +9,8 @@ var path = require('path'),
   errorHandler = require(path.resolve('./modules/core/server/controllers/errors.server.controller')),
   _ = require('lodash');
 
-exports.setDefault = function (req, res, next) {
-  req.categorys = [];
-  next();
-};
-
 exports.getProduct = function (req, res, next) {
+  req.categorys = [];
   var startdate = new Date();
   startdate.setDate(1);
   startdate.setHours(0, 0, 0);
@@ -32,7 +28,7 @@ exports.getProduct = function (req, res, next) {
   });
 };
 
-exports.createHilight = function (req, res, next) {
+exports.createSlides = function (req, res, next) {
   // var slide = [null, '1', '2', 'ggt'];
   var products = fliterCategory(req.products, null);
   var productPopular = createPopular(products);
