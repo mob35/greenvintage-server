@@ -71,6 +71,23 @@ var ProductmasterSchema = new Schema({
   issize: {
     type: Boolean
   },
+  sellerlog: {
+    type: [{
+      user: {
+        type: Schema.ObjectId,
+        ref: 'User'
+      },
+      date: {
+        type: Date,
+        default: Date.now
+      },
+      qty: Number
+    }]
+  },
+  sellerSummary: {
+    type: Number,
+    default: 0
+  },
   category: {
     required: 'Please fill Product category',
     type: Schema.ObjectId,

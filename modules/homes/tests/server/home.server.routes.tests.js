@@ -18,9 +18,12 @@ var should = require('should'),
 var app,
   agent,
   credentials,
+  credential2,
   user,
+  user2,
   product,
   shop,
+  shop2,
   shipping,
   category,
   address;
@@ -45,6 +48,11 @@ describe('Home CRUD tests', function () {
       password: 'M3@n.jsI$Aw3$0m3'
     };
 
+    credential2 = {
+      username: 'username2',
+      password: 'M3@n.jsI$Aw3$0m3'
+    };
+
     // Create a new user
     user = new User({
       firstName: 'Full',
@@ -53,6 +61,16 @@ describe('Home CRUD tests', function () {
       email: 'test@test.com',
       username: credentials.username,
       password: credentials.password,
+      provider: 'local'
+    });
+
+    user2 = new User({
+      firstName: 'Full2',
+      lastName: 'Name2',
+      displayName: 'Full2 Name2',
+      email: 'test2@test.com',
+      username: credential2.username,
+      password: credential2.password,
       provider: 'local'
     });
 
@@ -82,6 +100,20 @@ describe('Home CRUD tests', function () {
       user: user
     });
 
+    shop2 = new Shopmaster({
+      name: 'Shopmaster Name2',
+      detail: 'Shop detail',
+      email: 'shop@email.com',
+      tel: '0999999999',
+      image: 'http://www.sportsdirect.com/images/marketing/nikelanding-tainers.jpg',
+      map: {
+        lat: '1000',
+        lng: '1000'
+      },
+      address: [{ address: address }],
+      user: user
+    });
+
     shipping = new Shippingmaster({
       name: 'ส่งธรรมดา',
       detail: 'ส่งธรรมดาผ่านไปรษณีย์ (ฟรี)',
@@ -98,25 +130,29 @@ describe('Home CRUD tests', function () {
 
     // Save a user to the test db and create new Home
     user.save(function () {
-      address.save(function () {
-        shop.save(function () {
-          shipping.save(function () {
-            category.save(function () {
-              product = {
-                name: 'Productmaster name',
-                price: 1234,
-                image: [{
-                  url: 'http://www.sportsdirect.com/images/marketing/nikelanding-tainers.jpg'
-                }],
-                shop: shop,
-                shippings: [{
-                  shipping: shipping
-                }],
-                category: category,
-                user: user
-              };
+      user2.save(function () {
+        address.save(function () {
+          shop.save(function () {
+            shop2.save(function () {
+              shipping.save(function () {
+                category.save(function () {
+                  product = {
+                    name: 'Productmaster name',
+                    price: 1234,
+                    image: [{
+                      url: 'http://www.sportsdirect.com/images/marketing/nikelanding-tainers.jpg'
+                    }],
+                    shop: shop,
+                    shippings: [{
+                      shipping: shipping
+                    }],
+                    category: category,
+                    user: user
+                  };
 
-              done();
+                  done();
+                });
+              });
             });
           });
         });
@@ -126,7 +162,7 @@ describe('Home CRUD tests', function () {
 
   it('should be able to save a Home if logged in', function (done) {
     var productObj = new Productmaster({
-      name: 'Productmaster productObj',
+      name: 'Productmaster productObj user 2 view',
       price: 1234,
       image: [{
         url: 'http://www.sportsdirect.com/images/marketing/nikelanding-tainers.jpg'
@@ -134,6 +170,15 @@ describe('Home CRUD tests', function () {
       shop: shop,
       shippings: [{
         shipping: shipping
+      }],
+      sellerlog: [{
+        user: user,
+        date: new Date('2017', '09', '1'),
+        qty: 1
+      }],
+      historylog: [{
+        user: user2,
+        date: new Date()
       }],
       category: category,
       user: user
@@ -150,7 +195,12 @@ describe('Home CRUD tests', function () {
       }],
       historylog: [{
         user: user,
-        date: new Date()
+        date: new Date('2017', '09', '1')
+      }],
+      sellerlog: [{
+        user: user,
+        date: new Date(),
+        qty: 2
       }],
       category: category,
       user: user
@@ -167,13 +217,18 @@ describe('Home CRUD tests', function () {
       }],
       historylog: [{
         user: user,
-        date: new Date()
-      },{
+        date: new Date('2017', '09', '1')
+      }, {
         user: user,
-        date: new Date()
-      },{
+        date: new Date('2017', '09', '2')
+      }, {
         user: user,
-        date: new Date()
+        date: new Date('2017', '09', '2')
+      }],
+      sellerlog: [{
+        user: user,
+        date: new Date(),
+        qty: 3
       }],
       category: category,
       user: user
@@ -190,16 +245,21 @@ describe('Home CRUD tests', function () {
       }],
       historylog: [{
         user: user,
-        date: new Date()
-      },{
+        date: new Date('2017', '09', '1')
+      }, {
         user: user,
-        date: new Date()
-      },{
+        date: new Date('2017', '09', '2')
+      }, {
         user: user,
-        date: new Date()
-      },{
+        date: new Date('2017', '09', '2')
+      }, {
         user: user,
-        date: new Date()
+        date: new Date('2017', '09', '3')
+      }],
+      sellerlog: [{
+        user: user,
+        date: new Date(),
+        qty: 4
       }],
       category: category,
       user: user
@@ -216,16 +276,21 @@ describe('Home CRUD tests', function () {
       }],
       historylog: [{
         user: user,
-        date: new Date()
-      },{
+        date: new Date('2017', '09', '5')
+      }, {
         user: user,
-        date: new Date()
-      },{
+        date: new Date('2017', '09', '4')
+      }, {
         user: user,
-        date: new Date()
-      },{
+        date: new Date('2017', '09', '3')
+      }, {
         user: user,
-        date: new Date()
+        date: new Date('2017', '09', '3')
+      }],
+      sellerlog: [{
+        user: user,
+        date: new Date(),
+        qty: 5
       }],
       category: category,
       user: user
@@ -242,16 +307,21 @@ describe('Home CRUD tests', function () {
       }],
       historylog: [{
         user: user,
-        date: new Date()
-      },{
+        date: new Date('2017', '09', '3')
+      }, {
         user: user,
-        date: new Date()
-      },{
+        date: new Date('2017', '09', '2')
+      }, {
         user: user,
-        date: new Date()
-      },{
+        date: new Date('2017', '09', '2')
+      }, {
         user: user,
-        date: new Date()
+        date: new Date('2017', '09', '1')
+      }],
+      sellerlog: [{
+        user: user,
+        date: new Date(),
+        qty: 6
       }],
       category: category,
       user: user
@@ -262,22 +332,27 @@ describe('Home CRUD tests', function () {
       image: [{
         url: 'http://www.sportsdirect.com/images/marketing/nikelanding-tainers.jpg'
       }],
-      shop: shop,
+      shop: shop2,
       shippings: [{
         shipping: shipping
       }],
       historylog: [{
         user: user,
-        date: new Date()
-      },{
+        date: new Date('2017', '09', '5')
+      }, {
         user: user,
-        date: new Date()
-      },{
+        date: new Date('2017', '09', '5')
+      }, {
         user: user,
-        date: new Date()
-      },{
+        date: new Date('2017', '09', '4')
+      }, {
         user: user,
-        date: new Date()
+        date: new Date('2017', '09', '3')
+      }],
+      sellerlog: [{
+        user: user,
+        date: new Date(),
+        qty: 7
       }],
       category: category,
       user: user
@@ -294,16 +369,21 @@ describe('Home CRUD tests', function () {
       }],
       historylog: [{
         user: user,
-        date: new Date()
-      },{
+        date: new Date('2017', '09', '4')
+      }, {
         user: user,
-        date: new Date()
-      },{
+        date: new Date('2017', '09', '3')
+      }, {
         user: user,
-        date: new Date()
-      },{
+        date: new Date('2017', '09', '3')
+      }, {
         user: user,
-        date: new Date()
+        date: new Date('2017', '09', '3')
+      }],
+      sellerlog: [{
+        user: user,
+        date: new Date(),
+        qty: 8
       }],
       category: category,
       user: user
@@ -320,16 +400,21 @@ describe('Home CRUD tests', function () {
       }],
       historylog: [{
         user: user,
-        date: new Date()
-      },{
+        date: new Date('2017', '11', '5')
+      }, {
         user: user,
-        date: new Date()
-      },{
+        date: new Date('2017', '09', '5')
+      }, {
         user: user,
-        date: new Date()
-      },{
+        date: new Date('2017', '09', '4')
+      }, {
         user: user,
-        date: new Date()
+        date: new Date('2017', '09', '3')
+      }],
+      sellerlog: [{
+        user: user,
+        date: new Date(),
+        qty: 9
       }],
       category: category,
       user: user
@@ -345,17 +430,26 @@ describe('Home CRUD tests', function () {
         shipping: shipping
       }],
       historylog: [{
+        user: user2,
+        date: new Date('2017', '11', '12')
+      }, {
         user: user,
-        date: new Date()
-      },{
+        date: new Date('2017', '09', '4')
+      }, {
         user: user,
-        date: new Date()
-      },{
+        date: new Date('2017', '09', '5')
+      }, {
         user: user,
-        date: new Date()
-      },{
+        date: new Date('2017', '09', '2')
+      }],
+      sellerlog: [{
         user: user,
-        date: new Date()
+        date: new Date(),
+        qty: 10
+      }, {
+        user: user,
+        date: new Date(),
+        qty: 5
       }],
       category: category,
       user: user
@@ -395,6 +489,13 @@ describe('Home CRUD tests', function () {
 
               // Set assertions
               (homes.categorys[0].productpopular.length).should.equal(6);
+              (homes.categorys[0].bestseller.length).should.equal(6);
+              (homes.categorys[0].bestseller[0].name).should.equal('Productmaster productObj10');
+              (homes.categorys[0].popularshops.length).should.equal(2);
+              (homes.categorys[0].popularshops[0].name).should.equal('Shopmaster Name');
+              (homes.categorys[0].popularshops[1].name).should.equal('Shopmaster Name2');
+              (homes.categorys[0].lastvisit.length).should.equal(6);
+
 
               // Call the assertion callback
               done();
