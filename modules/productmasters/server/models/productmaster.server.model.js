@@ -71,6 +71,10 @@ var ProductmasterSchema = new Schema({
   issize: {
     type: Boolean
   },
+  size: {
+    type: Schema.ObjectId,
+    ref: 'Sizemaster'
+  },
   sellerlog: {
     type: [{
       user: {
