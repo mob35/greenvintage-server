@@ -21,8 +21,10 @@ var app,
   user,
   product,
   shop,
+  shop2,
   shipping,
   category,
+  category2,
   address;
 
 /**
@@ -82,6 +84,20 @@ describe('Product CRUD tests', function () {
       user: user
     });
 
+    shop2 = new Shopmaster({
+      name: 'Shopmaster Name2',
+      detail: 'Shop detail',
+      email: 'shop2@email.com',
+      tel: '0999999999',
+      image: 'http://www.sportsdirect.com/images/marketing/nikelanding-tainers.jpg',
+      map: {
+        lat: '1000',
+        lng: '1000'
+      },
+      address: [{ address: address }],
+      user: user
+    });
+
     shipping = new Shippingmaster({
       name: 'ส่งธรรมดา',
       detail: 'ส่งธรรมดาผ่านไปรษณีย์ (ฟรี)',
@@ -93,6 +109,11 @@ describe('Product CRUD tests', function () {
     category = new Categorymaster({
       name: 'เครื่องใช้ไฟฟ้า',
       detail: 'เครื่องใช้ไฟฟ้าในบ้าน'
+    });
+
+    category2 = new Categorymaster({
+      name: 'กีฬา',
+      detail: 'sport'
     });
 
     // Save a user to the test db and create new Product
@@ -148,6 +169,294 @@ describe('Product CRUD tests', function () {
             // Set assertions
             (productSaveRes.body.user._id).should.equal(userId);
             (productSaveRes.body.name).should.match('Productmaster name');
+
+            done();
+          });
+      });
+  });
+
+  it('get category all shop all', function (done) {
+    var productObj1 = new Productmaster({
+      name: 'Productmaster name',
+      price: 1234,
+      image: [{
+        url: 'http://www.sportsdirect.com/images/marketing/nikelanding-tainers.jpg'
+      }],
+      shop: shop,
+      shippings: [{
+        shipping: shipping
+      }],
+      category: category,
+      user: user
+    });
+
+    var productObj2 = new Productmaster({
+      name: 'Productmaster name2',
+      price: 1234,
+      image: [{
+        url: 'http://www.sportsdirect.com/images/marketing/nikelanding-tainers.jpg'
+      }],
+      shop: shop2,
+      shippings: [{
+        shipping: shipping
+      }],
+      category: category2,
+      user: user
+    });
+    productObj1.save();
+    productObj2.save();
+    agent.post('/api/auth/signin')
+      .send(credentials)
+      .expect(200)
+      .end(function (signinErr, signinRes) {
+        // Handle signin error
+        if (signinErr) {
+          return done(signinErr);
+        }
+
+        // Get the userId
+        var userId = user.id;
+
+        // Save a new Product
+        agent.get('/api/productsbycategorybyshop/all/all')
+          .end(function (productGetErr, productGetRes) {
+            // Handle Product save error
+            if (productGetErr) {
+              return done(productGetErr);
+            }
+            // Set assertions
+            (productGetRes.body.length).should.equal(2);
+
+            done();
+          });
+      });
+  });
+
+  it('get category id shop all', function (done) {
+    var productObj1 = new Productmaster({
+      name: 'Productmaster name',
+      price: 1234,
+      image: [{
+        url: 'http://www.sportsdirect.com/images/marketing/nikelanding-tainers.jpg'
+      }],
+      shop: shop,
+      shippings: [{
+        shipping: shipping
+      }],
+      category: category,
+      user: user
+    });
+
+    var productObj2 = new Productmaster({
+      name: 'Productmaster name2',
+      price: 1234,
+      image: [{
+        url: 'http://www.sportsdirect.com/images/marketing/nikelanding-tainers.jpg'
+      }],
+      shop: shop2,
+      shippings: [{
+        shipping: shipping
+      }],
+      category: category2,
+      user: user
+    });
+    productObj1.save();
+    productObj2.save();
+    agent.post('/api/auth/signin')
+      .send(credentials)
+      .expect(200)
+      .end(function (signinErr, signinRes) {
+        // Handle signin error
+        if (signinErr) {
+          return done(signinErr);
+        }
+
+        // Get the userId
+        var userId = user.id;
+
+        // Save a new Product
+        agent.get('/api/productsbycategorybyshop/' + category.id + '/all')
+          .end(function (productGetErr, productGetRes) {
+            // Handle Product save error
+            if (productGetErr) {
+              return done(productGetErr);
+            }
+            // Set assertions
+            (productGetRes.body.length).should.equal(1);
+
+            done();
+          });
+      });
+  });
+
+  it('get category all shop id', function (done) {
+    var productObj1 = new Productmaster({
+      name: 'Productmaster name',
+      price: 1234,
+      image: [{
+        url: 'http://www.sportsdirect.com/images/marketing/nikelanding-tainers.jpg'
+      }],
+      shop: shop,
+      shippings: [{
+        shipping: shipping
+      }],
+      category: category,
+      user: user
+    });
+
+    var productObj2 = new Productmaster({
+      name: 'Productmaster name2',
+      price: 1234,
+      image: [{
+        url: 'http://www.sportsdirect.com/images/marketing/nikelanding-tainers.jpg'
+      }],
+      shop: shop2,
+      shippings: [{
+        shipping: shipping
+      }],
+      category: category2,
+      user: user
+    });
+    productObj1.save();
+    productObj2.save();
+    agent.post('/api/auth/signin')
+      .send(credentials)
+      .expect(200)
+      .end(function (signinErr, signinRes) {
+        // Handle signin error
+        if (signinErr) {
+          return done(signinErr);
+        }
+
+        // Get the userId
+        var userId = user.id;
+
+        // Save a new Product
+        agent.get('/api/productsbycategorybyshop/all/' + shop.id)
+          .end(function (productGetErr, productGetRes) {
+            // Handle Product save error
+            if (productGetErr) {
+              return done(productGetErr);
+            }
+            // Set assertions
+            (productGetRes.body.length).should.equal(1);
+            (productGetRes.body[0].shop).should.equal(shop.id);
+
+            done();
+          });
+      });
+  });
+
+  it('get category id shop id have item', function (done) {
+    var productObj1 = new Productmaster({
+      name: 'Productmaster name',
+      price: 1234,
+      image: [{
+        url: 'http://www.sportsdirect.com/images/marketing/nikelanding-tainers.jpg'
+      }],
+      shop: shop,
+      shippings: [{
+        shipping: shipping
+      }],
+      category: category,
+      user: user
+    });
+
+    var productObj2 = new Productmaster({
+      name: 'Productmaster name2',
+      price: 1234,
+      image: [{
+        url: 'http://www.sportsdirect.com/images/marketing/nikelanding-tainers.jpg'
+      }],
+      shop: shop2,
+      shippings: [{
+        shipping: shipping
+      }],
+      category: category2,
+      user: user
+    });
+    productObj1.save();
+    productObj2.save();
+    agent.post('/api/auth/signin')
+      .send(credentials)
+      .expect(200)
+      .end(function (signinErr, signinRes) {
+        // Handle signin error
+        if (signinErr) {
+          return done(signinErr);
+        }
+
+        // Get the userId
+        var userId = user.id;
+
+        // Save a new Product
+        agent.get('/api/productsbycategorybyshop/' + category.id + '/' + shop.id)
+          .end(function (productGetErr, productGetRes) {
+            // Handle Product save error
+            if (productGetErr) {
+              return done(productGetErr);
+            }
+            // Set assertions
+            (productGetRes.body.length).should.equal(1);
+            (productGetRes.body[0].shop).should.equal(shop.id);
+            (productGetRes.body[0].category).should.equal(category.id);
+
+            done();
+          });
+      });
+  });
+
+  it('get category id shop id not have item', function (done) {
+    var productObj1 = new Productmaster({
+      name: 'Productmaster name',
+      price: 1234,
+      image: [{
+        url: 'http://www.sportsdirect.com/images/marketing/nikelanding-tainers.jpg'
+      }],
+      shop: shop,
+      shippings: [{
+        shipping: shipping
+      }],
+      category: category,
+      user: user
+    });
+
+    var productObj2 = new Productmaster({
+      name: 'Productmaster name2',
+      price: 1234,
+      image: [{
+        url: 'http://www.sportsdirect.com/images/marketing/nikelanding-tainers.jpg'
+      }],
+      shop: shop2,
+      shippings: [{
+        shipping: shipping
+      }],
+      category: category2,
+      user: user
+    });
+    productObj1.save();
+    productObj2.save();
+    agent.post('/api/auth/signin')
+      .send(credentials)
+      .expect(200)
+      .end(function (signinErr, signinRes) {
+        // Handle signin error
+        if (signinErr) {
+          return done(signinErr);
+        }
+
+        // Get the userId
+        var userId = user.id;
+
+        // Save a new Product
+        agent.get('/api/productsbycategorybyshop/' + category2.id + '/' + shop.id)
+          .end(function (productGetErr, productGetRes) {
+            // Handle Product save error
+            if (productGetErr) {
+              return done(productGetErr);
+            }
+            // Set assertions
+            (productGetRes.body.length).should.equal(0);
 
             done();
           });

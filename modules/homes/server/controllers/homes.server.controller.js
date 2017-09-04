@@ -42,28 +42,28 @@ exports.createSlides = function (req, res, next) {
     popularshops: popularshops,
     lastvisit: lastvisitProduct,
     productvoucher: [{
-      "name": "voucher1",
-      "image": "https://www.iphone-droid.net/wp-content/uploads/2017/03/Lazada-Promotion-1.jpg"
+      'name': 'voucher1',
+      'image': 'https://www.iphone-droid.net/wp-content/uploads/2017/03/Lazada-Promotion-1.jpg'
     },
     {
-      "name": "voucher2",
-      "image": "http://news.siamphone.com/upload/news/nw30365/01.jpg"
+      'name': 'voucher2',
+      'image': 'http://news.siamphone.com/upload/news/nw30365/01.jpg'
     },
     {
-      "name": "voucher3",
-      "image": "https://bookings.co.th/wp-content/uploads/Lazada-Birthday-Sale-%E0%B8%9B%E0%B8%B5%E0%B8%97%E0%B8%B5%E0%B9%88-5-%E0%B9%82%E0%B8%9B%E0%B8%A3%E0%B9%82%E0%B8%A1%E0%B8%8A%E0%B8%B1%E0%B9%88%E0%B8%99-%E0%B8%88%E0%B8%B1%E0%B8%94-21-23-%E0%B8%A1%E0%B8%B5.%E0%B8%84.2017.png"
+      'name': 'voucher3',
+      'image': 'https://bookings.co.th/wp-content/uploads/Lazada-Birthday-Sale-%E0%B8%9B%E0%B8%B5%E0%B8%97%E0%B8%B5%E0%B9%88-5-%E0%B9%82%E0%B8%9B%E0%B8%A3%E0%B9%82%E0%B8%A1%E0%B8%8A%E0%B8%B1%E0%B9%88%E0%B8%99-%E0%B8%88%E0%B8%B1%E0%B8%94-21-23-%E0%B8%A1%E0%B8%B5.%E0%B8%84.2017.png'
     }],
     shopvoucher: [{
-      "name": "voucher4",
-      "image": "https://www.iphone-droid.net/wp-content/uploads/2017/03/Lazada-Promotion-1.jpg"
+      'name': 'voucher4',
+      'image': 'https://www.iphone-droid.net/wp-content/uploads/2017/03/Lazada-Promotion-1.jpg'
     },
     {
-      "name": "voucher5",
-      "image": "http://news.siamphone.com/upload/news/nw30365/01.jpg"
+      'name': 'voucher5',
+      'image': 'http://news.siamphone.com/upload/news/nw30365/01.jpg'
     },
     {
-      "name": "voucher6",
-      "image": "https://bookings.co.th/wp-content/uploads/Lazada-Birthday-Sale-%E0%B8%9B%E0%B8%B5%E0%B8%97%E0%B8%B5%E0%B9%88-5-%E0%B9%82%E0%B8%9B%E0%B8%A3%E0%B9%82%E0%B8%A1%E0%B8%8A%E0%B8%B1%E0%B9%88%E0%B8%99-%E0%B8%88%E0%B8%B1%E0%B8%94-21-23-%E0%B8%A1%E0%B8%B5.%E0%B8%84.2017.png"
+      'name': 'voucher6',
+      'image': 'https://bookings.co.th/wp-content/uploads/Lazada-Birthday-Sale-%E0%B8%9B%E0%B8%B5%E0%B8%97%E0%B8%B5%E0%B9%88-5-%E0%B9%82%E0%B8%9B%E0%B8%A3%E0%B9%82%E0%B8%A1%E0%B8%8A%E0%B8%B1%E0%B9%88%E0%B8%99-%E0%B8%88%E0%B8%B1%E0%B8%94-21-23-%E0%B8%A1%E0%B8%B5.%E0%B8%84.2017.png'
     }]
   });
   next();
@@ -107,7 +107,7 @@ function bestSeller(products) {
 function shopPopular() {
   var shops = [];
   for (var i = 0; i < productList.length; i++) {
-    var indexOf = arrayObjectIndexOf(shops, productList[i].shop._id, "_id");
+    var indexOf = arrayObjectIndexOf(shops, productList[i].shop._id, '_id');
     var shop = productList[i].shop;
     if (indexOf === -1) {
       shop.sellerSummary = productList[i].sellerSummary;

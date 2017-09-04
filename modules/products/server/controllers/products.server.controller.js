@@ -64,3 +64,40 @@ exports.productByID = function (req, res, next, id) {
     next();
   });
 };
+
+exports.categoryByID = function (req, res, next, id) {
+  req.categoryId = id;
+  next();
+};
+
+exports.shopByID = function (req, res, next, id) {
+  req.shopId = id;
+  next();
+};
+
+exports.getByConditions = function (req, res, next) {
+  var filter = {};
+  if (req.categoryId !== 'all' && req.shopId === 'all') {
+    filter = { category: req.categoryId };
+  } else if (req.categoryId === 'all' && req.shopId !== 'all') {
+    filter = { shop: req.shopId };
+  } else if (req.categoryId !== 'all' && req.shopId !== 'all') {
+    filter = { category: req.categoryId, shop: req.shopId };
+  }
+  Productmaster.find(filter).populate('user', 'displayName').exec(function (err, productmaster) {
+    if (err) {
+      return next(err);
+    } else if (!productmaster) {
+      return res.status(404).send({
+        message: 'No Productmaster with that identifier has been found'
+      });
+    }
+    req.productsByConditions = productmaster;
+    next();
+  });
+};
+
+
+exports.resultProducts = function (req, res) {
+  res.jsonp(req.productsByConditions);
+};
