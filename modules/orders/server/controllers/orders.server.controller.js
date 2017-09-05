@@ -1,0 +1,37 @@
+'use strict';
+
+/**
+ * Module dependencies.
+ */
+var path = require('path'),
+  mongoose = require('mongoose'),
+  Ordermaster = mongoose.model('Ordermaster'),
+  errorHandler = require(path.resolve('./modules/core/server/controllers/errors.server.controller')),
+  _ = require('lodash');
+
+exports.getOrderByshop = function (req, res, next) {
+  var shop = req.user.shop ? req.user.shop : '';
+  Ordermaster.find().sort('-created').populate('user', 'displayName').populate('items.product').exec(function (err, ordermasters) {
+    if (err) {
+      return res.status(400).send({
+        message: errorHandler.getErrorMessage(err)
+      });
+    } else {
+      var orders = ordermasters.filter(function (obj) {
+        var orderShop = obj.items.filter(function (obj2) { return obj2.product.shop.toString() === shop.toString(); });
+        return orderShop.length > 0 === true;
+      });
+      req.orders = orders;
+      next();
+    }
+  });
+};
+
+exports.filterStatus = function (req, res, next) {
+  // req.orders;
+  next();
+};
+
+exports.resultOrders = function (req, res) {
+  res.jsonp(req.orders);
+};

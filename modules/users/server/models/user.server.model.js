@@ -74,6 +74,10 @@ var UserSchema = new Schema({
     type: String,
     required: 'Provider is required'
   },
+  shop: {
+    type: Schema.ObjectId,
+    ref: 'Shopmaster'
+  },
   providerData: {},
   additionalProvidersData: {},
   roles: {
