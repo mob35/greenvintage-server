@@ -30,42 +30,45 @@ exports.getProduct = function (req, res, next) {
 };
 
 exports.createSlides = function (req, res, next) {
-  // var slide = [null, '1', '2', 'ggt'];
-  var products = fliterCategory(req.products, null);
-  var productPopular = createPopular(products);
-  var productSeller = bestSeller(products);
-  var popularshops = shopPopular();
-  var lastvisitProduct = getLastvisit(products, req.user);
-  req.categorys.push({
-    productpopular: productPopular,
-    bestseller: productSeller,
-    popularshops: popularshops,
-    lastvisit: lastvisitProduct,
-    productvoucher: [{
-      'name': 'voucher1',
-      'image': 'https://www.iphone-droid.net/wp-content/uploads/2017/03/Lazada-Promotion-1.jpg'
-    },
-    {
-      'name': 'voucher2',
-      'image': 'http://news.siamphone.com/upload/news/nw30365/01.jpg'
-    },
-    {
-      'name': 'voucher3',
-      'image': 'https://bookings.co.th/wp-content/uploads/Lazada-Birthday-Sale-%E0%B8%9B%E0%B8%B5%E0%B8%97%E0%B8%B5%E0%B9%88-5-%E0%B9%82%E0%B8%9B%E0%B8%A3%E0%B9%82%E0%B8%A1%E0%B8%8A%E0%B8%B1%E0%B9%88%E0%B8%99-%E0%B8%88%E0%B8%B1%E0%B8%94-21-23-%E0%B8%A1%E0%B8%B5.%E0%B8%84.2017.png'
-    }],
-    shopvoucher: [{
-      'name': 'voucher4',
-      'image': 'https://www.iphone-droid.net/wp-content/uploads/2017/03/Lazada-Promotion-1.jpg'
-    },
-    {
-      'name': 'voucher5',
-      'image': 'http://news.siamphone.com/upload/news/nw30365/01.jpg'
-    },
-    {
-      'name': 'voucher6',
-      'image': 'https://bookings.co.th/wp-content/uploads/Lazada-Birthday-Sale-%E0%B8%9B%E0%B8%B5%E0%B8%97%E0%B8%B5%E0%B9%88-5-%E0%B9%82%E0%B8%9B%E0%B8%A3%E0%B9%82%E0%B8%A1%E0%B8%8A%E0%B8%B1%E0%B9%88%E0%B8%99-%E0%B8%88%E0%B8%B1%E0%B8%94-21-23-%E0%B8%A1%E0%B8%B5.%E0%B8%84.2017.png'
-    }]
-  });
+  var slide = [{ id: null, name: 'ไฮไลท์' }, { id: '1', name: 'เครื่องใช้ไฟฟ้า' }];
+  for (var i = 0; i < slide.length; i++) {
+    var products = fliterCategory(req.products, slide[i].id);
+    var productPopular = createPopular(products);
+    var productSeller = bestSeller(products);
+    var popularshops = shopPopular();
+    var lastvisitProduct = getLastvisit(products, req.user);
+    req.categorys.push({
+      name: slide[i].name,
+      productpopular: productPopular,
+      bestseller: productSeller,
+      popularshops: popularshops,
+      lastvisit: lastvisitProduct,
+      productvoucher: [{
+        'name': 'voucher1',
+        'image': 'https://www.iphone-droid.net/wp-content/uploads/2017/03/Lazada-Promotion-1.jpg'
+      },
+      {
+        'name': 'voucher2',
+        'image': 'http://news.siamphone.com/upload/news/nw30365/01.jpg'
+      },
+      {
+        'name': 'voucher3',
+        'image': 'https://bookings.co.th/wp-content/uploads/Lazada-Birthday-Sale-%E0%B8%9B%E0%B8%B5%E0%B8%97%E0%B8%B5%E0%B9%88-5-%E0%B9%82%E0%B8%9B%E0%B8%A3%E0%B9%82%E0%B8%A1%E0%B8%8A%E0%B8%B1%E0%B9%88%E0%B8%99-%E0%B8%88%E0%B8%B1%E0%B8%94-21-23-%E0%B8%A1%E0%B8%B5.%E0%B8%84.2017.png'
+      }],
+      shopvoucher: [{
+        'name': 'voucher4',
+        'image': 'https://www.iphone-droid.net/wp-content/uploads/2017/03/Lazada-Promotion-1.jpg'
+      },
+      {
+        'name': 'voucher5',
+        'image': 'http://news.siamphone.com/upload/news/nw30365/01.jpg'
+      },
+      {
+        'name': 'voucher6',
+        'image': 'https://bookings.co.th/wp-content/uploads/Lazada-Birthday-Sale-%E0%B8%9B%E0%B8%B5%E0%B8%97%E0%B8%B5%E0%B9%88-5-%E0%B9%82%E0%B8%9B%E0%B8%A3%E0%B9%82%E0%B8%A1%E0%B8%8A%E0%B8%B1%E0%B9%88%E0%B8%99-%E0%B8%88%E0%B8%B1%E0%B8%94-21-23-%E0%B8%A1%E0%B8%B5.%E0%B8%84.2017.png'
+      }]
+    });
+  }
   next();
 };
 
