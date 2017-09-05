@@ -7,7 +7,8 @@ var path = require('path'),
   errorHandler = require(path.resolve('./modules/core/server/controllers/errors.server.controller')),
   mongoose = require('mongoose'),
   passport = require('passport'),
-  User = mongoose.model('User');
+  User = mongoose.model('User'),
+  Shopmaster = mongoose.model('Shopmaster');
 
 // URLs for which user can't be redirected on signin
 var noReturnUrls = [
@@ -68,7 +69,13 @@ exports.signin = function (req, res, next) {
         if (err) {
           res.status(400).send(err);
         } else {
-          res.json(user);
+          if (user.shop && user.shop !== undefined) {
+            Shopmaster.populate(user, { path: 'shop' }, function (err, users) {
+              res.json(users);
+            });
+          } else {
+            res.json(user);
+          }
         }
       });
     }

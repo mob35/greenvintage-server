@@ -23,6 +23,9 @@ exports.invokeRolesPolicies = function () {
     }, {
       resources: '/api/ordersbyshopstatuspaid',
       permissions: ['get']
+    }, {
+      resources: '/api/order',
+      permissions: ['post']
     }]
   }, {
     roles: ['user'],
@@ -35,6 +38,9 @@ exports.invokeRolesPolicies = function () {
     }, {
       resources: '/api/ordersbyshopstatuspaid',
       permissions: ['get']
+    }, {
+      resources: '/api/order',
+      permissions: ['post']
     }]
   }, {
     roles: ['guest'],

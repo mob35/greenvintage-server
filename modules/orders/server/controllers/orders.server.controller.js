@@ -6,11 +6,13 @@
 var path = require('path'),
   mongoose = require('mongoose'),
   Ordermaster = mongoose.model('Ordermaster'),
+  Cartmaster = mongoose.model('Cartmaster'),
   errorHandler = require(path.resolve('./modules/core/server/controllers/errors.server.controller')),
   _ = require('lodash');
 
 exports.getOrderByshop = function (req, res, next) {
   var shop = req.user.shop ? req.user.shop : '';
+  console.log(req.user);
   Ordermaster.find().sort('-created').populate('user', 'displayName').populate('shipping').populate({
     path: 'items',
     populate: [{
@@ -56,4 +58,39 @@ exports.filterStatusPaid = function (req, res, next) {
 
 exports.resultOrders = function (req, res) {
   res.jsonp(req.orders);
+};
+
+exports.createOrder = function (req, res, next) {
+  var order = new Ordermaster(req.body);
+  order.user = req.user;
+  order.save(function (err) {
+    if (err) {
+      return res.status(400).send({
+        message: errorHandler.getErrorMessage(err)
+      });
+    } else {
+      req.orderCreate = order;
+      next();
+    }
+  });
+};
+
+exports.removeCart = function (req, res) {
+
+  Cartmaster.findById(req.orderCreate.cart).populate('user', 'displayName').exec(function (err, cart) {
+    if (err) {
+      return res.status(400).send({
+        message: errorHandler.getErrorMessage(err)
+      });
+    }
+    cart.remove(function (err) {
+      if (err) {
+        return res.status(400).send({
+          message: errorHandler.getErrorMessage(err)
+        });
+      } else {
+        res.jsonp(req.orderCreate);
+      }
+    });
+  });
 };

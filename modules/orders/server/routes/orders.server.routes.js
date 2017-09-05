@@ -13,6 +13,9 @@ module.exports = function (app) {
 
   app.route('/api/ordersbyshopstatuspaid').all(ordersPolicy.isAllowed)
     .get(orders.getOrderByshop, orders.filterStatusPaid, orders.resultOrders);
+
+  app.route('/api/order').all(ordersPolicy.isAllowed)
+    .post(orders.createOrder, orders.removeCart);
   //   .post(orders.create);
 
   // app.route('/api/orders/:orderId').all(ordersPolicy.isAllowed)

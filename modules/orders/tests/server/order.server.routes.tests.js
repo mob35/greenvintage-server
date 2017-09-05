@@ -344,12 +344,83 @@ describe('Order CRUD tests', function () {
             var orders = ordersGetRes.body;
 
             // Set assertions
-            (orders.length).should.equal(1);            
+            (orders.length).should.equal(1);
             (orders[0].user._id).should.equal(userId);
             (orders[0].totalamount).should.match(1000);
 
             // Call the assertion callback
             done();
+          });
+      });
+  });
+
+  it('create order', function (done) {
+    var orderObj1 = {
+      shipping: address,
+      items: [{
+        product: product,
+        qty: 1,
+        amount: 1234,
+        size: 'S',
+        delivery: shipping,
+        status: 'accept'
+      }],
+      payment: {
+        paymenttype: 'Counterservice',
+        counterservice: '7-11'
+      },
+      amount: 1234,
+      discount: 234,
+      totalamount: 1000,
+      cart: cart.id,
+      user: user
+    };
+    agent.post('/api/auth/signin')
+      .send(credentials)
+      .expect(200)
+      .end(function (signinErr, signinRes) {
+        // Handle signin error
+        if (signinErr) {
+          return done(signinErr);
+        }
+
+        // Get the userId
+        var userId = user.id;
+
+        // Get a list of Orders
+        agent.post('/api/order')
+          .send(orderObj1)
+          .expect(200)
+          .end(function (ordersErr, ordersRes) {
+            // Handle Orders save error
+            if (ordersErr) {
+              return done(ordersErr);
+            }
+
+            // Get Orders list
+            var orders = ordersRes.body;
+
+            // Set assertions
+            (orders.user._id).should.equal(userId);
+            (orders.totalamount).should.match(1000);
+
+            // Call the assertion callback
+            agent.get('/api/cartmasters')
+              .end(function (ordersGetErr, ordersGetRes) {
+                // Handle Orders save error
+                if (ordersGetErr) {
+                  return done(ordersGetErr);
+                }
+
+                // Get Orders list
+                var orders = ordersGetRes.body;
+
+                // Set assertions
+                (orders.length).should.equal(0);
+
+                // Call the assertion callback
+                done();
+              });
           });
       });
   });
