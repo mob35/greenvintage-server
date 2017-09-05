@@ -39,7 +39,7 @@ exports.createSlides = function (req, res, next) {
     var lastvisitProduct = getLastvisit(products, req.user);
     req.categorys.push({
       name: slide[i].name,
-      productpopular: productPopular,
+      popularproducts: productPopular,
       bestseller: productSeller,
       popularshops: popularshops,
       lastvisit: lastvisitProduct,

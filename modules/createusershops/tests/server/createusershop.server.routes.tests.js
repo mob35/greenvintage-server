@@ -61,12 +61,12 @@ describe('Createusershop CRUD tests', function () {
   it('should be able to save a Createusershop if logged in', function (done) {
 
     var user = {
-      firstName: 'Full',
-      lastName: 'Name',
-      displayName: 'Full Name',
-      email: 'test@test.com',
-      username: credentials.username,
-      password: credentials.password,
+      firstName: 'Full2',
+      lastName: 'Name2',
+      displayName: 'Full2 Name2',
+      email: 'test2@test.com',
+      username: 'bu4y',
+      password: 'P@ssw0rd1234',
       shop: {
         name: 'Shopmaster Name2',
         detail: 'Shop detail',

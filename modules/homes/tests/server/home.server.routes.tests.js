@@ -488,7 +488,7 @@ describe('Home CRUD tests', function () {
               var homes = homesGetRes.body;
 
               // Set assertions
-              (homes.categories[0].productpopular.length).should.equal(6);
+              (homes.categories[0].popularproducts.length).should.equal(6);
               (homes.categories[0].bestseller.length).should.equal(6);
               (homes.categories[0].bestseller[0].name).should.equal('Productmaster productObj10');
               (homes.categories[0].popularshops.length).should.equal(2);
