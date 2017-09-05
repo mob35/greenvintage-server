@@ -78,6 +78,7 @@ var UserSchema = new Schema({
     type: Schema.ObjectId,
     ref: 'Shopmaster'
   },
+  tel: String,
   providerData: {},
   additionalProvidersData: {},
   roles: {

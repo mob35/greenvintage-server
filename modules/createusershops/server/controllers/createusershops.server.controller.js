@@ -29,6 +29,8 @@ exports.createUser = function (req, res, next) {
 
 exports.createShop = function (req, res, next) {
   var shop = new Shop(req.body.shop);
+  shop.email = req.createuser.email;
+  shop.tel = req.createuser.tel;
   shop.user = req.createuser;
   shop.save(function (err) {
     if (err) {

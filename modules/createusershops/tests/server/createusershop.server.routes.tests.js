@@ -67,11 +67,10 @@ describe('Createusershop CRUD tests', function () {
       email: 'test2@test.com',
       username: 'bu4y',
       password: 'P@ssw0rd1234',
+      tel: '09999999',
       shop: {
         name: 'Shopmaster Name2',
         detail: 'Shop detail',
-        email: 'shop@email.com',
-        tel: '0999999999',
         image: 'http://www.sportsdirect.com/images/marketing/nikelanding-tainers.jpg'
       }
     };
@@ -90,6 +89,8 @@ describe('Createusershop CRUD tests', function () {
 
         (createusershops.firstName).should.match(user.firstName);
         (createusershops.shop.name).should.match(user.shop.name);
+        (createusershops.shop.email).should.match(user.email);
+        (createusershops.shop.tel).should.match(user.tel);
 
         // Call the assertion callback
         done();
