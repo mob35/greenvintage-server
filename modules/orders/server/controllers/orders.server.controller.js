@@ -12,7 +12,6 @@ var path = require('path'),
 
 exports.getOrderByshop = function (req, res, next) {
   var shop = req.user.shop ? req.user.shop : '';
-  console.log(req.user);
   Ordermaster.find().sort('-created').populate('user', 'displayName').populate('shipping').populate({
     path: 'items',
     populate: [{
@@ -54,6 +53,26 @@ exports.filterStatusPaid = function (req, res, next) {
   });
   req.orders = orders;
   next();
+};
+
+exports.cookingStatusWaiting = function (req, res, next) {
+  next();
+};
+
+exports.cookingStatusAccept = function (req, res, next) {
+  next();
+};
+
+exports.cookingStatusUnreceived = function (req, res, next) {
+  next();
+};
+
+exports.resultStatus = function (req, res) {
+  res.jsonp({
+    waiting: [],
+    accept: [],
+    unreceived: []
+  });
 };
 
 exports.resultOrders = function (req, res) {

@@ -344,9 +344,9 @@ describe('Order CRUD tests', function () {
             var orders = ordersGetRes.body;
 
             // Set assertions
-            (orders.length).should.equal(1);
-            (orders[0].user._id).should.equal(userId);
-            (orders[0].totalamount).should.match(1000);
+            (orders.waiting.length).should.equal(0);
+            (orders.accept.length).should.equal(0);
+            (orders.unreceived.length).should.equal(0);
 
             // Call the assertion callback
             done();
