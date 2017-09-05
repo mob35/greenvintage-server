@@ -10,12 +10,44 @@ var mongoose = require('mongoose'),
  * Ordermaster Schema
  */
 var OrdermasterSchema = new Schema({
-  name: {
-    type: String,
-    default: '',
-    required: 'Please fill Ordermaster name',
-    trim: true
+  shipping: {
+    type: Schema.ObjectId,
+    ref: 'Address'
   },
+  items: [{
+    product: {
+      type: Schema.ObjectId,
+      ref: 'Productmaster'
+    },
+    qty: Number,
+    amount: Number,
+    status: {
+      type: String,
+      enum: ['waiting', 'accept', 'reject'],
+      default: 'waiting'
+    },
+    delivery: {
+      type: Schema.ObjectId,
+      ref: 'Shippingmaster'
+    },
+  }],
+  payment: {
+    paymenttype: String,
+    creditno: String,
+    creditname: String,
+    expdate: String,
+    creditcvc: String,
+    counterservice: String
+  },
+  amount: Number,
+  discount: Number,
+  totalamount: Number,
+  status: {
+    type: String,
+    enum: ['confirm', 'paid', 'prepare', 'deliver', 'complete', 'cancel'],
+    default: 'confirm'
+  },
+  cart: String,
   created: {
     type: Date,
     default: Date.now

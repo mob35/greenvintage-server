@@ -51,7 +51,7 @@ describe('Ordermaster CRUD tests', function () {
     // Save a user to the test db and create new Ordermaster
     user.save(function () {
       ordermaster = {
-        name: 'Ordermaster name'
+        amount: 1234
       };
 
       done();
@@ -94,7 +94,7 @@ describe('Ordermaster CRUD tests', function () {
 
                 // Set assertions
                 (ordermasters[0].user._id).should.equal(userId);
-                (ordermasters[0].name).should.match('Ordermaster name');
+                (ordermasters[0].amount).should.match(1234);
 
                 // Call the assertion callback
                 done();
@@ -110,36 +110,6 @@ describe('Ordermaster CRUD tests', function () {
       .end(function (ordermasterSaveErr, ordermasterSaveRes) {
         // Call the assertion callback
         done(ordermasterSaveErr);
-      });
-  });
-
-  it('should not be able to save an Ordermaster if no name is provided', function (done) {
-    // Invalidate name field
-    ordermaster.name = '';
-
-    agent.post('/api/auth/signin')
-      .send(credentials)
-      .expect(200)
-      .end(function (signinErr, signinRes) {
-        // Handle signin error
-        if (signinErr) {
-          return done(signinErr);
-        }
-
-        // Get the userId
-        var userId = user.id;
-
-        // Save a new Ordermaster
-        agent.post('/api/ordermasters')
-          .send(ordermaster)
-          .expect(400)
-          .end(function (ordermasterSaveErr, ordermasterSaveRes) {
-            // Set message assertion
-            (ordermasterSaveRes.body.message).should.match('Please fill Ordermaster name');
-
-            // Handle Ordermaster save error
-            done(ordermasterSaveErr);
-          });
       });
   });
 
@@ -167,7 +137,7 @@ describe('Ordermaster CRUD tests', function () {
             }
 
             // Update Ordermaster name
-            ordermaster.name = 'WHY YOU GOTTA BE SO MEAN?';
+            ordermaster.amount = 123;
 
             // Update an existing Ordermaster
             agent.put('/api/ordermasters/' + ordermasterSaveRes.body._id)
@@ -181,7 +151,7 @@ describe('Ordermaster CRUD tests', function () {
 
                 // Set assertions
                 (ordermasterUpdateRes.body._id).should.equal(ordermasterSaveRes.body._id);
-                (ordermasterUpdateRes.body.name).should.match('WHY YOU GOTTA BE SO MEAN?');
+                (ordermasterUpdateRes.body.amount).should.match(123);
 
                 // Call the assertion callback
                 done();
@@ -218,7 +188,7 @@ describe('Ordermaster CRUD tests', function () {
       request(app).get('/api/ordermasters/' + ordermasterObj._id)
         .end(function (req, res) {
           // Set assertion
-          res.body.should.be.instanceof(Object).and.have.property('name', ordermaster.name);
+          res.body.should.be.instanceof(Object).and.have.property('amount', ordermaster.amount);
 
           // Call the assertion callback
           done();
@@ -363,7 +333,7 @@ describe('Ordermaster CRUD tests', function () {
               }
 
               // Set assertions on new Ordermaster
-              (ordermasterSaveRes.body.name).should.equal(ordermaster.name);
+              (ordermasterSaveRes.body.amount).should.equal(ordermaster.amount);
               should.exist(ordermasterSaveRes.body.user);
               should.equal(ordermasterSaveRes.body.user._id, orphanId);
 
@@ -390,7 +360,7 @@ describe('Ordermaster CRUD tests', function () {
 
                         // Set assertions
                         (ordermasterInfoRes.body._id).should.equal(ordermasterSaveRes.body._id);
-                        (ordermasterInfoRes.body.name).should.equal(ordermaster.name);
+                        (ordermasterInfoRes.body.amount).should.equal(ordermaster.amount);
                         should.equal(ordermasterInfoRes.body.user, undefined);
 
                         // Call the assertion callback
