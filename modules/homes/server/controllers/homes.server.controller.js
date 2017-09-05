@@ -135,38 +135,42 @@ function arrayObjectIndexOf(myArray, searchTerm, property) {
 }
 
 function getLastvisit(products, user) {
+  if (user && user !== undefined) {
+    var myLastVisit = products.filter(function (obj) {
+      return (obj.historylog.filter(function (obj2) {
+        return obj2.user.toString() === user._id.toString();
+      })).length > 0;
+    });
 
-  var myLastVisit = products.filter(function (obj) {
-    return (obj.historylog.filter(function (obj2) {
-      return obj2.user.toString() === user._id.toString();
-    })).length > 0;
-  });
-
-  for (var i = 0; i < myLastVisit.length; i++) {
-    for (var ii = 0; ii < myLastVisit[i].historylog.length; ii++) {
-      if (myLastVisit[i].historylog[ii].user.toString() !== user._id.toString()) {
-        myLastVisit[i].historylog.splice(ii, 1);
+    for (var i = 0; i < myLastVisit.length; i++) {
+      for (var ii = 0; ii < myLastVisit[i].historylog.length; ii++) {
+        if (myLastVisit[i].historylog[ii].user.toString() !== user._id.toString()) {
+          myLastVisit[i].historylog.splice(ii, 1);
+        }
       }
+
     }
+    var lastvisit = myLastVisit.sort(function (a, b) {
 
+      // console.log('cookingLastvisitB' + cookingLastvisitB);
+
+      var lastvisitA = a.historylog.sort(function (aa, bb) {
+        return (new Date(aa.date) < new Date(bb.date)) ? 1 : ((new Date(bb.date) < new Date(aa.date)) ? -1 : 0);
+      });
+      // console.log('lastvisitA' + lastvisitA);
+      var lastvisitB = b.historylog.sort(function (aa, bb) {
+        return (new Date(aa.date) < new Date(bb.date)) ? 1 : ((new Date(bb.date) < new Date(aa.date)) ? -1 : 0);
+      });
+      // console.log('lastvisitB' + lastvisitB);
+
+      return lastvisitA.length > 0 && lastvisitB.length > 0 ? (new Date(lastvisitA[0].date) < new Date(lastvisitB[0].date)) ? 1 : ((new Date(lastvisitB[0].date) < new Date(lastvisitA[0].date)) ? -1 : 0) : 0;
+
+    });
+    var setLastVisit = sliceItem(lastvisit);
+    // console.log(lastvisit);
+    return setLastVisit;
+  } else {
+    return [];
   }
-  var lastvisit = myLastVisit.sort(function (a, b) {
 
-    // console.log('cookingLastvisitB' + cookingLastvisitB);
-
-    var lastvisitA = a.historylog.sort(function (aa, bb) {
-      return (new Date(aa.date) < new Date(bb.date)) ? 1 : ((new Date(bb.date) < new Date(aa.date)) ? -1 : 0);
-    });
-    // console.log('lastvisitA' + lastvisitA);
-    var lastvisitB = b.historylog.sort(function (aa, bb) {
-      return (new Date(aa.date) < new Date(bb.date)) ? 1 : ((new Date(bb.date) < new Date(aa.date)) ? -1 : 0);
-    });
-    // console.log('lastvisitB' + lastvisitB);
-
-    return lastvisitA.length > 0 && lastvisitB.length > 0 ? (new Date(lastvisitA[0].date) < new Date(lastvisitB[0].date)) ? 1 : ((new Date(lastvisitB[0].date) < new Date(lastvisitA[0].date)) ? -1 : 0) : 0;
-
-  });
-  var setLastVisit = sliceItem(lastvisit);
-  // console.log(lastvisit);
-  return setLastVisit;
 }
