@@ -73,7 +73,7 @@ exports.createSlides = function (req, res, next) {
 };
 
 exports.returnData = function (req, res) {
-  res.jsonp({ categorys: req.categorys });
+  res.jsonp({ categories: req.categorys });
 };
 
 function sliceItem(products) {
