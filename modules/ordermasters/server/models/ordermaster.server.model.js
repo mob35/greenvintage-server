@@ -21,6 +21,7 @@ var OrdermasterSchema = new Schema({
     },
     qty: Number,
     amount: Number,
+    size: String,
     status: {
       type: String,
       enum: ['waiting', 'accept', 'reject'],
