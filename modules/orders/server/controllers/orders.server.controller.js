@@ -28,7 +28,11 @@ exports.getOrderByshop = function (req, res, next) {
 };
 
 exports.filterStatus = function (req, res, next) {
-  // req.orders;
+  var orders = req.orders.filter(function (obj) {
+    var orderStatus = obj.items.filter(function (obj2) { return obj2.status.toString() === 'waiting'; });
+    return orderStatus.length > 0 === true;
+  });
+  req.orders = orders;
   next();
 };
 

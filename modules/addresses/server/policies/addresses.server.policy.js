@@ -20,6 +20,9 @@ exports.invokeRolesPolicies = function () {
     }, {
       resources: '/api/addresses/:addressId',
       permissions: '*'
+    }, {
+      resources: '/api/addressesbyuser',
+      permissions: ['get']
     }]
   }, {
     roles: ['user'],
@@ -29,6 +32,9 @@ exports.invokeRolesPolicies = function () {
     }, {
       resources: '/api/addresses/:addressId',
       permissions: ['get']
+    }, {
+      resources: '/api/addressesbyuser',
+      permissions: ['get']
     }]
   }, {
     roles: ['guest'],
@@ -37,6 +43,9 @@ exports.invokeRolesPolicies = function () {
       permissions: ['get']
     }, {
       resources: '/api/addresses/:addressId',
+      permissions: ['get']
+    }, {
+      resources: '/api/addressesbyuser',
       permissions: ['get']
     }]
   }]);

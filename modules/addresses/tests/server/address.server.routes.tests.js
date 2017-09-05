@@ -410,6 +410,129 @@ describe('Address CRUD tests', function () {
     });
   });
 
+  it('get Address if logged in success', function (done) {
+    agent.post('/api/auth/signin')
+      .send(credentials)
+      .expect(200)
+      .end(function (signinErr, signinRes) {
+        // Handle signin error
+        if (signinErr) {
+          return done(signinErr);
+        }
+
+        // Get the userId
+        var userId = user.id;
+
+        // Save a new Address
+        agent.post('/api/addresses')
+          .send(address)
+          .expect(200)
+          .end(function (addressSaveErr, addressSaveRes) {
+            // Handle Address save error
+            if (addressSaveErr) {
+              return done(addressSaveErr);
+            }
+
+            // Get a list of Addresses
+            agent.get('/api/addressesbyuser')
+              .end(function (addressesGetErr, addressesGetRes) {
+                // Handle Addresses save error
+                if (addressesGetErr) {
+                  return done(addressesGetErr);
+                }
+
+                // Get Addresses list
+                var addresses = addressesGetRes.body;
+
+                // Set assertions
+                (addresses[0].user._id).should.equal(userId);
+                (addresses[0].firstname).should.match('firstname');
+
+                // Call the assertion callback
+                done();
+              });
+          });
+      });
+  });
+
+  it('get Address if logged in not address', function (done) {
+    var addressObj = new Address({
+      firstname: 'firstname',
+      lastname: 'lastname',
+      tel: 'tel',
+      address: 'address',
+      subdistrict: 'subdistrict',
+      district: 'district',
+      province: 'province',
+      postcode: 'postcode',
+      user: null
+    });
+    addressObj.save();
+    agent.post('/api/auth/signin')
+      .send(credentials)
+      .expect(200)
+      .end(function (signinErr, signinRes) {
+        // Handle signin error
+        if (signinErr) {
+          return done(signinErr);
+        }
+
+        // Get the userId
+        var userId = user.id;
+
+        // Save a new Address
+
+        // Get a list of Addresses
+        agent.get('/api/addressesbyuser')
+          .end(function (addressesGetErr, addressesGetRes) {
+            // Handle Addresses save error
+            if (addressesGetErr) {
+              return done(addressesGetErr);
+            }
+
+            // Get Addresses list
+            var addresses = addressesGetRes.body;
+
+            // Set assertions
+            (addresses.length).should.equal(0);
+
+            // Call the assertion callback
+            done();
+          });
+      });
+  });
+
+  it('get Address if not logged in', function (done) {
+    var addressObj = new Address({
+      firstname: 'firstname',
+      lastname: 'lastname',
+      tel: 'tel',
+      address: 'address',
+      subdistrict: 'subdistrict',
+      district: 'district',
+      province: 'province',
+      postcode: 'postcode',
+      user: user
+    });
+    addressObj.save();
+    agent.get('/api/addressesbyuser')
+      .end(function (addressesGetErr, addressesGetRes) {
+        // Handle Addresses save error
+        if (addressesGetErr) {
+          return done(addressesGetErr);
+        }
+
+        // Get Addresses list
+        var addresses = addressesGetRes.body;
+
+        // Set assertions
+        (addresses.length).should.equal(0);
+
+        // Call the assertion callback
+        done();
+      });
+  });
+
   afterEach(function (done) {
     User.remove().exec(function () {
       Address.remove().exec(done);
