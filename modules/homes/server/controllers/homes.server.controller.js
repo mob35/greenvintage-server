@@ -33,10 +33,10 @@ exports.createSlides = function (req, res, next) {
   var slide = [{ id: null, name: 'ไฮไลท์' }, { id: '1', name: 'เครื่องใช้ไฟฟ้า' }];
   for (var i = 0; i < slide.length; i++) {
     var products = fliterCategory(req.products, slide[i].id);
-    var productPopular = createPopular(products);
-    var productSeller = bestSeller(products);
-    var popularshops = shopPopular();
-    var lastvisitProduct = getLastvisit(products, req.user);
+    var productPopular = createPopular(products, 6);
+    var productSeller = bestSeller(products, 6);
+    var popularshops = shopPopular(6);
+    var lastvisitProduct = getLastvisit(products, req.user, 6);
     req.categorys.push({
       name: slide[i].name,
       popularproducts: productPopular,
@@ -76,8 +76,8 @@ exports.returnData = function (req, res) {
   res.jsonp({ categories: req.categorys });
 };
 
-function sliceItem(products) {
-  return products.slice(0, 6);
+function sliceItem(products, number) {
+  return products.slice(0, number);
 }
 
 function fliterCategory(products, cateId) {
@@ -88,13 +88,13 @@ function fliterCategory(products, cateId) {
   return category;
 }
 
-function createPopular(products) {
+function createPopular(products, number) {
   var popular = products.sort(function (a, b) { return (a.historylog.length < b.historylog.length) ? 1 : ((b.historylog.length < a.historylog.length) ? -1 : 0); });
-  var setPopular = sliceItem(popular);
+  var setPopular = sliceItem(popular, number);
   return setPopular;
 }
 
-function bestSeller(products) {
+function bestSeller(products, number) {
   for (var i = 0; i < products.length; i++) {
     products[i].sellerSummary = 0;
     for (var ii = 0; ii < products[i].sellerlog.length; ii++) {
@@ -103,11 +103,11 @@ function bestSeller(products) {
   }
   var bestseller = products.sort(function (a, b) { return (a.sellerSummary < b.sellerSummary) ? 1 : ((b.sellerSummary < a.sellerSummary) ? -1 : 0); });
   productList = bestseller;
-  var setBestseller = sliceItem(bestseller);
+  var setBestseller = sliceItem(bestseller, number);
   return setBestseller;
 }
 
-function shopPopular() {
+function shopPopular(number) {
   var shops = [];
   for (var i = 0; i < productList.length; i++) {
     var indexOf = arrayObjectIndexOf(shops, productList[i].shop._id, '_id');
@@ -121,7 +121,7 @@ function shopPopular() {
   }
   var shopsPopular = shops.sort(function (a, b) { return (a.sellerSummary < b.sellerSummary) ? 1 : ((b.sellerSummary < a.sellerSummary) ? -1 : 0); });
 
-  var setShopPopular = sliceItem(shopsPopular);
+  var setShopPopular = sliceItem(shopsPopular, number);
 
   return setShopPopular;
 
@@ -134,7 +134,7 @@ function arrayObjectIndexOf(myArray, searchTerm, property) {
   return -1;
 }
 
-function getLastvisit(products, user) {
+function getLastvisit(products, user, number) {
   if (user && user !== undefined) {
     var myLastVisit = products.filter(function (obj) {
       return (obj.historylog.filter(function (obj2) {
@@ -166,7 +166,7 @@ function getLastvisit(products, user) {
       return lastvisitA.length > 0 && lastvisitB.length > 0 ? (new Date(lastvisitA[0].date) < new Date(lastvisitB[0].date)) ? 1 : ((new Date(lastvisitB[0].date) < new Date(lastvisitA[0].date)) ? -1 : 0) : 0;
 
     });
-    var setLastVisit = sliceItem(lastvisit);
+    var setLastVisit = sliceItem(lastvisit, number);
     // console.log(lastvisit);
     return setLastVisit;
   } else {
