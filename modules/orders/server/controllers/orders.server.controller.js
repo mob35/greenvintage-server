@@ -21,6 +21,9 @@ exports.getOrderByshop = function (req, res, next) {
         path: 'category',
         model: 'Categorymaster'
       }, {
+        path: 'shop',
+        model: 'Shopmaster'
+      }, {
         path: 'shippings.shipping',
         model: 'Shippingmaster'
       }]
@@ -36,7 +39,7 @@ exports.getOrderByshop = function (req, res, next) {
       });
     } else {
       var orders = ordermasters.filter(function (obj) {
-        var orderShop = obj.items.filter(function (obj2) { return obj2.product.shop.toString() === shop.toString(); });
+        var orderShop = obj.items.filter(function (obj2) { return obj2.product.shop._id.toString() === shop.toString(); });
         return orderShop.length > 0 === true;
       });
       req.orders = orders;
