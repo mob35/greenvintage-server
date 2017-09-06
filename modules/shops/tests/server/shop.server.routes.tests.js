@@ -119,6 +119,48 @@ describe('Shop CRUD tests', function () {
       });
   });
 
+  it('get shop by user', function (done) {
+    agent.post('/api/auth/signin')
+      .send(credentials)
+      .expect(200)
+      .end(function (signinErr, signinRes) {
+        // Handle signin error
+        if (signinErr) {
+          return done(signinErr);
+        }
+
+        // Get the userId
+        var userId = user.id;
+
+        // Save a new Shop
+        agent.post('/api/shops')
+          .send(shopmaster)
+          .expect(200)
+          .end(function (shopSaveErr, shopSaveRes) {
+            // Handle Shop save error
+            if (shopSaveErr) {
+              return done(shopSaveErr);
+            }
+
+            agent.get('/api/shops')
+              .end(function (shopgetErr, shopgetRes) {
+                // Handle Shop save error
+                if (shopgetErr) {
+                  return done(shopgetErr);
+                }
+
+
+                // Set assertions
+                (shopgetRes.body[0].user._id).should.equal(userId);
+                (shopgetRes.body[0].name).should.match('Shop name');
+
+                // Call the assertion callback
+                done();
+              });
+          });
+      });
+  });
+
   afterEach(function (done) {
     User.remove().exec(function () {
       Address.remove().exec(function () {

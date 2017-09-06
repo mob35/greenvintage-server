@@ -25,7 +25,7 @@ exports.invokeRolesPolicies = function () {
     roles: ['user'],
     allows: [{
       resources: '/api/shops',
-      permissions: ['post']
+      permissions: ['get', 'post']
     }, {
       resources: '/api/shops/:shopId',
       permissions: ['get']
@@ -34,7 +34,7 @@ exports.invokeRolesPolicies = function () {
     roles: ['guest'],
     allows: [{
       resources: '/api/shops',
-      permissions: ['post']
+      permissions: ['get', 'post']
     }, {
       resources: '/api/shops/:shopId',
       permissions: ['get']

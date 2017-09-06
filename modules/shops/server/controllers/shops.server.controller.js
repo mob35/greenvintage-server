@@ -27,6 +27,17 @@ exports.create = function (req, res) {
   });
 };
 
+
+exports.list = function (req, res) {
+  Shopmaster.find({ user: { _id: req.user._id } }).populate('user', 'displayName').exec(function (err, shop) {
+    if (err) {
+      return res.status(400).send({
+        message: errorHandler.getErrorMessage(err)
+      });
+    }
+    res.jsonp(shop);
+  });
+};
 /**
  * Show the current Shop
  */
