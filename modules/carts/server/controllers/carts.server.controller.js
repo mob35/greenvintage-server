@@ -92,9 +92,11 @@ exports.processingAddUserCart = function (req, res, next) {
     }
 
     item.amount = 0;
-    item.products.forEach(function (element) {
-      item.amount += element.itemamount;
-    });
+    if (item.products && item.products.length > 0) {
+      item.products.forEach(function (element) {
+        item.amount += element.itemamount;
+      });
+    }
     req.userCart = item;
     next();
 
