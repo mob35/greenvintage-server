@@ -333,7 +333,7 @@ describe('Order CRUD tests', function () {
         var userId = user.id;
 
         // Get a list of Orders
-        agent.get('/api/ordersbyshopstatuspaid')
+        agent.get('/api/orderlistbyshops')
           .end(function (ordersGetErr, ordersGetRes) {
             // Handle Orders save error
             if (ordersGetErr) {
@@ -344,9 +344,7 @@ describe('Order CRUD tests', function () {
             var orders = ordersGetRes.body;
 
             // Set assertions
-            (orders.waiting.length).should.equal(0);
-            (orders.accept.length).should.equal(0);
-            (orders.unreceived.length).should.equal(0);
+            (orders.length).should.equal(1);
 
             // Call the assertion callback
             done();

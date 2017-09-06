@@ -12,11 +12,11 @@ var path = require('path'),
 /**
  * Create a Productmaster
  */
-exports.create = function(req, res) {
+exports.create = function (req, res) {
   var productmaster = new Productmaster(req.body);
   productmaster.user = req.user;
 
-  productmaster.save(function(err) {
+  productmaster.save(function (err) {
     if (err) {
       return res.status(400).send({
         message: errorHandler.getErrorMessage(err)
@@ -30,7 +30,7 @@ exports.create = function(req, res) {
 /**
  * Show the current Productmaster
  */
-exports.read = function(req, res) {
+exports.read = function (req, res) {
   // convert mongoose document to JSON
   var productmaster = req.productmaster ? req.productmaster.toJSON() : {};
 
@@ -44,12 +44,12 @@ exports.read = function(req, res) {
 /**
  * Update a Productmaster
  */
-exports.update = function(req, res) {
+exports.update = function (req, res) {
   var productmaster = req.productmaster;
 
   productmaster = _.extend(productmaster, req.body);
 
-  productmaster.save(function(err) {
+  productmaster.save(function (err) {
     if (err) {
       return res.status(400).send({
         message: errorHandler.getErrorMessage(err)
@@ -63,10 +63,10 @@ exports.update = function(req, res) {
 /**
  * Delete an Productmaster
  */
-exports.delete = function(req, res) {
+exports.delete = function (req, res) {
   var productmaster = req.productmaster;
 
-  productmaster.remove(function(err) {
+  productmaster.remove(function (err) {
     if (err) {
       return res.status(400).send({
         message: errorHandler.getErrorMessage(err)
@@ -80,8 +80,8 @@ exports.delete = function(req, res) {
 /**
  * List of Productmasters
  */
-exports.list = function(req, res) {
-  Productmaster.find().sort('-created').populate('user', 'displayName').exec(function(err, productmasters) {
+exports.list = function (req, res) {
+  Productmaster.find().sort('-created').populate('user', 'displayName').exec(function (err, productmasters) {
     if (err) {
       return res.status(400).send({
         message: errorHandler.getErrorMessage(err)
@@ -95,7 +95,7 @@ exports.list = function(req, res) {
 /**
  * Productmaster middleware
  */
-exports.productmasterByID = function(req, res, next, id) {
+exports.productmasterByID = function (req, res, next, id) {
 
   if (!mongoose.Types.ObjectId.isValid(id)) {
     return res.status(400).send({
@@ -103,7 +103,7 @@ exports.productmasterByID = function(req, res, next, id) {
     });
   }
 
-  Productmaster.findById(id).populate('user', 'displayName').exec(function (err, productmaster) {
+  Productmaster.findById(id).populate('user', 'displayName').populate('shop').exec(function (err, productmaster) {
     if (err) {
       return next(err);
     } else if (!productmaster) {

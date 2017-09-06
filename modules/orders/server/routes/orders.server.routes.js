@@ -11,8 +11,8 @@ module.exports = function (app) {
   app.route('/api/ordersbyshop').all(ordersPolicy.isAllowed)
     .get(orders.getOrderByshop, orders.filterStatus, orders.resultOrders);
 
-  app.route('/api/ordersbyshopstatuspaid').all(ordersPolicy.isAllowed)
-    .get(orders.getOrderByshop, orders.filterStatusPaid, orders.cookingStatusWaiting, orders.cookingStatusAccept, orders.cookingStatusUnreceived, orders.resultStatus);
+  app.route('/api/orderlistbyshops').all(ordersPolicy.isAllowed)
+    .get(orders.getOrderByshop, orders.filterStatusNotCancelAndConfirm, orders.resultOrders);
 
   app.route('/api/order').all(ordersPolicy.isAllowed)
     .post(orders.createOrder, orders.removeCart);

@@ -16,7 +16,14 @@ exports.getOrderByshop = function (req, res, next) {
     path: 'items',
     populate: [{
       path: 'product',
-      model: 'Productmaster'
+      model: 'Productmaster',
+      populate: [{
+        path: 'category',
+        model: 'Categorymaster'
+      }, {
+        path: 'shippings.shipping',
+        model: 'Shippingmaster'
+      }]
     },
     {
       path: 'delivery',
@@ -47,32 +54,16 @@ exports.filterStatus = function (req, res, next) {
   next();
 };
 
-exports.filterStatusPaid = function (req, res, next) {
+exports.filterStatusNotCancelAndConfirm = function (req, res, next) {
   var orders = req.orders.filter(function (obj) {
-    return obj.status.toString() === 'paid';
+    return obj.status.toString() !== 'cancel';
   });
-  req.orders = orders;
-  next();
-};
 
-exports.cookingStatusWaiting = function (req, res, next) {
-  next();
-};
-
-exports.cookingStatusAccept = function (req, res, next) {
-  next();
-};
-
-exports.cookingStatusUnreceived = function (req, res, next) {
-  next();
-};
-
-exports.resultStatus = function (req, res) {
-  res.jsonp({
-    waiting: [],
-    accept: [],
-    unreceived: []
+  var orders2 = orders.filter(function (obj) {
+    return obj.status.toString() !== 'confirm';
   });
+  req.orders = orders2;
+  next();
 };
 
 exports.resultOrders = function (req, res) {

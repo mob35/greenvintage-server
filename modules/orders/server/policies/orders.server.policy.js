@@ -21,7 +21,7 @@ exports.invokeRolesPolicies = function () {
       resources: '/api/orders/:orderId',
       permissions: '*'
     }, {
-      resources: '/api/ordersbyshopstatuspaid',
+      resources: '/api/orderlistbyshops',
       permissions: ['get']
     }, {
       resources: '/api/order',
@@ -36,7 +36,7 @@ exports.invokeRolesPolicies = function () {
       resources: '/api/orders/:orderId',
       permissions: ['get']
     }, {
-      resources: '/api/ordersbyshopstatuspaid',
+      resources: '/api/orderlistbyshops',
       permissions: ['get']
     }, {
       resources: '/api/order',
@@ -51,7 +51,7 @@ exports.invokeRolesPolicies = function () {
       resources: '/api/orders/:orderId',
       permissions: ['get']
     }, {
-      resources: '/api/ordersbyshopstatuspaid',
+      resources: '/api/orderlistbyshops',
       permissions: ['get']
     }]
   }]);
