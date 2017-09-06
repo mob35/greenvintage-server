@@ -103,7 +103,7 @@ function sliceItem(products, number) {
 function fliterCategory(products, cateId) {
   var category = products;
   if (cateId !== null) {
-    category = products.filter(function (obj) { return obj.category.parent.toString() === cateId.toString(); });
+    category = products.filter(function (obj) { return obj.category.parent ? obj.category.parent.toString() : '' === cateId.toString(); });
   }
   return category;
 }
