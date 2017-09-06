@@ -11,8 +11,8 @@ module.exports = function (app) {
   app.route('/api/homes').all(homesPolicy.isAllowed)
     .get(homes.getProduct, homes.createSlides, homes.returnData);
 
-  // app.route('/api/getproucttop/:keyword').all(homesPolicy.isAllowed)
-  //   .get(homes.getProduct, homes.createSlides, homes.returnData);
+  app.route('/api/getproucttop/:keyword').all(homesPolicy.isAllowed)
+    .get(homes.getProduct, homes.checkType, homes.returnTopData);
   // .post(homes.create);
 
   // app.route('/api/homes/:homeId').all(homesPolicy.isAllowed)
@@ -21,5 +21,5 @@ module.exports = function (app) {
   //   .delete(homes.delete);
 
   // Finish by binding the Home middleware
-  // app.param('keyword', homes.keywordType);
+  app.param('keyword', homes.keywordType);
 };

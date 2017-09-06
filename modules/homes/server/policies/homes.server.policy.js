@@ -20,6 +20,9 @@ exports.invokeRolesPolicies = function () {
     }, {
       resources: '/api/homes/:homeId',
       permissions: '*'
+    }, {
+      resources: '/api/getproucttop/:keyword',
+      permissions: ['get']
     }]
   }, {
     roles: ['user'],
@@ -29,6 +32,9 @@ exports.invokeRolesPolicies = function () {
     }, {
       resources: '/api/homes/:homeId',
       permissions: ['get']
+    }, {
+      resources: '/api/getproucttop/:keyword',
+      permissions: ['get']
     }]
   }, {
     roles: ['guest'],
@@ -37,6 +43,9 @@ exports.invokeRolesPolicies = function () {
       permissions: ['get']
     }, {
       resources: '/api/homes/:homeId',
+      permissions: ['get']
+    }, {
+      resources: '/api/getproucttop/:keyword',
       permissions: ['get']
     }]
   }]);

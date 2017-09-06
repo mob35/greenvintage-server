@@ -76,6 +76,26 @@ exports.returnData = function (req, res) {
   res.jsonp({ categories: req.categorys });
 };
 
+exports.keywordType = function (req, res, next, keyword) {
+  req.keyword = keyword;
+  next();
+};
+
+exports.checkType = function (req, res, next) {
+  var topProducts = [];
+  console.log(req.products);
+  if (req.keyword.toString() === 'bestseller') {
+    topProducts = bestSeller(req.products, 20);
+  } else if (req.keyword.toString() === 'popular') {
+    topProducts = createPopular(req.products, 20);
+  }
+  req.topProducts = topProducts;
+};
+
+exports.returnTopData = function (req, res) {
+  res.jsonp(req.topProducts);
+};
+
 function sliceItem(products, number) {
   return products.slice(0, number);
 }

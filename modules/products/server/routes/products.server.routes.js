@@ -8,7 +8,7 @@ var productsPolicy = require('../policies/products.server.policy'),
 
 module.exports = function (app) {
   // Products Routes
-  app.route('/api/products').all(productsPolicy.isAllowed)
+  app.route('/api/products')//.all(productsPolicy.isAllowed)
     .post(products.create);
 
   app.route('/api/products/:productId').all(productsPolicy.isAllowed)
