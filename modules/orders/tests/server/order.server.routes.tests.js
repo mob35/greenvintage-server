@@ -45,8 +45,8 @@ describe('Order CRUD tests', function () {
   beforeEach(function (done) {
     // Create user credentials
     credentials = {
-      username: 'username',
-      password: 'M3@n.jsI$Aw3$0m3'
+      username: 'getorder',
+      password: 'P@ssw0rd1234'
     };
 
     address = new Address({
