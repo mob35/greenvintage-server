@@ -83,13 +83,13 @@ exports.keywordType = function (req, res, next, keyword) {
 
 exports.checkType = function (req, res, next) {
   var topProducts = [];
-  console.log(req.products);
   if (req.keyword.toString() === 'bestseller') {
     topProducts = bestSeller(req.products, 20);
   } else if (req.keyword.toString() === 'popular') {
     topProducts = createPopular(req.products, 20);
   }
   req.topProducts = topProducts;
+  next();
 };
 
 exports.returnTopData = function (req, res) {
