@@ -84,7 +84,7 @@ exports.getByConditions = function (req, res, next) {
   } else if (req.categoryId !== 'all' && req.shopId !== 'all') {
     filter = { category: req.categoryId, shop: req.shopId };
   }
-  Productmaster.find(filter).populate('user', 'displayName').exec(function (err, productmaster) {
+  Productmaster.find(filter).populate('user', 'displayName').populate('shop').populate('category').populate('size').populate('shippings.shipping').exec(function (err, productmaster) {
     if (err) {
       return next(err);
     } else if (!productmaster) {
