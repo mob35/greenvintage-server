@@ -52,7 +52,7 @@ exports.productByID = function (req, res, next, id) {
     });
   }
 
-  Productmaster.findById(id).populate('user', 'displayName').exec(function (err, productmaster) {
+  Productmaster.findById(id).populate('user', 'displayName').populate('shop').populate('category').populate('size').populate('shippings.shipping').exec(function (err, productmaster) {
     if (err) {
       return next(err);
     } else if (!productmaster) {

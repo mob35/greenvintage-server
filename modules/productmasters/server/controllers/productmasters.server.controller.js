@@ -81,7 +81,7 @@ exports.delete = function (req, res) {
  * List of Productmasters
  */
 exports.list = function (req, res) {
-  Productmaster.find().sort('-created').populate('user', 'displayName').exec(function (err, productmasters) {
+  Productmaster.find().sort('-created').populate('user', 'displayName').populate('shop').populate('category').populate('size').populate('shippings.shipping').exec(function (err, productmasters) {
     if (err) {
       return res.status(400).send({
         message: errorHandler.getErrorMessage(err)
@@ -103,7 +103,7 @@ exports.productmasterByID = function (req, res, next, id) {
     });
   }
 
-  Productmaster.findById(id).populate('user', 'displayName').populate('shop').exec(function (err, productmaster) {
+  Productmaster.findById(id).populate('user', 'displayName').populate('shop').populate('category').populate('size').populate('shippings.shipping').exec(function (err, productmaster) {
     if (err) {
       return next(err);
     } else if (!productmaster) {
