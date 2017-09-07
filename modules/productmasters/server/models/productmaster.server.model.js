@@ -24,6 +24,7 @@ var ProductmasterSchema = new Schema({
   image: {
     required: 'Please fill Product image',
     type: [{
+      id: String,
       url: String
     }]
   },

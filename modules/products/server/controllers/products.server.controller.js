@@ -6,24 +6,59 @@
 var path = require('path'),
   mongoose = require('mongoose'),
   Productmaster = mongoose.model('Productmaster'),
+  cloudinary = require(path.resolve('./config/lib/cloudinary')).cloudinary,
   errorHandler = require(path.resolve('./modules/core/server/controllers/errors.server.controller')),
   _ = require('lodash');
 
 /**
  * Create a Product
  */
-exports.create = function (req, res) {
-  var productmaster = new Productmaster(req.body);
-  productmaster.user = req.user;
-
-  productmaster.save(function (err) {
-    if (err) {
-      return res.status(400).send({
-        message: errorHandler.getErrorMessage(err)
-      });
+////////////////////////////////// cloudinary process//////////////////////////////////////////
+function uploadCloudinary(imgs) {
+  return new Promise((resolve, reject) => {
+    if (imgs.length <= 0) {
+      resolve(null);
     } else {
-      res.jsonp(productmaster);
+      var cloudinaryImgs = [];
+      for (var i = 0; i < imgs.length; i++) {
+        cloudinary.v2.uploader.upload(imgs[i],
+          { public_id: new Date() + '_' + i }, function (error, result) {
+            if (error) {
+              reject(error);
+            } else {
+              cloudinaryImgs.push({
+                id: result.public_id,
+                url: result.secure_url
+              });
+              if (cloudinaryImgs.length == imgs.length) {
+                resolve(cloudinaryImgs);
+              }
+            }
+          });
+      }
     }
+  });
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////////////
+exports.create = function (req, res) {
+  uploadCloudinary(req.body.image).then(imgs => {
+    req.body.user = req.user;
+    req.body.image = imgs;
+    var productmaster = new Productmaster(req.body);
+    productmaster.save(function (err, result) {
+      if (err) {
+        return res.status(400).send({
+          message: errorHandler.getErrorMessage(err)
+        });
+      } else {
+        res.jsonp(result);
+      }
+    });
+  }).catch(err => {
+    return res.status(400).send({
+      message: errorHandler.getErrorMessage(err)
+    });
   });
 };
 
