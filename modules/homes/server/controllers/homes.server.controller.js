@@ -164,7 +164,7 @@ function getLastvisit(products, user, number) {
 
     for (var i = 0; i < myLastVisit.length; i++) {
       for (var ii = 0; ii < myLastVisit[i].historylog.length; ii++) {
-        if (myLastVisit[i].historylog[ii].user.toString() !== user._id.toString()) {
+        if (myLastVisit[i].historylog[ii].user ? myLastVisit[i].historylog[ii].user.toString() : '' !== user._id.toString()) {
           myLastVisit[i].historylog.splice(ii, 1);
         }
       }
