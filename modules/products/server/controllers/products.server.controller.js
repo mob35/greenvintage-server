@@ -15,19 +15,13 @@ var path = require('path'),
  */
 ////////////////////////////////// cloudinary process//////////////////////////////////////////
 function uploadCloudinary(imgs) {
-  console.log('======================CLO===================');
-  console.log(cloudinary);
-  console.log('======================CLO===================');
   return new Promise((resolve, reject) => {
     if (imgs.length <= 0) {
-      console.log('====================ERRRR 1================');
-      console.log('NULLLLL');
-      console.log('========================================');
       resolve(null);
     } else {
       var cloudinaryImgs = [];
       for (var i = 0; i < imgs.length; i++) {
-        cloudinary.v2.uploader.upload(imgs[i],
+        cloudinary.v2.uploader.upload(imgs[i].base64,
           { public_id: new Date() + '_' + i }, function (error, result) {
             if (error) {
               console.log('====================ERRRR 2================');
