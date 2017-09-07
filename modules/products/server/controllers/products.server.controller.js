@@ -24,9 +24,6 @@ function uploadCloudinary(imgs) {
         cloudinary.v2.uploader.upload(imgs[i].base64,
           { public_id: new Date() + '_' + i }, function (error, result) {
             if (error) {
-              console.log('====================ERRRR 2================');
-              console.log(error);
-              console.log('========================================');
               reject(error);
             } else {
               cloudinaryImgs.push({
@@ -45,17 +42,12 @@ function uploadCloudinary(imgs) {
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 exports.create = function (req, res) {
-  console.log('===================================pass 1================');
   uploadCloudinary(req.body.image).then(imgs => {
-    console.log('==========================APP=============================');
-    console.log(imgs);
-    console.log('==========================================================');
     req.body.user = req.user;
     req.body.image = imgs;
     var productmaster = new Productmaster(req.body);
     productmaster.save(function (err, result) {
       if (err) {
-  console.log('===================================pass 2================');  
         return res.status(400).send({
           message: errorHandler.getErrorMessage(err)
         });
@@ -64,7 +56,6 @@ exports.create = function (req, res) {
       }
     });
   }).catch(err => {
-  console.log('===================================pass 3================');  
     return res.status(400).send({
       message: errorHandler.getErrorMessage(err)
     });
