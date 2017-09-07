@@ -24,7 +24,7 @@ var OrdermasterSchema = new Schema({
     size: String,
     status: {
       type: String,
-      enum: ['waiting', 'accept', 'reject', 'sent', 'unreceived', 'received'],
+      enum: ['waiting', 'accept', 'reject', 'sent', 'unreceived', 'received', 'complete', 'return'],
       default: 'waiting'
     },
     delivery: {
