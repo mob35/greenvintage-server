@@ -90,22 +90,20 @@ exports.createOrder = function (req, res, next) {
 };
 
 exports.removeCart = function (req, res) {
-  console.log(req.orderCreate.cart);
   Cartmaster.findById(req.orderCreate.cart).populate('user', 'displayName').exec(function (err, cart) {
     if (err) {
       return res.status(400).send({
         message: errorHandler.getErrorMessage(err)
       });
     }
-    console.log(cart);
-    // cart.remove(function (err) {
-    //   if (err) {
-    //     return res.status(400).send({
-    //       message: errorHandler.getErrorMessage(err)
-    //     });
-    //   } else {
-    res.jsonp(req.orderCreate);
-    // }
-    // });
+    cart.remove(function (err) {
+      if (err) {
+        return res.status(400).send({
+          message: errorHandler.getErrorMessage(err)
+        });
+      } else {
+        res.jsonp(req.orderCreate);
+      }
+    });
   });
 };
