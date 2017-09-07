@@ -468,6 +468,48 @@ describe('Productmaster CRUD tests', function () {
     });
   });
 
+  // it('get product update historylog', function (done) {
+  //   agent.post('/api/auth/signin')
+  //     .send(credentials)
+  //     .expect(200)
+  //     .end(function (signinErr, signinRes) {
+  //       // Handle signin error
+  //       if (signinErr) {
+  //         return done(signinErr);
+  //       }
+
+  //       // Get the userId
+  //       var userId = user.id;
+
+  //       // Save a new Productmaster
+  //       agent.post('/api/productmasters')
+  //         .send(productmaster)
+  //         .expect(200)
+  //         .end(function (productmasterSaveErr, productmasterSaveRes) {
+  //           // Handle Productmaster save error
+  //           if (productmasterSaveErr) {
+  //             return done(productmasterSaveErr);
+  //           }
+
+  //           // Update an existing Productmaster
+  //           agent.get('/api/productmasters/' + productmasterSaveRes.body._id)
+  //             .end(function (productmasterUpdateErr, productmasterUpdateRes) {
+  //               // Handle Productmaster update error
+  //               if (productmasterUpdateErr) {
+  //                 return done(productmasterUpdateErr);
+  //               }
+
+  //               // Set assertions
+  //               (productmasterUpdateRes.body._id).should.equal(productmasterSaveRes.body._id);
+  //               (productmasterUpdateRes.body.name).should.match('WHY YOU GOTTA BE SO MEAN?');
+
+  //               // Call the assertion callback
+  //               done();
+  //             });
+  //         });
+  //     });
+  // });
+
   afterEach(function (done) {
     User.remove().exec(function () {
       Address.remove().exec(function () {

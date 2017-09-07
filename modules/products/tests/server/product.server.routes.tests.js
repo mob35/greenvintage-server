@@ -340,7 +340,7 @@ describe('Product CRUD tests', function () {
             }
             // Set assertions
             (productGetRes.body.length).should.equal(1);
-            (productGetRes.body[0].shop).should.equal(shop.id);
+            (productGetRes.body[0].shop._id).should.equal(shop.id);
 
             done();
           });
@@ -398,8 +398,8 @@ describe('Product CRUD tests', function () {
             }
             // Set assertions
             (productGetRes.body.length).should.equal(1);
-            (productGetRes.body[0].shop).should.equal(shop.id);
-            (productGetRes.body[0].category).should.equal(category.id);
+            (productGetRes.body[0].shop._id).should.equal(shop.id);
+            (productGetRes.body[0].category._id).should.equal(category.id);
 
             done();
           });

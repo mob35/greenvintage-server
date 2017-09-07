@@ -11,7 +11,7 @@ module.exports = function (app) {
   app.route('/api/homes').all(homesPolicy.isAllowed)
     .get(homes.getProduct, homes.createSlides, homes.returnData);
 
-  app.route('/api/getproucttop/:keyword').all(homesPolicy.isAllowed)
+  app.route('/api/getproducttop/:keyword').all(homesPolicy.isAllowed)
     .get(homes.getProduct, homes.checkType, homes.returnTopData);
   // .post(homes.create);
 

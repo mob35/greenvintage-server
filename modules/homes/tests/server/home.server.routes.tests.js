@@ -1213,7 +1213,7 @@ describe('Home CRUD tests', function () {
           var userId = user.id;
 
           // Get a list of Homes
-          agent.get('/api/getproucttop/bestseller')
+          agent.get('/api/getproducttop/bestseller')
             .end(function (homesGetErr, homesGetRes) {
               // Handle Homes save error
               if (homesGetErr) {
@@ -1944,7 +1944,7 @@ describe('Home CRUD tests', function () {
           var userId = user.id;
 
           // Get a list of Homes
-          agent.get('/api/getproucttop/popular')
+          agent.get('/api/getproducttop/popular')
             .end(function (homesGetErr, homesGetRes) {
               // Handle Homes save error
               if (homesGetErr) {
@@ -2675,7 +2675,7 @@ describe('Home CRUD tests', function () {
           var userId = user.id;
 
           // Get a list of Homes
-          agent.get('/api/getproucttop/asdf')
+          agent.get('/api/getproducttop/asdf')
             .end(function (homesGetErr, homesGetRes) {
               // Handle Homes save error
               if (homesGetErr) {

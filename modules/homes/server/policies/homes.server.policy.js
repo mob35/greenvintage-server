@@ -21,7 +21,7 @@ exports.invokeRolesPolicies = function () {
       resources: '/api/homes/:homeId',
       permissions: '*'
     }, {
-      resources: '/api/getproucttop/:keyword',
+      resources: '/api/getproducttop/:keyword',
       permissions: ['get']
     }]
   }, {
@@ -33,7 +33,7 @@ exports.invokeRolesPolicies = function () {
       resources: '/api/homes/:homeId',
       permissions: ['get']
     }, {
-      resources: '/api/getproucttop/:keyword',
+      resources: '/api/getproducttop/:keyword',
       permissions: ['get']
     }]
   }, {
@@ -45,7 +45,7 @@ exports.invokeRolesPolicies = function () {
       resources: '/api/homes/:homeId',
       permissions: ['get']
     }, {
-      resources: '/api/getproucttop/:keyword',
+      resources: '/api/getproducttop/:keyword',
       permissions: ['get']
     }]
   }]);
