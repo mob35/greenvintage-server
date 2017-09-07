@@ -43,6 +43,9 @@ function uploadCloudinary(imgs) {
 //////////////////////////////////////////////////////////////////////////////////////////////////
 exports.create = function (req, res) {
   uploadCloudinary(req.body.image).then(imgs => {
+    console.log('==========================APP=============================');
+    console.log(imgs);
+    console.log('==========================APP=============================');
     req.body.user = req.user;
     req.body.image = imgs;
     var productmaster = new Productmaster(req.body);
