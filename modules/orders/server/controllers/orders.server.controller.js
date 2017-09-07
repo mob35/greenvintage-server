@@ -76,6 +76,7 @@ exports.resultOrders = function (req, res) {
 exports.createOrder = function (req, res, next) {
   var order = new Ordermaster(req.body);
   order.user = req.user;
+  console.log(order);
   order.save(function (err) {
     if (err) {
       return res.status(400).send({
