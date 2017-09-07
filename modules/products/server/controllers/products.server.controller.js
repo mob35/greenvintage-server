@@ -17,6 +17,9 @@ var path = require('path'),
 function uploadCloudinary(imgs) {
   return new Promise((resolve, reject) => {
     if (imgs.length <= 0) {
+      console.log('====================ERRRR 1================');
+      console.log('NULLLLL');
+      console.log('========================================');
       resolve(null);
     } else {
       var cloudinaryImgs = [];
@@ -24,7 +27,7 @@ function uploadCloudinary(imgs) {
         cloudinary.v2.uploader.upload(imgs[i],
           { public_id: new Date() + '_' + i }, function (error, result) {
             if (error) {
-              console.log('====================ERRRR================');
+              console.log('====================ERRRR 2================');
               console.log(error);
               console.log('========================================');
               reject(error);
