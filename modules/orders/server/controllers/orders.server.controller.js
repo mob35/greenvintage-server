@@ -12,7 +12,7 @@ var path = require('path'),
 
 exports.getOrderByshop = function (req, res, next) {
   console.log(req.user);
-  var shop = req.user.shop ? req.user.shop : '';
+  var shop = req.user ? req.user.shop : '';
   Ordermaster.find().sort('-created').populate('user', 'displayName').populate('shipping').populate({
     path: 'items',
     populate: [{
