@@ -163,7 +163,7 @@ function getLastvisit(products, user, number) {
 
       var myLastVisit = productHistorylog.filter(function (obj) {
         return (obj.historylog.filter(function (obj2) {
-          console.log(obj2);
+          console.log(user._id);
           return obj2.user.toString() === user._id.toString();
         })).length > 0;
       });
