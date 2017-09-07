@@ -79,6 +79,7 @@ exports.createOrder = function (req, res, next) {
   console.log(order);
   order.save(function (err) {
     if (err) {
+      console.log('save order : ' + err);
       return res.status(400).send({
         message: errorHandler.getErrorMessage(err)
       });
@@ -92,12 +93,14 @@ exports.createOrder = function (req, res, next) {
 exports.removeCart = function (req, res) {
   Cartmaster.findById(req.orderCreate.cart).populate('user', 'displayName').exec(function (err, cart) {
     if (err) {
+      console.log('find cart err : ' + err);
       return res.status(400).send({
         message: errorHandler.getErrorMessage(err)
       });
     }
     cart.remove(function (err) {
       if (err) {
+        console.log('remove cart err : ' + err);
         return res.status(400).send({
           message: errorHandler.getErrorMessage(err)
         });
