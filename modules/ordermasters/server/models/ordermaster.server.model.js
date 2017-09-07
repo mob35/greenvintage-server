@@ -46,7 +46,7 @@ var OrdermasterSchema = new Schema({
   status: {
     type: String,
     enum: ['confirm', 'paid', 'prepare', 'deliver', 'complete', 'cancel'],
-    default: 'confirm'
+    default: 'paid'
   },
   cart: String,
   created: {
