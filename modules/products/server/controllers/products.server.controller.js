@@ -15,6 +15,9 @@ var path = require('path'),
  */
 ////////////////////////////////// cloudinary process//////////////////////////////////////////
 function uploadCloudinary(imgs) {
+  console.log('======================CLO===================');
+  console.log(cloudinary);
+  console.log('======================CLO===================');
   return new Promise((resolve, reject) => {
     if (imgs.length <= 0) {
       console.log('====================ERRRR 1================');
