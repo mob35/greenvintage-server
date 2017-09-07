@@ -30,6 +30,26 @@ exports.create = function (req, res) {
 /**
  * Show the current Productmaster
  */
+
+exports.updatehistorylog = function (req, res, next) {
+  var product = req.productmaster;
+  Productmaster.findById(product._id).populate('user', 'displayName').populate('shop').populate('category').populate('size').populate('shippings.shipping').exec(function (err, product) {
+    product.historylog.push({
+      user: req.user,
+      date: new Date()
+    });
+    product.save(function (err) {
+      if (err) {
+        return res.status(400).send({
+          message: errorHandler.getErrorMessage(err)
+        });
+      } else {
+        req.productmaster = product;
+        next();
+      }
+    });
+  });
+};
 exports.read = function (req, res) {
   // convert mongoose document to JSON
   var productmaster = req.productmaster ? req.productmaster.toJSON() : {};
