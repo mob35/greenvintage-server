@@ -375,7 +375,7 @@ describe('Order CRUD tests', function () {
             (orders.waiting[0].qty).should.equal(orderObj1.items[0].qty);
             (orders.waiting[0].image).should.equal(product.image[0].url);
             (orders.waiting[0].status).should.equal(orderObj1.items[0].status);
-            (orders.accept.length).should.equal(2);
+            (orders.accept.length).should.equal(0);
             (orders.sent.length).should.equal(0);
             (orders.return.length).should.equal(0);
 

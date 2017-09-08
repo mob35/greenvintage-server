@@ -225,7 +225,7 @@ exports.read = function (req, res, next) {
 };
 
 exports.getorder = function (req, res, next) {
-  Ordermaster.find().populate('items.product').exec(function (err, ordermaster) {
+  Ordermaster.find({ $and: [{ status: { $ne: 'confirm' } }, { status: { $ne: 'cancel' } }] }).populate('items.product').exec(function (err, ordermaster) {
     req.orders = ordermaster;
     next();
   });
