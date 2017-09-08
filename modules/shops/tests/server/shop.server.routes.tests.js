@@ -185,9 +185,9 @@ describe('Shop CRUD tests', function () {
                 (shop.historylog[0].customerid).should.match(user.id);
                 (shop.historylog[0].historydate).should.match('2017-08-10T06:25:00.000Z');
                 (shop.products.length).should.match(1);
-                // (shop.products[0].name).should.match(productmaster.name);
-                // (shop.products[0].price).should.match(productmaster.price);
-                // (shop.products[0].image).should.match(productmaster.image);
+                (shop.products[0].name).should.match(productmaster.name);
+                (shop.products[0].price).should.match(productmaster.price);
+                (shop.products[0].image).should.match(productmaster.image[0].url);
 
                 // Call the assertion callback
                 done();

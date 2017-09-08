@@ -61,7 +61,7 @@ exports.read = function (req, res, next) {
     _products.push({
       id: prod._id,
       name: prod.name,
-      image: prod.image,
+      image: prod.image[0].url,
       price: prod.price
     });
 
@@ -93,7 +93,7 @@ exports.shopByID = function (req, res, next, id) {
       message: 'Shop is invalid'
     });
   }
-
+  req.shopId = id;
   Shopmaster.findById(id).populate('user', 'displayName').exec(function (err, shop) {
     if (err) {
       return next(err);
@@ -109,7 +109,7 @@ exports.shopByID = function (req, res, next, id) {
 };
 exports.productByShop = function (req, res, next) {
   // { shop: { _id: req.shop._id } }
-  Productmaster.find().sort('-created').populate('user', 'displayName').exec(function (err, productmaster) {
+  Productmaster.find({ shop: { _id: req.shopId } }).sort('-created').exec(function (err, productmaster) {
     if (err) {
       console.log(err);
       return res.status(400).send({
