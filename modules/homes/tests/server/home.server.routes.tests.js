@@ -521,233 +521,233 @@ describe('Home CRUD tests', function () {
 
 
   it('should be able to get a Home if logged in', function (done) {
-    // var productObj = new Productmaster({
-    //   name: 'Productmaster productObj user 2 view',
-    //   price: 1234,
-    //   image: [{
-    //     url: 'http://www.sportsdirect.com/images/marketing/nikelanding-tainers.jpg'
-    //   }],
-    //   shop: shop,
-    //   shippings: [{
-    //     shipping: shipping
-    //   }],
-    //   sellerlog: [{
-    //     user: user,
-    //     date: new Date('2017', '08', '1'),
-    //     qty: 1
-    //   }],
-    //   historylog: [{
-    //     user: user2,
-    //     date: new Date()
-    //   }],
-    //   category: category,
-    //   user: user
-    // });
-    // var productObj2 = new Productmaster({
-    //   name: 'Productmaster productObj2',
-    //   price: 1234,
-    //   image: [{
-    //     url: 'http://www.sportsdirect.com/images/marketing/nikelanding-tainers.jpg'
-    //   }],
-    //   shop: shop,
-    //   shippings: [{
-    //     shipping: shipping
-    //   }],
-    //   historylog: [{
-    //     user: user,
-    //     date: new Date('2017', '08', '1')
-    //   }],
-    //   sellerlog: [{
-    //     user: user,
-    //     date: new Date(),
-    //     qty: 2
-    //   }],
-    //   category: category,
-    //   user: user
-    // });
-    // var productObj3 = new Productmaster({
-    //   name: 'Productmaster productObj3',
-    //   price: 1234,
-    //   image: [{
-    //     url: 'http://www.sportsdirect.com/images/marketing/nikelanding-tainers.jpg'
-    //   }],
-    //   shop: shop,
-    //   shippings: [{
-    //     shipping: shipping
-    //   }],
-    //   historylog: [{
-    //     user: user,
-    //     date: new Date('2017', '08', '1')
-    //   }, {
-    //     user: user,
-    //     date: new Date('2017', '09', '2')
-    //   }, {
-    //     user: user,
-    //     date: new Date('2017', '09', '2')
-    //   }],
-    //   sellerlog: [{
-    //     user: user,
-    //     date: new Date(),
-    //     qty: 3
-    //   }],
-    //   category: category,
-    //   user: user
-    // });
-    // var productObj4 = new Productmaster({
-    //   name: 'Productmaster productObj4',
-    //   price: 1234,
-    //   image: [{
-    //     url: 'http://www.sportsdirect.com/images/marketing/nikelanding-tainers.jpg'
-    //   }],
-    //   shop: shop,
-    //   shippings: [{
-    //     shipping: shipping
-    //   }],
-    //   historylog: [{
-    //     user: user,
-    //     date: new Date('2017', '08', '1')
-    //   }, {
-    //     user: user,
-    //     date: new Date('2017', '09', '2')
-    //   }, {
-    //     user: user,
-    //     date: new Date('2017', '09', '2')
-    //   }, {
-    //     user: user,
-    //     date: new Date('2017', '09', '3')
-    //   }],
-    //   sellerlog: [{
-    //     user: user,
-    //     date: new Date(),
-    //     qty: 4
-    //   }],
-    //   category: category,
-    //   user: user
-    // });
-    // var productObj5 = new Productmaster({
-    //   name: 'Productmaster productObj5',
-    //   price: 1234,
-    //   image: [{
-    //     url: 'http://www.sportsdirect.com/images/marketing/nikelanding-tainers.jpg'
-    //   }],
-    //   shop: shop,
-    //   shippings: [{
-    //     shipping: shipping
-    //   }],
-    //   historylog: [{
-    //     user: user,
-    //     date: new Date('2017', '09', '5')
-    //   }, {
-    //     user: user,
-    //     date: new Date('2017', '08', '4')
-    //   }, {
-    //     user: user,
-    //     date: new Date('2017', '09', '3')
-    //   }, {
-    //     user: user,
-    //     date: new Date('2017', '09', '3')
-    //   }],
-    //   sellerlog: [{
-    //     user: user,
-    //     date: new Date(),
-    //     qty: 5
-    //   }],
-    //   category: category,
-    //   user: user
-    // });
-    // var productObj6 = new Productmaster({
-    //   name: 'Productmaster productObj6',
-    //   price: 1234,
-    //   image: [{
-    //     url: 'http://www.sportsdirect.com/images/marketing/nikelanding-tainers.jpg'
-    //   }],
-    //   shop: shop,
-    //   shippings: [{
-    //     shipping: shipping
-    //   }],
-    //   historylog: [{
-    //     user: user,
-    //     date: new Date('2017', '09', '3')
-    //   }, {
-    //     user: user,
-    //     date: new Date('2017', '08', '2')
-    //   }, {
-    //     user: user,
-    //     date: new Date('2017', '09', '2')
-    //   }, {
-    //     user: user,
-    //     date: new Date('2017', '09', '1')
-    //   }],
-    //   sellerlog: [{
-    //     user: user,
-    //     date: new Date(),
-    //     qty: 6
-    //   }],
-    //   category: category,
-    //   user: user
-    // });
-    // var productObj7 = new Productmaster({
-    //   name: 'Productmaster productObj7',
-    //   price: 1234,
-    //   image: [{
-    //     url: 'http://www.sportsdirect.com/images/marketing/nikelanding-tainers.jpg'
-    //   }],
-    //   shop: shop2,
-    //   shippings: [{
-    //     shipping: shipping
-    //   }],
-    //   historylog: [{
-    //     user: user,
-    //     date: new Date('2017', '09', '5')
-    //   }, {
-    //     user: user,
-    //     date: new Date('2017', '08', '5')
-    //   }, {
-    //     user: user,
-    //     date: new Date('2017', '09', '4')
-    //   }, {
-    //     user: user,
-    //     date: new Date('2017', '09', '3')
-    //   }],
-    //   sellerlog: [{
-    //     user: user,
-    //     date: new Date(),
-    //     qty: 7
-    //   }],
-    //   category: category,
-    //   user: user
-    // });
-    // var productObj8 = new Productmaster({
-    //   name: 'Productmaster productObj8',
-    //   price: 1234,
-    //   image: [{
-    //     url: 'http://www.sportsdirect.com/images/marketing/nikelanding-tainers.jpg'
-    //   }],
-    //   shop: shop,
-    //   shippings: [{
-    //     shipping: shipping
-    //   }],
-    //   historylog: [{
-    //     user: user,
-    //     date: new Date('2017', '09', '4')
-    //   }, {
-    //     user: user,
-    //     date: new Date('2017', '09', '3')
-    //   }, {
-    //     user: user,
-    //     date: new Date('2017', '08', '3')
-    //   }, {
-    //     user: user,
-    //     date: new Date('2017', '09', '3')
-    //   }],
-    //   sellerlog: [{
-    //     user: user,
-    //     date: new Date(),
-    //     qty: 8
-    //   }],
-    //   category: category,
-    //   user: user
-    // });
+    var productObj = new Productmaster({
+      name: 'Productmaster productObj user 2 view',
+      price: 1234,
+      image: [{
+        url: 'http://www.sportsdirect.com/images/marketing/nikelanding-tainers.jpg'
+      }],
+      shop: shop,
+      shippings: [{
+        shipping: shipping
+      }],
+      sellerlog: [{
+        user: user,
+        date: new Date('2017', '08', '1'),
+        qty: 1
+      }],
+      historylog: [{
+        user: user2,
+        date: new Date()
+      }],
+      category: category,
+      user: user
+    });
+    var productObj2 = new Productmaster({
+      name: 'Productmaster productObj2',
+      price: 1234,
+      image: [{
+        url: 'http://www.sportsdirect.com/images/marketing/nikelanding-tainers.jpg'
+      }],
+      shop: shop,
+      shippings: [{
+        shipping: shipping
+      }],
+      historylog: [{
+        user: user,
+        date: new Date('2017', '08', '1')
+      }],
+      sellerlog: [{
+        user: user,
+        date: new Date(),
+        qty: 2
+      }],
+      category: category,
+      user: user
+    });
+    var productObj3 = new Productmaster({
+      name: 'Productmaster productObj3',
+      price: 1234,
+      image: [{
+        url: 'http://www.sportsdirect.com/images/marketing/nikelanding-tainers.jpg'
+      }],
+      shop: shop,
+      shippings: [{
+        shipping: shipping
+      }],
+      historylog: [{
+        user: user,
+        date: new Date('2017', '08', '1')
+      }, {
+        user: user,
+        date: new Date('2017', '09', '2')
+      }, {
+        user: user,
+        date: new Date('2017', '09', '2')
+      }],
+      sellerlog: [{
+        user: user,
+        date: new Date(),
+        qty: 3
+      }],
+      category: category,
+      user: user
+    });
+    var productObj4 = new Productmaster({
+      name: 'Productmaster productObj4',
+      price: 1234,
+      image: [{
+        url: 'http://www.sportsdirect.com/images/marketing/nikelanding-tainers.jpg'
+      }],
+      shop: shop,
+      shippings: [{
+        shipping: shipping
+      }],
+      historylog: [{
+        user: user,
+        date: new Date('2017', '08', '1')
+      }, {
+        user: user,
+        date: new Date('2017', '09', '2')
+      }, {
+        user: user,
+        date: new Date('2017', '09', '2')
+      }, {
+        user: user,
+        date: new Date('2017', '09', '3')
+      }],
+      sellerlog: [{
+        user: user,
+        date: new Date(),
+        qty: 4
+      }],
+      category: category,
+      user: user
+    });
+    var productObj5 = new Productmaster({
+      name: 'Productmaster productObj5',
+      price: 1234,
+      image: [{
+        url: 'http://www.sportsdirect.com/images/marketing/nikelanding-tainers.jpg'
+      }],
+      shop: shop,
+      shippings: [{
+        shipping: shipping
+      }],
+      historylog: [{
+        user: user,
+        date: new Date('2017', '09', '5')
+      }, {
+        user: user,
+        date: new Date('2017', '08', '4')
+      }, {
+        user: user,
+        date: new Date('2017', '09', '3')
+      }, {
+        user: user,
+        date: new Date('2017', '09', '3')
+      }],
+      sellerlog: [{
+        user: user,
+        date: new Date(),
+        qty: 5
+      }],
+      category: category,
+      user: user
+    });
+    var productObj6 = new Productmaster({
+      name: 'Productmaster productObj6',
+      price: 1234,
+      image: [{
+        url: 'http://www.sportsdirect.com/images/marketing/nikelanding-tainers.jpg'
+      }],
+      shop: shop,
+      shippings: [{
+        shipping: shipping
+      }],
+      historylog: [{
+        user: user,
+        date: new Date('2017', '09', '3')
+      }, {
+        user: user,
+        date: new Date('2017', '08', '2')
+      }, {
+        user: user,
+        date: new Date('2017', '09', '2')
+      }, {
+        user: user,
+        date: new Date('2017', '09', '1')
+      }],
+      sellerlog: [{
+        user: user,
+        date: new Date(),
+        qty: 6
+      }],
+      category: category,
+      user: user
+    });
+    var productObj7 = new Productmaster({
+      name: 'Productmaster productObj7',
+      price: 1234,
+      image: [{
+        url: 'http://www.sportsdirect.com/images/marketing/nikelanding-tainers.jpg'
+      }],
+      shop: shop2,
+      shippings: [{
+        shipping: shipping
+      }],
+      historylog: [{
+        user: user,
+        date: new Date('2017', '09', '5')
+      }, {
+        user: user,
+        date: new Date('2017', '08', '5')
+      }, {
+        user: user,
+        date: new Date('2017', '09', '4')
+      }, {
+        user: user,
+        date: new Date('2017', '09', '3')
+      }],
+      sellerlog: [{
+        user: user,
+        date: new Date(),
+        qty: 7
+      }],
+      category: category,
+      user: user
+    });
+    var productObj8 = new Productmaster({
+      name: 'Productmaster productObj8',
+      price: 1234,
+      image: [{
+        url: 'http://www.sportsdirect.com/images/marketing/nikelanding-tainers.jpg'
+      }],
+      shop: shop,
+      shippings: [{
+        shipping: shipping
+      }],
+      historylog: [{
+        user: user,
+        date: new Date('2017', '09', '4')
+      }, {
+        user: user,
+        date: new Date('2017', '09', '3')
+      }, {
+        user: user,
+        date: new Date('2017', '08', '3')
+      }, {
+        user: user,
+        date: new Date('2017', '09', '3')
+      }],
+      sellerlog: [{
+        user: user,
+        date: new Date(),
+        qty: 8
+      }],
+      category: category,
+      user: user
+    });
     var productObj9 = new Productmaster({
       name: 'Productmaster productObj9',
       price: 1234,
@@ -814,13 +814,13 @@ describe('Home CRUD tests', function () {
       category: category,
       user: user
     });
-    // productObj2.save();
-    // productObj3.save();
-    // productObj4.save();
-    // productObj5.save();
-    // productObj6.save();
-    // productObj7.save();
-    // productObj8.save();
+    productObj2.save();
+    productObj3.save();
+    productObj4.save();
+    productObj5.save();
+    productObj6.save();
+    productObj7.save();
+    productObj8.save();
     productObj9.save();
     // productObj10.save();
     productObj10.save(function () {
@@ -852,21 +852,21 @@ describe('Home CRUD tests', function () {
               // (homes.categories).should.equal('');
               (homes.categories[0].name).should.equal(category.name);
               (homes.categories[0].detail).should.equal(category.detail);
-              (homes.categories[0].popularproducts.length).should.equal(2);
+              (homes.categories[0].popularproducts.length).should.equal(6);
               (homes.categories[0].popularproducts[0].name).should.equal(productObj10.name);
               (homes.categories[0].popularproducts[0].image).should.equal(productObj10.image[0].url);
               (homes.categories[0].popularproducts[0].price).should.equal(productObj10.price);
-              (homes.categories[0].bestseller.length).should.equal(1);
+              (homes.categories[0].bestseller.length).should.equal(8);
               (homes.categories[0].bestseller[0].name).should.equal(productObj9.name);
               (homes.categories[0].bestseller[0].image).should.equal(productObj9.image[0].url);
               (homes.categories[0].bestseller[0].price).should.equal(productObj9.price);
-              (homes.categories[0].lastvisit.length).should.equal(2);
+              (homes.categories[0].lastvisit.length).should.equal(6);
               (homes.categories[0].lastvisit[0].name).should.equal(productObj10.name);
               (homes.categories[0].lastvisit[0].image).should.equal(productObj10.image[0].url);
               (homes.categories[0].lastvisit[0].price).should.equal(productObj10.price);
               (homes.categories[0].productvoucher.length).should.equal(3);
               (homes.categories[0].shopvoucher.length).should.equal(3);
-              (homes.categories[0].popularshops.length).should.equal(1);
+              (homes.categories[0].popularshops.length).should.equal(2);
               (homes.categories[0].popularshops[0].name).should.equal(shop.name);
               (homes.categories[0].popularshops[0].image).should.equal(shop.image);
 
