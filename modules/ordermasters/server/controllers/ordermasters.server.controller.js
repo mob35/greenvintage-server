@@ -45,10 +45,9 @@ exports.read = function(req, res) {
  * Update a Ordermaster
  */
 exports.update = function(req, res) {
-  // req.body;
   var ordermaster = req.ordermaster;
 
-  ordermaster = _.extend(ordermaster.items, req.body);
+  ordermaster = _.extend(ordermaster, req.body);
 
   ordermaster.save(function(err) {
     if (err) {

@@ -9,7 +9,7 @@ var homesPolicy = require('../policies/homes.server.policy'),
 module.exports = function (app) {
   // Homes Routes
   app.route('/api/homes').all(homesPolicy.isAllowed)
-    .get(homes.getProduct, homes.createSlides, homes.returnData);
+    .get(homes.getCategory, homes.popular, homes.bestseller, homes.lastvisit, homes.productvoucher, homes.shopvoucher, homes.shoppopular, homes.cookingData, homes.returnData);
 
   app.route('/api/getproducttop/:keyword').all(homesPolicy.isAllowed)
     .get(homes.getProduct, homes.checkType, homes.returnTopData);

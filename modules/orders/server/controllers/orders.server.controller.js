@@ -11,7 +11,7 @@ var path = require('path'),
   _ = require('lodash');
 
 exports.getOrderByshop = function (req, res, next) {
-  console.log(req.user);
+  // console.log(req.user);
   var shop = req.user ? req.user.shop : '';
   Ordermaster.find().sort('-created').populate('user', 'displayName').populate('shipping').populate({
     path: 'items',
@@ -77,7 +77,7 @@ exports.resultOrders = function (req, res) {
 exports.createOrder = function (req, res, next) {
   var order = new Ordermaster(req.body);
   order.user = req.user;
-  console.log(order);
+  // console.log(order);
   order.save(function (err) {
     if (err) {
       console.log('save order : ' + err);
