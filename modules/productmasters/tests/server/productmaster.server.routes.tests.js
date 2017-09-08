@@ -122,7 +122,7 @@ describe('Productmaster CRUD tests', function () {
         shipping: shipping
       }],
       issize: true,
-      size: size,
+      size: sizemaster,
       sellerlog: [{
         user: user,
         qty: 9
@@ -146,28 +146,28 @@ describe('Productmaster CRUD tests', function () {
     });
   });
 
-  it('should be able to save a Productmaster if logged in', function (done) {
+  // it('should be able to save a Productmaster if logged in', function (done) {
 
-    productmaster.save(function (err, result) {
-      console.log('=======================PRODUCT SAVE===================');
-      console.log(result);
-      console.log('=================================================');
-      agent.get('/api/productmasters/'+ result._id)
-      .end(function (productmastersGetErr, productmastersGetRes) {
+  //   productmaster.save(function (err, result) {
+  //     console.log('=======================PRODUCT SAVE===================');
+  //     console.log(result);
+  //     console.log('=================================================');
+  //     agent.get('/api/productmasters/'+ result._id)
+  //     .end(function (productmastersGetErr, productmastersGetRes) {
 
-        if (productmastersGetErr) {
-          return done(productmastersGetErr);
-        }
+  //       if (productmastersGetErr) {
+  //         return done(productmastersGetErr);
+  //       }
 
-        console.log('=======================PRODUCT GET BY ID============');
-        console.log(productmastersGetRes.body);
-        console.log('=================================================');
+  //       console.log('=======================PRODUCT GET BY ID============');
+  //       console.log(productmastersGetRes.body);
+  //       console.log('=================================================');
 
-        done();
-      });
-    });
+  //       done();
+  //     });
+  //   });
     
-  });
+  // });
 
   afterEach(function (done) {
     User.remove().exec(function () {
