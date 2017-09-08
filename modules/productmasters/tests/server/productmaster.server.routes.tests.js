@@ -128,7 +128,7 @@ describe('Productmaster CRUD tests', function () {
       favorite: [{
         customerid: user
       }],
-      promotions:[{
+      promotions: [{
         name: 'discount 50%',
         detail: 'discount 50% when shop total 1000 bath',
         code: 'APPLE01'
@@ -164,7 +164,7 @@ describe('Productmaster CRUD tests', function () {
         question: 'what is this',
         answer: 'it is a apple'
       }],
-      payment : [{
+      payment: [{
         payment: 'เก็บเงินปลายทางทั่วประเทศ'
       }],
       category: category,
@@ -185,7 +185,28 @@ describe('Productmaster CRUD tests', function () {
       });
     });
   });
+  // it('should be able to save a Productmaster if logged in', function (done) {
 
+  //   productmaster.save(function (err, result) {
+  //     console.log('=======================PRODUCT SAVE===================');
+  //     console.log(result);
+  //     console.log('=================================================');
+  //     agent.get('/api/productmasters/'+ result._id)
+  //     .end(function (productmastersGetErr, productmastersGetRes) {
+
+  //       if (productmastersGetErr) {
+  //         return done(productmastersGetErr);
+  //       }
+
+  //       console.log('=======================PRODUCT GET BY ID============');
+  //       console.log(productmastersGetRes.body);
+  //       console.log('=================================================');
+
+  //       done();
+  //     });
+  //   });
+
+  // });
   it('should be able get product by id', function (done) {
 
     productmaster.save(function (err, result) {
@@ -197,7 +218,7 @@ describe('Productmaster CRUD tests', function () {
           }
 
           var product = productmastersGetRes.body;
-          
+
           (product.name).should.equal(result.name);
           (product.detail).should.equal(result.detail);
           (product.price).should.match(result.price);
@@ -209,8 +230,8 @@ describe('Productmaster CRUD tests', function () {
           (product.shop.shop).should.equal(result.shop.name);
           (product.shop.rate).should.equal(result.shop.rate);
           (product.stock.amount).should.match(result.stock.amount);
-          (product.qty).should.match(result.qty);  
-            
+          (product.qty).should.match(result.qty);
+
           done();
         });
     });

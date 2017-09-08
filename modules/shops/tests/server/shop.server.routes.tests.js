@@ -89,12 +89,12 @@ describe('Shop CRUD tests', function () {
         user: user
       }],
       historylog: [{
-        customerid: user,
-        historydate: "2017-08-10T06:25:00"
+        user: user,
+        date: "2017-08-10T06:25:00"
       },
       {
-        customerid: user,
-        historydate: "2017-08-05T14:05:59"
+        user: user,
+        date: "2017-08-05T14:05:59"
       }]
     });
 
@@ -182,8 +182,8 @@ describe('Shop CRUD tests', function () {
                 (shop.review[0].rate).should.match(res.review[0].rate);
                 (shop.review[0].comment).should.match(res.review[0].comment);
                 (shop.review[0].user).should.match(user.id);
-                (shop.historylog[0].customerid).should.match(user.id);
-                (shop.historylog[0].historydate).should.match('2017-08-10T06:25:00.000Z');
+                (shop.historylog[0].user).should.match(user.id);
+                (shop.historylog[0].date).should.match('2017-08-10T06:25:00.000Z');
                 (shop.products.length).should.match(1);
                 (shop.products[0].name).should.match(productmaster.name);
                 (shop.products[0].price).should.match(productmaster.price);
