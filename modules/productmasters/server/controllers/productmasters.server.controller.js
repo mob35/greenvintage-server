@@ -31,30 +31,6 @@ exports.create = function (req, res) {
  * Show the current Productmaster
  */
 
-exports.updatehistorylog = function (req, res, next) {
-  if (req.user && req.user !== undefined) {
-    var product = req.productmaster;
-    Productmaster.findById(product._id).populate('user', 'displayName').populate('shop').populate('category').populate('size').populate('shippings.shipping').exec(function (err, product) {
-      product.historylog.push({
-        user: req.user,
-        date: new Date()
-      });
-      product.save(function (err) {
-        if (err) {
-          return res.status(400).send({
-            message: errorHandler.getErrorMessage(err)
-          });
-        } else {
-          req.productmaster = product;
-          next();
-        }
-      });
-    });
-  } else {
-    next();
-  }
-};
-
 exports.read = function (req, res) {
   // convert mongoose document to JSON
   var productmaster = req.productmaster ? req.productmaster.toJSON() : {};
@@ -128,15 +104,122 @@ exports.productmasterByID = function (req, res, next, id) {
     });
   }
 
-  Productmaster.findById(id).populate('user', 'displayName').populate('shop').populate('category').populate('size').populate('shippings.shipping').exec(function (err, productmaster) {
+  Productmaster.findById(id)
+    .populate('user')
+    .populate('shop')
+    .populate('category')
+    .populate('size')
+    .populate('shippings.shipping')
+    .exec(function (err, productmaster) {
+      if (err) {
+        return next(err);
+      } else if (!productmaster) {
+        return res.status(404).send({
+          message: 'No Productmaster'
+        });
+      }
+      req.productmaster = productmaster;
+      next();
+    });
+};
+
+exports.productDetail = function (req, res, next) {
+  res.jsonp({
+    'id': req.productmaster._id,
+    'name': req.productmaster.name,
+    'detail': req.productmaster.detail,
+    'price': req.productmaster.price,
+    'image': req.productmaster.image,
+    'review': req.productmaster.review,
+    'rate': req.productmaster.rate,
+    'qa': req.productmaster.qa,
+    'promotions': req.productmaster.promotions,
+    'favorite': req.productmaster.favorite,
+    'stock': req.productmaster.stock,
+    'qty': req.productmaster.qty,
+    'issize': req.productmaster.issize,
+    'size': req.productmaster.size,
+    'category': req.productmaster.category,
+    'payment': req.productmaster.payment,
+    'shipping': req.productmaster.shipping,
+    'shop': {
+      'shop': req.productmaster.shop.name,
+      'rate': req.productmaster.shop.rate
+    },
+    'relationproducts': [
+      {
+        'name': 'NIKE',
+        'image': 'https://assets.wired.com/photos/w_1534/wp-content/uploads/2016/09/ff_nike-hyperadapt_angle_front.jpg',
+        'price': 100
+      },
+      {
+        'name': 'ADIDAS',
+        'image': 'http://th-live-01.slatic.net/p/7/adidas-men-run-shoe-duramo8-bb4656-2290-1493865078-91437671-31f932a8c992f98dc9ba8c6b4dec3f6e-catalog_233.jpg',
+        'price': 100
+      },
+      {
+        'name': 'PUMA',
+        'image': 'http://gadgets.siamsport.co.th/wp-content/uploads/puma-nrgy-sneakers.jpg',
+        'price': 100
+      },
+      {
+        'name': 'ONITSUKA',
+        'image': 'https://th-live-02.slatic.net/p/7/onitsuka-tiger-womens-serrano-shoes-d471l-1494928131-7120789-b60f98a3253f8a5230b4a0cf110588e1.jpg',
+        'price': 100
+      }
+    ],
+    'title': req.productmaster.detail
+  });
+};
+
+exports.productsBytitle = function (req, res, next, title) {
+  req.title = title;
+  next();
+};
+
+exports.getProductlist = function (req, res, next) {
+  var filter = {};
+  if (req.user && req.user.shop && req.user.shop !== undefined) {
+    filter = { shop: req.user.shop };
+  }
+  Productmaster.find(filter).sort('-created').exec(function (err, productmasters) {
     if (err) {
-      return next(err);
-    } else if (!productmaster) {
-      return res.status(404).send({
-        message: 'No Productmaster with that identifier has been found'
+      return res.status(400).send({
+        message: errorHandler.getErrorMessage(err)
       });
+    } else {
+      // res.jsonp(productmasters);
+      req.productlist = productmasters;
+      next();
     }
-    req.productmaster = productmaster;
-    next();
+  });
+};
+
+exports.cookingProductlist = function (req, res, next) {
+  var productmaster = req.productlist;
+  var items = [];
+  productmaster.forEach(function (item) {
+    console.log(item);
+    items.push({
+      _id: item._id,
+      name: item.name,
+      image: item.image && item.image.length > 0 ? item.image[0].url : 'not found image',
+      price: item.price,
+      normalprice: item.price,
+      discount: 0,
+      discounttype: '%',
+      currency: 'THB',
+      rate: 0,
+
+    });
+  });
+  req.productlist = items;
+  next();
+};
+
+exports.getProductsBytitle = function (req, res) {
+  res.jsonp({
+    title: req.title,
+    items: req.productlist
   });
 };
