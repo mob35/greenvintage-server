@@ -10,6 +10,7 @@ var should = require('should'),
   Categorymaster = mongoose.model('Categorymaster'),
   Address = mongoose.model('Address'),
   Productmaster = mongoose.model('Productmaster'),
+  Sizemaster = mongoose.model('Sizemaster'),
   express = require(path.resolve('./config/lib/express'));
 
 /**
@@ -23,6 +24,7 @@ var app,
   shop,
   shipping,
   category,
+  sizemaster,
   address;
 
 /**
@@ -57,65 +59,86 @@ describe('Productmaster CRUD tests', function () {
     });
 
     address = new Address({
-      firstname: 'firstname',
-      lastname: 'lastname',
-      tel: 'tel',
-      address: 'address',
-      subdistrict: 'subdistrict',
-      district: 'district',
-      province: 'province',
-      postcode: 'postcode',
+      firstname: 'dook',
+      lastname: 'dik',
+      tel: '0961345046',
+      address: '6/203',
+      subdistrict: 'paholyothin52',
+      district: 'saimai',
+      province: 'bangkok',
+      postcode: '10220',
       user: user
     });
 
     shop = new Shopmaster({
-      name: 'Shopmaster Name',
+      name: 'Apple Shop',
       detail: 'Shop detail',
       email: 'shop@email.com',
       tel: '0999999999',
       image: 'http://www.sportsdirect.com/images/marketing/nikelanding-tainers.jpg',
       map: {
-        lat: '1000',
-        lng: '1000'
+        lat: '13.45345345',
+        lng: '100.4343500'
       },
       address: [{ address: address }],
       user: user
     });
 
     shipping = new Shippingmaster({
-      name: 'ส่งธรรมดา',
-      detail: 'ส่งธรรมดาผ่านไปรษณีย์ (ฟรี)',
-      days: 7,
-      price: 0,
+      name: 'EMS',
+      detail: 'EMS register',
+      days: 2,
+      price: 39,
       user: user
     });
 
     category = new Categorymaster({
-      name: 'เครื่องใช้ไฟฟ้า',
-      detail: 'เครื่องใช้ไฟฟ้าในบ้าน'
+      name: 'electonic',
+      detail: 'home electonic'
     });
 
-    // Save a user to the test db and create new Productmaster
+    sizemaster = new Sizemaster({
+      detail: 'America Size',
+      sizedetail: ['32', '33', '34', '35'],
+      user: user
+    });
+
+    productmaster = new Productmaster({
+      name: 'Apple',
+      detail: 'product detail',
+      price: 999,
+      image: [{
+        url: 'http://www.sportsdirect.com/images/marketing/nikelanding-tainers.jpg'
+      }],
+      preparedays: 7,
+      favorite: [{
+        user: user
+      }],
+      historylog: [{
+        user: user
+      }],
+      shop: shop,
+      shippings: [{
+        shipping: shipping
+      }],
+      issize: true,
+      size: size,
+      sellerlog: [{
+        user: user,
+        qty: 9
+      }],
+      category: category,
+      user: user
+    });
+
     user.save(function () {
       address.save(function () {
         shop.save(function () {
           shipping.save(function () {
             category.save(function () {
-              productmaster = {
-                name: 'Productmaster name',
-                price: 1234,
-                image: [{
-                  url: 'http://www.sportsdirect.com/images/marketing/nikelanding-tainers.jpg'
-                }],
-                shop: shop,
-                shippings: [{
-                  shipping: shipping
-                }],
-                category: category,
-                user: user
-              };
-
-              done();
+              sizemaster.save(function () {
+                done();
+              });
             });
           });
         });
@@ -124,391 +147,27 @@ describe('Productmaster CRUD tests', function () {
   });
 
   it('should be able to save a Productmaster if logged in', function (done) {
-    agent.post('/api/auth/signin')
-      .send(credentials)
-      .expect(200)
-      .end(function (signinErr, signinRes) {
-        // Handle signin error
-        if (signinErr) {
-          return done(signinErr);
+
+    productmaster.save(function (err, result) {
+      console.log('=======================PRODUCT SAVE===================');
+      console.log(result);
+      console.log('=================================================');
+      agent.get('/api/productmasters/'+ result._id)
+      .end(function (productmastersGetErr, productmastersGetRes) {
+
+        if (productmastersGetErr) {
+          return done(productmastersGetErr);
         }
 
-        // Get the userId
-        var userId = user.id;
+        console.log('=======================PRODUCT GET BY ID============');
+        console.log(productmastersGetRes.body);
+        console.log('=================================================');
 
-        // Save a new Productmaster
-        agent.post('/api/productmasters')
-          .send(productmaster)
-          .expect(200)
-          .end(function (productmasterSaveErr, productmasterSaveRes) {
-            // Handle Productmaster save error
-            if (productmasterSaveErr) {
-              return done(productmasterSaveErr);
-            }
-
-            // Get a list of Productmasters
-            agent.get('/api/productmasters')
-              .end(function (productmastersGetErr, productmastersGetRes) {
-                // Handle Productmasters save error
-                if (productmastersGetErr) {
-                  return done(productmastersGetErr);
-                }
-
-                // Get Productmasters list
-                var productmasters = productmastersGetRes.body;
-
-                // Set assertions
-                (productmasters[0].user._id).should.equal(userId);
-                (productmasters[0].name).should.match('Productmaster name');
-
-                // Call the assertion callback
-                done();
-              });
-          });
-      });
-  });
-
-  it('should not be able to save an Productmaster if not logged in', function (done) {
-    agent.post('/api/productmasters')
-      .send(productmaster)
-      .expect(403)
-      .end(function (productmasterSaveErr, productmasterSaveRes) {
-        // Call the assertion callback
-        done(productmasterSaveErr);
-      });
-  });
-
-  it('should not be able to save an Productmaster if no name is provided', function (done) {
-    // Invalidate name field
-    productmaster.name = '';
-
-    agent.post('/api/auth/signin')
-      .send(credentials)
-      .expect(200)
-      .end(function (signinErr, signinRes) {
-        // Handle signin error
-        if (signinErr) {
-          return done(signinErr);
-        }
-
-        // Get the userId
-        var userId = user.id;
-
-        // Save a new Productmaster
-        agent.post('/api/productmasters')
-          .send(productmaster)
-          .expect(400)
-          .end(function (productmasterSaveErr, productmasterSaveRes) {
-            // Set message assertion
-            (productmasterSaveRes.body.message).should.match('Please fill Productmaster name');
-
-            // Handle Productmaster save error
-            done(productmasterSaveErr);
-          });
-      });
-  });
-
-  it('should be able to update an Productmaster if signed in', function (done) {
-    agent.post('/api/auth/signin')
-      .send(credentials)
-      .expect(200)
-      .end(function (signinErr, signinRes) {
-        // Handle signin error
-        if (signinErr) {
-          return done(signinErr);
-        }
-
-        // Get the userId
-        var userId = user.id;
-
-        // Save a new Productmaster
-        agent.post('/api/productmasters')
-          .send(productmaster)
-          .expect(200)
-          .end(function (productmasterSaveErr, productmasterSaveRes) {
-            // Handle Productmaster save error
-            if (productmasterSaveErr) {
-              return done(productmasterSaveErr);
-            }
-
-            // Update Productmaster name
-            productmaster.name = 'WHY YOU GOTTA BE SO MEAN?';
-
-            // Update an existing Productmaster
-            agent.put('/api/productmasters/' + productmasterSaveRes.body._id)
-              .send(productmaster)
-              .expect(200)
-              .end(function (productmasterUpdateErr, productmasterUpdateRes) {
-                // Handle Productmaster update error
-                if (productmasterUpdateErr) {
-                  return done(productmasterUpdateErr);
-                }
-
-                // Set assertions
-                (productmasterUpdateRes.body._id).should.equal(productmasterSaveRes.body._id);
-                (productmasterUpdateRes.body.name).should.match('WHY YOU GOTTA BE SO MEAN?');
-
-                // Call the assertion callback
-                done();
-              });
-          });
-      });
-  });
-
-  it('should be able to get a list of Productmasters if not signed in', function (done) {
-    // Create new Productmaster model instance
-    var productmasterObj = new Productmaster(productmaster);
-
-    // Save the productmaster
-    productmasterObj.save(function () {
-      // Request Productmasters
-      request(app).get('/api/productmasters')
-        .end(function (req, res) {
-          // Set assertion
-          res.body.should.be.instanceof(Array).and.have.lengthOf(1);
-
-          // Call the assertion callback
-          done();
-        });
-
-    });
-  });
-
-  it('should be able to get a single Productmaster if not signed in', function (done) {
-    // Create new Productmaster model instance
-    var productmasterObj = new Productmaster(productmaster);
-
-    // Save the Productmaster
-    productmasterObj.save(function () {
-      request(app).get('/api/productmasters/' + productmasterObj._id)
-        .end(function (req, res) {
-          // Set assertion
-          res.body.should.be.instanceof(Object).and.have.property('name', productmaster.name);
-
-          // Call the assertion callback
-          done();
-        });
-    });
-  });
-
-  it('should return proper error for single Productmaster with an invalid Id, if not signed in', function (done) {
-    // test is not a valid mongoose Id
-    request(app).get('/api/productmasters/test')
-      .end(function (req, res) {
-        // Set assertion
-        res.body.should.be.instanceof(Object).and.have.property('message', 'Productmaster is invalid');
-
-        // Call the assertion callback
         done();
       });
-  });
-
-  it('should return proper error for single Productmaster which doesnt exist, if not signed in', function (done) {
-    // This is a valid mongoose Id but a non-existent Productmaster
-    request(app).get('/api/productmasters/559e9cd815f80b4c256a8f41')
-      .end(function (req, res) {
-        // Set assertion
-        res.body.should.be.instanceof(Object).and.have.property('message', 'No Productmaster with that identifier has been found');
-
-        // Call the assertion callback
-        done();
-      });
-  });
-
-  it('should be able to delete an Productmaster if signed in', function (done) {
-    agent.post('/api/auth/signin')
-      .send(credentials)
-      .expect(200)
-      .end(function (signinErr, signinRes) {
-        // Handle signin error
-        if (signinErr) {
-          return done(signinErr);
-        }
-
-        // Get the userId
-        var userId = user.id;
-
-        // Save a new Productmaster
-        agent.post('/api/productmasters')
-          .send(productmaster)
-          .expect(200)
-          .end(function (productmasterSaveErr, productmasterSaveRes) {
-            // Handle Productmaster save error
-            if (productmasterSaveErr) {
-              return done(productmasterSaveErr);
-            }
-
-            // Delete an existing Productmaster
-            agent.delete('/api/productmasters/' + productmasterSaveRes.body._id)
-              .send(productmaster)
-              .expect(200)
-              .end(function (productmasterDeleteErr, productmasterDeleteRes) {
-                // Handle productmaster error error
-                if (productmasterDeleteErr) {
-                  return done(productmasterDeleteErr);
-                }
-
-                // Set assertions
-                (productmasterDeleteRes.body._id).should.equal(productmasterSaveRes.body._id);
-
-                // Call the assertion callback
-                done();
-              });
-          });
-      });
-  });
-
-  it('should not be able to delete an Productmaster if not signed in', function (done) {
-    // Set Productmaster user
-    productmaster.user = user;
-
-    // Create new Productmaster model instance
-    var productmasterObj = new Productmaster(productmaster);
-
-    // Save the Productmaster
-    productmasterObj.save(function () {
-      // Try deleting Productmaster
-      request(app).delete('/api/productmasters/' + productmasterObj._id)
-        .expect(403)
-        .end(function (productmasterDeleteErr, productmasterDeleteRes) {
-          // Set message assertion
-          (productmasterDeleteRes.body.message).should.match('User is not authorized');
-
-          // Handle Productmaster error error
-          done(productmasterDeleteErr);
-        });
-
     });
+    
   });
-
-  it('should be able to get a single Productmaster that has an orphaned user reference', function (done) {
-    // Create orphan user creds
-    var _creds = {
-      username: 'orphan',
-      password: 'M3@n.jsI$Aw3$0m3'
-    };
-
-    // Create orphan user
-    var _orphan = new User({
-      firstName: 'Full',
-      lastName: 'Name',
-      displayName: 'Full Name',
-      email: 'orphan@test.com',
-      username: _creds.username,
-      password: _creds.password,
-      provider: 'local'
-    });
-
-    _orphan.save(function (err, orphan) {
-      // Handle save error
-      if (err) {
-        return done(err);
-      }
-
-      agent.post('/api/auth/signin')
-        .send(_creds)
-        .expect(200)
-        .end(function (signinErr, signinRes) {
-          // Handle signin error
-          if (signinErr) {
-            return done(signinErr);
-          }
-
-          // Get the userId
-          var orphanId = orphan._id;
-
-          // Save a new Productmaster
-          agent.post('/api/productmasters')
-            .send(productmaster)
-            .expect(200)
-            .end(function (productmasterSaveErr, productmasterSaveRes) {
-              // Handle Productmaster save error
-              if (productmasterSaveErr) {
-                return done(productmasterSaveErr);
-              }
-
-              // Set assertions on new Productmaster
-              (productmasterSaveRes.body.name).should.equal(productmaster.name);
-              should.exist(productmasterSaveRes.body.user);
-              should.equal(productmasterSaveRes.body.user._id, orphanId);
-
-              // force the Productmaster to have an orphaned user reference
-              orphan.remove(function () {
-                // now signin with valid user
-                agent.post('/api/auth/signin')
-                  .send(credentials)
-                  .expect(200)
-                  .end(function (err, res) {
-                    // Handle signin error
-                    if (err) {
-                      return done(err);
-                    }
-
-                    // Get the Productmaster
-                    agent.get('/api/productmasters/' + productmasterSaveRes.body._id)
-                      .expect(200)
-                      .end(function (productmasterInfoErr, productmasterInfoRes) {
-                        // Handle Productmaster error
-                        if (productmasterInfoErr) {
-                          return done(productmasterInfoErr);
-                        }
-
-                        // Set assertions
-                        (productmasterInfoRes.body._id).should.equal(productmasterSaveRes.body._id);
-                        (productmasterInfoRes.body.name).should.equal(productmaster.name);
-                        should.equal(productmasterInfoRes.body.user, undefined);
-
-                        // Call the assertion callback
-                        done();
-                      });
-                  });
-              });
-            });
-        });
-    });
-  });
-
-  // it('get product update historylog', function (done) {
-  //   agent.post('/api/auth/signin')
-  //     .send(credentials)
-  //     .expect(200)
-  //     .end(function (signinErr, signinRes) {
-  //       // Handle signin error
-  //       if (signinErr) {
-  //         return done(signinErr);
-  //       }
-
-  //       // Get the userId
-  //       var userId = user.id;
-
-  //       // Save a new Productmaster
-  //       agent.post('/api/productmasters')
-  //         .send(productmaster)
-  //         .expect(200)
-  //         .end(function (productmasterSaveErr, productmasterSaveRes) {
-  //           // Handle Productmaster save error
-  //           if (productmasterSaveErr) {
-  //             return done(productmasterSaveErr);
-  //           }
-
-  //           // Update an existing Productmaster
-  //           agent.get('/api/productmasters/' + productmasterSaveRes.body._id)
-  //             .end(function (productmasterUpdateErr, productmasterUpdateRes) {
-  //               // Handle Productmaster update error
-  //               if (productmasterUpdateErr) {
-  //                 return done(productmasterUpdateErr);
-  //               }
-
-  //               // Set assertions
-  //               (productmasterUpdateRes.body._id).should.equal(productmasterSaveRes.body._id);
-  //               (productmasterUpdateRes.body.name).should.match('WHY YOU GOTTA BE SO MEAN?');
-
-  //               // Call the assertion callback
-  //               done();
-  //             });
-  //         });
-  //     });
-  // });
 
   afterEach(function (done) {
     User.remove().exec(function () {
@@ -516,7 +175,11 @@ describe('Productmaster CRUD tests', function () {
         Shopmaster.remove().exec(function () {
           Shippingmaster.remove().exec(function () {
             Categorymaster.remove().exec(function () {
-              Productmaster.remove().exec(done);
+              Sizemaster.remove().exec(function () {
+                Productmaster.remove().exec(function () {
+                  done();
+                });
+              });
             });
           });
         });

@@ -13,7 +13,7 @@ module.exports = function (app) {
     .post(productmasters.create);
 
   app.route('/api/productmasters/:productmasterId').all(productmastersPolicy.isAllowed)
-    .get(productmasters.updatehistorylog, productmasters.read)
+    .get(productmasters.productDetail)
     .put(productmasters.update)
     .delete(productmasters.delete);
 
