@@ -285,7 +285,7 @@ describe('Order CRUD tests', function () {
         amount: 1234,
         size: 'S',
         delivery: shipping,
-        status: 'accept'
+        status: 'waiting'
       }],
       payment: {
         paymenttype: 'Counterservice',
@@ -314,12 +314,35 @@ describe('Order CRUD tests', function () {
       },
       amount: 1234,
       discount: 234,
+      status: 'confirm',
+      totalamount: 1000,
+      cart: cart.id,
+      user: user
+    });
+    var orderObj3 = new Ordermaster({
+      shipping: address,
+      items: [{
+        product: product,
+        qty: 1,
+        amount: 1234,
+        size: 'S',
+        delivery: shipping,
+        status: 'accept'
+      }],
+      payment: {
+        paymenttype: 'Counterservice',
+        counterservice: '7-11'
+      },
+      amount: 1234,
+      discount: 234,
+      status: 'cancel',
       totalamount: 1000,
       cart: cart.id,
       user: user
     });
     orderObj2.save();
     orderObj1.save();
+    orderObj3.save();
     agent.post('/api/auth/signin')
       .send(credentials)
       .expect(200)
@@ -344,7 +367,18 @@ describe('Order CRUD tests', function () {
             var orders = ordersGetRes.body;
 
             // Set assertions
-            (orders.length).should.equal(1);
+            (orders.waiting.length).should.equal(1);
+            (orders.waiting[0].order_id).should.equal(orderObj1.id);
+            (orders.waiting[0].item_id).should.equal(orderObj1.items[0].id);
+            (orders.waiting[0].name).should.equal(product.name);
+            (orders.waiting[0].price).should.equal(product.price);
+            (orders.waiting[0].qty).should.equal(orderObj1.items[0].qty);
+            (orders.waiting[0].image).should.equal(product.image[0].url);
+            (orders.waiting[0].status).should.equal(orderObj1.items[0].status);
+            (orders.accept.length).should.equal(0);
+            (orders.sent.length).should.equal(0);
+            (orders.return.length).should.equal(0);
+
 
             // Call the assertion callback
             done();
@@ -422,6 +456,88 @@ describe('Order CRUD tests', function () {
           });
       });
   });
+
+
+  // it('get order by id by itemid', function (done) {
+  //   var orderObj1 = {
+  //     shipping: address,
+  //     items: [{
+  //       product: product,
+  //       qty: 1,
+  //       amount: 1234,
+  //       size: 'S',
+  //       delivery: shipping,
+  //       status: 'accept'
+  //     }],
+  //     payment: {
+  //       paymenttype: 'Counterservice',
+  //       counterservice: '7-11'
+  //     },
+  //     amount: 1234,
+  //     discount: 234,
+  //     totalamount: 1000,
+  //     cart: cart.id,
+  //     user: user
+  //   };
+  //   agent.post('/api/auth/signin')
+  //     .send(credentials)
+  //     .expect(200)
+  //     .end(function (signinErr, signinRes) {
+  //       // Handle signin error
+  //       if (signinErr) {
+  //         return done(signinErr);
+  //       }
+
+  //       // Get the userId
+  //       var userId = user.id;
+
+  //       // Get a list of Orders
+  //       agent.post('/api/order')
+  //         .send(orderObj1)
+  //         .expect(200)
+  //         .end(function (ordersErr, ordersRes) {
+  //           // Handle Orders save error
+  //           if (ordersErr) {
+  //             return done(ordersErr);
+  //           }
+
+  //           // Get Orders list
+  //           var orders = ordersRes.body;
+
+  //           // Set assertions
+  //           (orders.user._id).should.equal(userId);
+  //           (orders.totalamount).should.match(1000);
+
+  //           // Call the assertion callback
+  //           agent.get('/api/orders/' + orders._id + '/' + orders.items[0]._id)
+  //             .end(function (ordersGetErr, ordersGetRes) {
+  //               // Handle Orders save error
+  //               if (ordersGetErr) {
+  //                 return done(ordersGetErr);
+  //               }
+
+  //               // Get Orders list
+  //               var orders2 = ordersGetRes.body;
+
+  //               // Set assertions
+  //               (orders2.order_id).should.equal(orders._id);
+  //               (orders2.item_id).should.equal(orders.items[0]._id);
+  //               (orders2.name).should.equal(product.name);
+  //               (orders2.price).should.equal(product.price);
+  //               (orders2.qty).should.equal(orders.items[0].qty);
+  //               (orders2.image).should.equal(product.image);
+  //               (orders2.status).should.equal(orders.items[0].status);
+  //               (orders2.delivery).should.equal(shipping);
+  //               (orders2.shipping).should.equal(address);
+
+  //               // Call the assertion callback
+  //               done();
+  //             });
+  //         });
+  //     });
+  // });
+
+
 
   afterEach(function (done) {
     User.remove().exec(function () {

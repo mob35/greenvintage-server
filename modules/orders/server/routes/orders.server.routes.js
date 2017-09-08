@@ -12,17 +12,19 @@ module.exports = function (app) {
     .get(orders.getOrderByshop, orders.filterStatus, orders.resultOrders);
 
   app.route('/api/orderlistbyshops').all(ordersPolicy.isAllowed)
-    .get(orders.getOrderByshop, orders.filterStatusNotCancelAndConfirm, orders.resultOrders);
+    .get(orders.getorder, orders.orderlistbyshops);
 
   app.route('/api/order').all(ordersPolicy.isAllowed)
     .post(orders.createOrder, orders.removeCart);
   //   .post(orders.create);
 
-  // app.route('/api/orders/:orderId').all(ordersPolicy.isAllowed)
-  //   .get(orders.read)
-  //   .put(orders.update)
-  //   .delete(orders.delete);
+  app.route('/api/orders/:orderId/:itemId').all(ordersPolicy.isAllowed)
+    .get(orders.read);
+  // .put(orders.update)
+  // .delete(orders.delete);
 
   // // Finish by binding the Order middleware
-  // app.param('orderId', orders.orderByID);
+  app.param('orderId', orders.orderByID);
+  app.param('itemId', orders.orderByitemID);
+
 };

@@ -18,7 +18,7 @@ exports.invokeRolesPolicies = function () {
       resources: '/api/ordersbyshop',
       permissions: '*'
     }, {
-      resources: '/api/orders/:orderId',
+      resources: '/api/orders/:orderId/:itemId',
       permissions: '*'
     }, {
       resources: '/api/orderlistbyshops',
@@ -33,8 +33,8 @@ exports.invokeRolesPolicies = function () {
       resources: '/api/ordersbyshop',
       permissions: ['get']
     }, {
-      resources: '/api/orders/:orderId',
-      permissions: ['get']
+      resources: '/api/orders/:orderId/:itemId',
+      permissions: '*'
     }, {
       resources: '/api/orderlistbyshops',
       permissions: ['get']
@@ -48,7 +48,7 @@ exports.invokeRolesPolicies = function () {
       resources: '/api/ordersbyshop',
       permissions: ['get']
     }, {
-      resources: '/api/orders/:orderId',
+      resources: '/api/orders/:orderId/:itemId',
       permissions: ['get']
     }, {
       resources: '/api/orderlistbyshops',
