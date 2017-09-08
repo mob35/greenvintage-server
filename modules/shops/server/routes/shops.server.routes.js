@@ -13,7 +13,7 @@ module.exports = function (app) {
     .get(shops.list);
 
   app.route('/api/shops/:shopId').all(shopsPolicy.isAllowed)
-    .get(shops.read);
+    .get(shops.productByShop, shops.read);
 
   // Finish by binding the Shop middleware
   app.param('shopId', shops.shopByID);
