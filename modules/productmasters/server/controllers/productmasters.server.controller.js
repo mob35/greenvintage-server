@@ -146,7 +146,7 @@ exports.productDetail = function (req, res, next) {
       'shop': req.productmaster.shop.name,
       'rate': req.productmaster.shop.rate
     },
-    'relationproducts': [
+    'relationProducts': [
       {
         'name': 'NIKE',
         'image': 'https://assets.wired.com/photos/w_1534/wp-content/uploads/2016/09/ff_nike-hyperadapt_angle_front.jpg',
