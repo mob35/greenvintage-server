@@ -18,7 +18,6 @@ var ShopmasterSchema = new Schema({
   },
   detail: {
     type: String,
-    trim: true
   },
   email: {
     type: String
@@ -33,22 +32,43 @@ var ShopmasterSchema = new Schema({
     lat: {
       type: String
     },
-    lng: {
+    long: {
       type: String
     }
   },
-  address: {
-    type: [{
-      address: {
-        type: Schema.ObjectId,
-        ref: 'Address'
-      }
-    }]
+  rate: {
+    type: Number
   },
-  sellerSummary: {
-    type: Number,
-    default: 0
-  },
+  review: [{
+    rate: Number,
+    comment: String,
+    user: {
+      type: Schema.ObjectId,
+      ref: 'User'
+    }
+  }],
+  historylog: [{
+    customerid: {
+      type: Schema.ObjectId,
+      ref: 'User'
+    },
+    historydate: {
+      type: Date,
+      default: Date.now
+    }
+  }],
+  // address: {
+  //   type: [{
+  //     address: {
+  //       type: Schema.ObjectId,
+  //       ref: 'Address'
+  //     }
+  //   }]
+  // },
+  // sellerSummary: {
+  //   type: Number,
+  //   default: 0
+  // },
   created: {
     type: Date,
     default: Date.now
