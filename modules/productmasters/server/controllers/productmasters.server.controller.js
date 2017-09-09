@@ -35,7 +35,7 @@ exports.read = function (req, res) {
   // convert mongoose document to JSON
   var productmaster = req.productmaster ? req.productmaster.toJSON() : {};
 
-  // Add a custom field to the Article, for determining if the current User is the 'owner'.
+  // Add a custom field to the Article, for determining if the current User is the "owner".
   // NOTE: This field is NOT persisted to the database, since it doesn't exist in the Article model.
   productmaster.isCurrentUserOwner = req.user && productmaster.user && productmaster.user._id.toString() === req.user._id.toString();
 
@@ -169,5 +169,57 @@ exports.productDetail = function (req, res, next) {
       }
     ],
     'title': req.productmaster.detail
+  });
+};
+
+exports.productsBytitle = function (req, res, next, title) {
+  req.title = title;
+  next();
+};
+
+exports.getProductlist = function (req, res, next) {
+  var filter = {};
+  if (req.user && req.user.shop && req.user.shop !== undefined) {
+    filter = { shop: req.user.shop };
+  }
+  Productmaster.find(filter).sort('-created').exec(function (err, productmasters) {
+    if (err) {
+      return res.status(400).send({
+        message: errorHandler.getErrorMessage(err)
+      });
+    } else {
+      // res.jsonp(productmasters);
+      req.productlist = productmasters;
+      next();
+    }
+  });
+};
+
+exports.cookingProductlist = function (req, res, next) {
+  var productmaster = req.productlist;
+  var items = [];
+  productmaster.forEach(function (item) {
+    console.log(item);
+    items.push({
+      _id: item._id,
+      name: item.name,
+      image: item.image && item.image.length > 0 ? item.image[0].url : 'not found image',
+      price: item.price,
+      normalprice: item.price,
+      discount: 0,
+      discounttype: '%',
+      currency: 'THB',
+      rate: 0,
+
+    });
+  });
+  req.productlist = items;
+  next();
+};
+
+exports.getProductsBytitle = function (req, res) {
+  res.jsonp({
+    title: req.title,
+    items: req.productlist
   });
 };
