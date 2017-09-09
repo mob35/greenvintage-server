@@ -43,6 +43,11 @@ var ProductmasterSchema = new Schema({
       }
     }]
   },
+  promotions:[{
+    name: String,
+    detail: String,
+    code: String
+  }],
   historylog: {
     type: [{
       user: {
@@ -55,6 +60,16 @@ var ProductmasterSchema = new Schema({
       }
     }]
   },
+  stock: {
+    stockvalue: [{
+      in: Number,
+      out: Number
+    }],
+    sumin: Number,
+    sumout: Number,
+    amount: Number
+  },
+  qty: Number,
   shop: {
     required: 'Please fill Product shopseller',
     type: Schema.ObjectId,
@@ -89,6 +104,27 @@ var ProductmasterSchema = new Schema({
       qty: Number
     }]
   },
+  review: {
+    type: [{
+      user: {
+        type: Schema.ObjectId,
+        ref: 'User'
+      },
+      comment: String,
+      rate: Number
+    }]
+  },
+  qa: {
+    type: [{
+      user: {
+        type: Schema.ObjectId,
+        ref: 'User'
+      },
+      question: String,
+      answer: String
+    }]
+  },
+  rate: Number,
   sellerSummary: {
     type: Number,
     default: 0
@@ -98,6 +134,9 @@ var ProductmasterSchema = new Schema({
     type: Schema.ObjectId,
     ref: 'Categorymaster'
   },
+  payment: [{
+    payment: String
+  }],
   created: {
     type: Date,
     default: Date.now

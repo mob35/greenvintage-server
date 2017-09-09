@@ -49,6 +49,17 @@ var ShopmasterSchema = new Schema({
     type: Number,
     default: 0
   },
+  review: {
+    type: [{
+      user: {
+        type: Schema.ObjectId,
+        ref: 'User'
+      },
+      comment: String,
+      rate: Number
+    }]
+  },
+  rate: Number,
   created: {
     type: Date,
     default: Date.now

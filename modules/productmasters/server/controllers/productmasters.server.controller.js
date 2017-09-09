@@ -35,7 +35,7 @@ exports.read = function (req, res) {
   // convert mongoose document to JSON
   var productmaster = req.productmaster ? req.productmaster.toJSON() : {};
 
-  // Add a custom field to the Article, for determining if the current User is the "owner".
+  // Add a custom field to the Article, for determining if the current User is the 'owner'.
   // NOTE: This field is NOT persisted to the database, since it doesn't exist in the Article model.
   productmaster.isCurrentUserOwner = req.user && productmaster.user && productmaster.user._id.toString() === req.user._id.toString();
 
@@ -125,153 +125,49 @@ exports.productmasterByID = function (req, res, next, id) {
 
 exports.productDetail = function (req, res, next) {
   res.jsonp({
-    "id": "product001",
-    "name": "NIKE",
-    "detail": "All item(s) will be shipped",
-    "price": 100,
-    "image": [
-      {
-        "url": "https://assets.wired.com/photos/w_1534/wp-content/uploads/2016/09/ff_nike-hyperadapt_angle_front.jpg",
-        "id": "img001"
-      },
-      {
-        "url": "http://www.sportsdirect.com/images/marketing/nikelanding-tainers.jpg",
-        "id": "img002"
-      }
-    ],
-    "review": [
-      {
-        "comment": "สินค้าตัวจริงสวยมากเลยค่ะ",
-        "rate": 4.5
-      },
-      {
-        "comment": "ถ้าได้สินค้าแล้วจะกลับมาเพิ่มดาวให้นะ",
-        "rate": 1.5
-      }
-    ],
-    "rate": 4.5,
-    "qa": [
-      {
-        "question": "Qa question 1",
-        "answer": "Qa answer 1"
-      },
-      {
-        "question": "Qa question 2",
-        "answer": "Qa answer 2"
-      }
-    ],
-    "promotions": [
-      {
-        "name": "โปรโมชั่นวันวาเลนไทน์",
-        "detail": "โปรโมชั่นวันวาเลนไทน์ ซื้อสินค้าจากร้านครบ 500 บาท รับกล่องเก็บรองเท้า ฟรี!!",
-        "code": "promotion 1"
-      }
-    ],
-    "favorite": [
-      {
-        "customerid": "xxx",
-        "favdate": "2017-08-05T14:05:59"
-      }
-    ],
-    "historyLog": [],
-    "stock": {
-      "stockvalue": [
-        {
-          "in": 10,
-          "out": 10
-        }
-      ],
-      "sumin": 10,
-      "sumout": 10,
-      "amount": 10
+    'id': req.productmaster._id,
+    'name': req.productmaster.name,
+    'detail': req.productmaster.detail,
+    'price': req.productmaster.price,
+    'image': req.productmaster.image,
+    'review': req.productmaster.review,
+    'rate': req.productmaster.rate,
+    'qa': req.productmaster.qa,
+    'promotions': req.productmaster.promotions,
+    'favorite': req.productmaster.favorite,
+    'stock': req.productmaster.stock,
+    'qty': req.productmaster.qty,
+    'issize': req.productmaster.issize,
+    'size': req.productmaster.size,
+    'category': req.productmaster.category,
+    'payment': req.productmaster.payment,
+    'shipping': req.productmaster.shipping,
+    'shop': {
+      'shop': req.productmaster.shop.name,
+      'rate': req.productmaster.shop.rate
     },
-    "qty": 40,
-    "issize": true,
-    "size": {
-      "detail": "https://scontent-sea1-1.cdninstagram.com/t51.2885-15/s480x480/e35/13636041_639744079526778_1585487380_n.jpg?ig_cache_key=MTI5NDE4MDYzNTI4Nzk4NDAwNQ%3D%3D.2",
-      "sizedetail": [
-        {
-          "name": "S",
-          "qty": 10
-        },
-        {
-          "name": "M",
-          "qty": 10
-        },
-        {
-          "name": "L",
-          "qty": 10
-        },
-        {
-          "name": "XL",
-          "qty": 10
-        },
-        {
-          "name": "XL",
-          "qty": 10
-        },
-        {
-          "name": "XL",
-          "qty": 10
-        },
-        {
-          "name": "XL",
-          "qty": 10
-        },
-        {
-          "name": "XL",
-          "qty": 10
-        }
-      ]
-    },
-    "category": [
+    'relationproducts': [
       {
-        "name": "แฟชั่น",
-        "detail": "category description",
-        "subcategory": [
-          {
-            "name": "กางเกง",
-            "detail": "subcategory description"
-          }
-        ]
-      }
-    ],
-    "payment": [
-      {
-        "payment": "เก็บเงินปลายทางทั่วประเทศ"
-      }
-    ],
-    "shipping": [
-      {
-        "shipping": "ส่งแบบธรรมดา: ฟรี"
-      }
-    ],
-    "shop": {
-      "shop": "Adidas Thailand",
-      "rate": 4
-    },
-    "relationproducts": [
-      {
-        "name": "NIKE",
-        "image": "https://assets.wired.com/photos/w_1534/wp-content/uploads/2016/09/ff_nike-hyperadapt_angle_front.jpg",
-        "price": 100
+        'name': 'NIKE',
+        'image': 'https://assets.wired.com/photos/w_1534/wp-content/uploads/2016/09/ff_nike-hyperadapt_angle_front.jpg',
+        'price': 100
       },
       {
-        "name": "ADIDAS",
-        "image": "http://th-live-01.slatic.net/p/7/adidas-men-run-shoe-duramo8-bb4656-2290-1493865078-91437671-31f932a8c992f98dc9ba8c6b4dec3f6e-catalog_233.jpg",
-        "price": 100
+        'name': 'ADIDAS',
+        'image': 'http://th-live-01.slatic.net/p/7/adidas-men-run-shoe-duramo8-bb4656-2290-1493865078-91437671-31f932a8c992f98dc9ba8c6b4dec3f6e-catalog_233.jpg',
+        'price': 100
       },
       {
-        "name": "PUMA",
-        "image": "http://gadgets.siamsport.co.th/wp-content/uploads/puma-nrgy-sneakers.jpg",
-        "price": 100
+        'name': 'PUMA',
+        'image': 'http://gadgets.siamsport.co.th/wp-content/uploads/puma-nrgy-sneakers.jpg',
+        'price': 100
       },
       {
-        "name": "ONITSUKA",
-        "image": "https://th-live-02.slatic.net/p/7/onitsuka-tiger-womens-serrano-shoes-d471l-1494928131-7120789-b60f98a3253f8a5230b4a0cf110588e1.jpg",
-        "price": 100
+        'name': 'ONITSUKA',
+        'image': 'https://th-live-02.slatic.net/p/7/onitsuka-tiger-womens-serrano-shoes-d471l-1494928131-7120789-b60f98a3253f8a5230b4a0cf110588e1.jpg',
+        'price': 100
       }
     ],
-    "title": "Product Detail"
+    'title': req.productmaster.detail
   });
 };

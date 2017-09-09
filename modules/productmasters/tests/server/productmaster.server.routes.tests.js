@@ -80,6 +80,12 @@ describe('Productmaster CRUD tests', function () {
         lat: '13.45345345',
         lng: '100.4343500'
       },
+      review: [{
+        user: user,
+        comment: 'Good',
+        rate: 5
+      }],
+      rate: 5,
       address: [{ address: address }],
       user: user
     });
@@ -94,7 +100,11 @@ describe('Productmaster CRUD tests', function () {
 
     category = new Categorymaster({
       name: 'electonic',
-      detail: 'home electonic'
+      detail: 'home electonic',
+      subcategory: [{
+        name: 'TV',
+        detail: 'televistion'
+      }]
     });
 
     sizemaster = new Sizemaster({
@@ -108,24 +118,54 @@ describe('Productmaster CRUD tests', function () {
       detail: 'product detail',
       price: 999,
       image: [{
+        id: '11111',
+        url: 'http://www.sportsdirect.com/images/marketing/nikelanding-tainers.jpg'
+      }, {
+        id: '22222',
         url: 'http://www.sportsdirect.com/images/marketing/nikelanding-tainers.jpg'
       }],
       preparedays: 7,
       favorite: [{
-        user: user
+        customerid: user
       }],
-      historylog: [{
-        user: user
+      promotions:[{
+        name: 'discount 50%',
+        detail: 'discount 50% when shop total 1000 bath',
+        code: 'APPLE01'
       }],
+      stock: {
+        stockvalue: [{
+          in: 9,
+          out: 9
+        }],
+        sumin: 9,
+        sumout: 9,
+        amount: 18
+      },
+      qty: 1,
       shop: shop,
       shippings: [{
         shipping: shipping
       }],
       issize: true,
-      size: size,
+      size: sizemaster,
       sellerlog: [{
         user: user,
         qty: 9
+      }],
+      review: [{
+        user: user,
+        comment: 'Good',
+        rate: 5
+      }],
+      rate: 5,
+      qa: [{
+        user: user,
+        question: 'what is this',
+        answer: 'it is a apple'
+      }],
+      payment : [{
+        payment: 'เก็บเงินปลายทางทั่วประเทศ'
       }],
       category: category,
       user: user
@@ -146,27 +186,35 @@ describe('Productmaster CRUD tests', function () {
     });
   });
 
-  it('should be able to save a Productmaster if logged in', function (done) {
+  it('should be able get product by id', function (done) {
 
     productmaster.save(function (err, result) {
-      console.log('=======================PRODUCT SAVE===================');
-      console.log(result);
-      console.log('=================================================');
-      agent.get('/api/productmasters/'+ result._id)
-      .end(function (productmastersGetErr, productmastersGetRes) {
+      agent.get('/api/productmasters/' + result._id)
+        .end(function (productmastersGetErr, productmastersGetRes) {
 
-        if (productmastersGetErr) {
-          return done(productmastersGetErr);
-        }
+          if (productmastersGetErr) {
+            return done(productmastersGetErr);
+          }
 
-        console.log('=======================PRODUCT GET BY ID============');
-        console.log(productmastersGetRes.body);
-        console.log('=================================================');
-
-        done();
-      });
+          var product = productmastersGetRes.body;
+          
+          (product.name).should.equal(result.name);
+          (product.detail).should.equal(result.detail);
+          (product.price).should.match(result.price);
+          (product.image[0].url).should.equal(result.image[0].url);
+          (product.review[0].comment).should.equal(result.review[0].comment);
+          (product.rate).should.match(result.rate);
+          (product.qa[0].question).should.equal(result.qa[0].question);
+          (product.promotions[0].name).should.equal(result.promotions[0].name);
+          (product.shop.shop).should.equal(result.shop.name);
+          (product.shop.rate).should.equal(result.shop.rate);
+          (product.stock.amount).should.match(result.stock.amount);
+          (product.qty).should.match(result.qty);  
+            
+          done();
+        });
     });
-    
+
   });
 
   afterEach(function (done) {
