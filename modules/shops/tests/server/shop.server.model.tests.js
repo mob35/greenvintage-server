@@ -35,6 +35,10 @@ describe('Shop Model Unit Tests:', function () {
         email: 'Shop Email',
         image: 'https://www.onsite.org/assets/images/teaser/online-e-shop.jpg',
         tel: '097654321',
+        map:{
+          lat:'13.933954',
+          long:'100.7157976'
+        },
         user: user
       });
 
