@@ -8,7 +8,7 @@ var shopsPolicy = require('../policies/shops.server.policy'),
 
 module.exports = function (app) {
   // Shops Routes
-  app.route('/api/shops').all(shopsPolicy.isAllowed)
+  app.route('/api/shops')//.all(shopsPolicy.isAllowed)
     .post(shops.create)
     .get(shops.list);
 
