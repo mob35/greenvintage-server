@@ -6,12 +6,14 @@
 var should = require('should'),
   mongoose = require('mongoose'),
   User = mongoose.model('User'),
+  Review = mongoose.model('Review'),
   Shop = mongoose.model('Shop');
 
 /**
  * Globals
  */
 var user,
+  review,
   shop;
 
 /**
@@ -27,22 +29,29 @@ describe('Shop Model Unit Tests:', function () {
       username: 'username',
       password: 'password'
     });
-
+    review = new Review({
+      topic: 'Topic',
+      comment: 'Comment',
+      rate: 5
+    });
     user.save(function () {
-      shop = new Shop({
-        name: 'Shop Name',
-        detail: 'Shop Detail',
-        email: 'Shop Email',
-        image: 'https://www.onsite.org/assets/images/teaser/online-e-shop.jpg',
-        tel: '097654321',
-        map:{
-          lat:'13.933954',
-          long:'100.7157976'
-        },
-        user: user
-      });
+      review.save(function () {
+        shop = new Shop({
+          name: 'Shop Name',
+          detail: 'Shop Detail',
+          email: 'Shop Email',
+          image: 'https://www.onsite.org/assets/images/teaser/online-e-shop.jpg',
+          tel: '097654321',
+          map: {
+            lat: '13.933954',
+            long: '100.7157976'
+          },
+          reviews: [review],
+          user: user
+        });
 
-      done();
+        done();
+      });
     });
   });
 

@@ -6,9 +6,20 @@
 var mongoose = require('mongoose'),
   Schema = mongoose.Schema;
 
+var ReviewSchema = new Schema({
+  topic: String,
+  comment: String,
+  rate: Number,
+  created: {
+    type: Date,
+    default: Date.now
+  }
+});
+
 /**
  * Shop Schema
  */
+
 var ShopSchema = new Schema({
   name: {
     type: String,
@@ -40,6 +51,12 @@ var ShopSchema = new Schema({
       type: String
     }
   },
+  reviews: {
+    type: [{
+      type: Schema.ObjectId,
+      ref: 'Review'
+    }]
+  },
   created: {
     type: Date,
     default: Date.now
@@ -51,3 +68,4 @@ var ShopSchema = new Schema({
 });
 
 mongoose.model('Shop', ShopSchema);
+mongoose.model('Review', ReviewSchema);

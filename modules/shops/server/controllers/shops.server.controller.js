@@ -6,6 +6,7 @@
 var path = require('path'),
   mongoose = require('mongoose'),
   Shop = mongoose.model('Shop'),
+  Review = mongoose.model('Review'),
   errorHandler = require(path.resolve('./modules/core/server/controllers/errors.server.controller')),
   _ = require('lodash');
 
@@ -122,18 +123,49 @@ exports.shopByID = function (req, res, next, id) {
     next();
   });
 };
+
+exports.createReview = function (req, res, next) {
+  var review = new Review(req.body);
+
+  review.save(function (err) {
+    if (err) {
+      return res.status(400).send({
+        message: errorHandler.getErrorMessage(err)
+      });
+    } else {
+      req.review = review;
+      next();
+    }
+  });
+
+};
+
+exports.updateReviewShop = function (req, res, next) {
+  req.shop.reviews.push(req.review);
+  req.shop.save(function (err) {
+    if (err) {
+      return res.status(400).send({
+        message: errorHandler.getErrorMessage(err)
+      });
+    } else {
+      next();
+    }
+  });
+};
+
 exports.cookingShopDetail = function (req, res, next) {
+
   var data = {
     _id: req.shop._id,
     name: req.shop.name,
     image: req.shop.image,
-    detail:req.shop.detail,
+    detail: req.shop.detail,
     tel: req.shop.tel,
     email: req.shop.email,
     map: req.shop.map,
     rate: 5,
     products: [],
-    reviews: []
+    reviews: req.shop.reviews
   };
   req.shop = data;
   next();

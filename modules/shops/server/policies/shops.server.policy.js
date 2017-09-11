@@ -20,6 +20,9 @@ exports.invokeRolesPolicies = function () {
     }, {
       resources: '/api/shops/:shopId',
       permissions: '*'
+    }, {
+      resources: '/api/shop/review/:shopId',
+      permissions: '*'
     }]
   }, {
     roles: ['user'],
@@ -29,6 +32,9 @@ exports.invokeRolesPolicies = function () {
     }, {
       resources: '/api/shops/:shopId',
       permissions: ['get']
+    }, {
+      resources: '/api/shop/review/:shopId',
+      permissions: '*'
     }]
   }, {
     roles: ['guest'],
