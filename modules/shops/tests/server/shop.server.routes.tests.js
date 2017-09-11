@@ -236,8 +236,7 @@ describe('Shop CRUD tests', function () {
           res.body.should.be.instanceof(Object).and.have.property('map', shop.map).and.have.property('lat', shop.map.lat);
           res.body.should.be.instanceof(Object).and.have.property('map', shop.map).and.have.property('long', shop.map.long);
           res.body.products.should.be.instanceof(Array).and.have.lengthOf(0);
-          res.body.review.should.be.instanceof(Array).and.have.lengthOf(0);
-          res.body.historylog.should.be.instanceof(Array).and.have.lengthOf(0);
+          res.body.reviews.should.be.instanceof(Array).and.have.lengthOf(0);
 
           // Call the assertion callback
           done();

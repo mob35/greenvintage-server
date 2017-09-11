@@ -133,8 +133,7 @@ exports.cookingShopDetail = function (req, res, next) {
     map: req.shop.map,
     rate: 5,
     products: [],
-    review: [],
-    historylog: []
+    reviews: []
   };
   req.shop = data;
   next();
