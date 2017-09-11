@@ -32,11 +32,11 @@ exports.create = function (req, res) {
  */
 exports.read = function (req, res) {
   // convert mongoose document to JSON
-  var shop = req.shop ? req.shop.toJSON() : {};
+  var shop = req.shop;
 
   // Add a custom field to the Article, for determining if the current User is the "owner".
   // NOTE: This field is NOT persisted to the database, since it doesn't exist in the Article model.
-  shop.isCurrentUserOwner = req.user && shop.user && shop.user._id.toString() === req.user._id.toString();
+  // shop.isCurrentUserOwner = req.user && shop.user && shop.user._id.toString() === req.user._id.toString();
 
   res.jsonp(shop);
 };
@@ -121,4 +121,20 @@ exports.shopByID = function (req, res, next, id) {
     req.shop = shop;
     next();
   });
+};
+exports.cookingShopDetail = function (req, res, next) {
+  var data = {
+    _id: req.shop._id,
+    name: req.shop.name,
+    image: req.shop.image,
+    detail:req.shop.detail,
+    tel: req.shop.tel,
+    email: req.shop.email,
+    map: req.shop.map,
+    rate: 5,
+    products: [],
+    reviews: []
+  };
+  req.shop = data;
+  next();
 };

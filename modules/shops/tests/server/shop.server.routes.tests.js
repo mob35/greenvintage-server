@@ -55,7 +55,11 @@ describe('Shop CRUD tests', function () {
         detail: 'Shop Detail',
         email: 'Shop Email',
         image: 'https://www.onsite.org/assets/images/teaser/online-e-shop.jpg',
-        tel: '097654321'
+        tel: '097654321',
+        map: {
+          lat: '13.933954',
+          long: '100.7157976'
+        }
       };
 
       done();
@@ -207,12 +211,6 @@ describe('Shop CRUD tests', function () {
           (shops).should.have.property('title');
           (shops).should.have.property('items');
           (shops.items).should.be.instanceof(Array).and.have.lengthOf(1);
-          // res.body.should.be.instanceof(Array).and.have.lengthOf(1);
-          // (shops[0]._id).should.be.equal(shopObj.id);
-          // (shops[0].name).should.be.equal(shopObj.name);
-          // (shops[0].image).should.be.equal(shopObj.image);
-          // (shops[0]).should.not.have.property('detail');
-          // (shops[0]).should.not.have.property('email');
           // Call the assertion callback
           done();
         });
@@ -230,6 +228,15 @@ describe('Shop CRUD tests', function () {
         .end(function (req, res) {
           // Set assertion
           res.body.should.be.instanceof(Object).and.have.property('name', shop.name);
+          res.body.should.be.instanceof(Object).and.have.property('detail', shop.detail);
+          res.body.should.be.instanceof(Object).and.have.property('image', shop.image);
+          res.body.should.be.instanceof(Object).and.have.property('email', shop.email);
+          res.body.should.be.instanceof(Object).and.have.property('tel', shop.tel);
+          res.body.should.be.instanceof(Object).and.have.property('rate', 5);
+          res.body.should.be.instanceof(Object).and.have.property('map', shop.map).and.have.property('lat', shop.map.lat);
+          res.body.should.be.instanceof(Object).and.have.property('map', shop.map).and.have.property('long', shop.map.long);
+          res.body.products.should.be.instanceof(Array).and.have.lengthOf(0);
+          res.body.reviews.should.be.instanceof(Array).and.have.lengthOf(0);
 
           // Call the assertion callback
           done();

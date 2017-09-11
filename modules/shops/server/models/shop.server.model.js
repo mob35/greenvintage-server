@@ -32,6 +32,14 @@ var ShopSchema = new Schema({
     type: String,
     default: ''
   },
+  map: {
+    lat: {
+      type: String
+    },
+    long: {
+      type: String
+    }
+  },
   created: {
     type: Date,
     default: Date.now
