@@ -81,7 +81,7 @@ exports.delete = function(req, res) {
  * List of Shops
  */
 exports.list = function(req, res) {
-  Shop.find().sort('-created').populate('user', 'displayName').exec(function(err, shops) {
+  Shop.find({},'name image _id').sort('-created').populate('user', 'displayName').exec(function(err, shops) {
     if (err) {
       return res.status(400).send({
         message: errorHandler.getErrorMessage(err)

@@ -97,12 +97,8 @@ describe('Shop CRUD tests', function () {
                 var shops = shopsGetRes.body;
 
                 // Set assertions
-                (shops[0].user._id).should.equal(userId);
                 (shops[0].name).should.match('Shop name');
-                (shops[0].detail).should.match('Shop Detail');
                 (shops[0].image).should.match('https://www.onsite.org/assets/images/teaser/online-e-shop.jpg');
-                (shops[0].email).should.match('Shop Email');
-                (shops[0].tel).should.match('097654321');
                 // Call the assertion callback
                 done();
               });
@@ -110,15 +106,15 @@ describe('Shop CRUD tests', function () {
       });
   });
 
-  it('should not be able to save an Shop if not logged in', function (done) {
-    agent.post('/api/shops')
-      .send(shop)
-      .expect(403)
-      .end(function (shopSaveErr, shopSaveRes) {
-        // Call the assertion callback
-        done(shopSaveErr);
-      });
-  });
+  // it('should not be able to save an Shop if not logged in', function (done) {
+  //   agent.post('/api/shops')
+  //     .send(shop)
+  //     .expect(403)
+  //     .end(function (shopSaveErr, shopSaveRes) {
+  //       // Call the assertion callback
+  //       done(shopSaveErr);
+  //     });
+  // });
 
   it('should not be able to save an Shop if no name is provided', function (done) {
     // Invalidate name field
@@ -206,9 +202,14 @@ describe('Shop CRUD tests', function () {
       // Request Shops
       request(app).get('/api/shops')
         .end(function (req, res) {
+          var shops = res.body;
           // Set assertion
           res.body.should.be.instanceof(Array).and.have.lengthOf(1);
-
+          (shops[0]._id).should.be.equal(shopObj.id);
+          (shops[0].name).should.be.equal(shopObj.name);
+          (shops[0].image).should.be.equal(shopObj.image);
+          (shops[0]).should.not.have.property('detail');
+          (shops[0]).should.not.have.property('email');
           // Call the assertion callback
           done();
         });
