@@ -73,8 +73,10 @@ describe('Cart Model Unit Tests:', function () {
 
   afterEach(function (done) {
     Cart.remove().exec(function () {
-      User.remove().exec(function () {
-        done();
+      Product.remove().exec(function () {
+        User.remove().exec(function () {
+          done();
+        });
       });
     });
   });
