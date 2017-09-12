@@ -6,31 +6,129 @@
 var path = require('path'),
   mongoose = require('mongoose'),
   Cart = mongoose.model('Cart'),
+  Product = mongoose.model('Product'),
   errorHandler = require(path.resolve('./modules/core/server/controllers/errors.server.controller')),
   _ = require('lodash');
+
+//********** Create Cart **********
+exports.cartID = function (req, res, next) {
+  var cart = req.body;
+
+  if (cart._id) {
+    if (!mongoose.Types.ObjectId.isValid(cart._id)) {
+      return res.status(400).send({
+        message: 'Cart is invalid'
+      });
+    }
+
+    Cart.findById(cart._id).populate('user', 'displayName').exec(function (err, cart) {
+      if (err) {
+        return next(err);
+      } else if (!cart) {
+        return res.status(404).send({
+          message: 'No Cart with that identifier has been found'
+        });
+      }
+      req.cart = cart;
+      next();
+    });
+  } else {
+    req.cart = cart;
+    next();
+  }
+};
 
 /**
  * Create a Cart
  */
-exports.create = function(req, res) {
-  var cart = new Cart(req.body);
-  cart.user = req.user;
+exports.create = function (req, res, next) {
+  if (req.cart._id) {
+    next();
+  } else {
+    var cartCreate = new Cart(req.cart);
+    cartCreate.save(function (err) {
+      if (err) {
+        return res.status(400).send({
+          message: errorHandler.getErrorMessage(err)
+        });
+      } else {
+        Product.populate(cartCreate, {
+          path: 'items.product'
+        }, function (err, cart) {
+          req.cart = cart;
+          next();
+        });
+      }
+    });
+  }
+};
 
-  cart.save(function(err) {
+/**
+ * Update a Cart
+ */
+exports.update = function (req, res, next) {
+
+  if (req.cart._id) {
+    var cartUpdate = req.cart;
+    cartUpdate = _.extend(cartUpdate, req.body);
+
+    cartUpdate.save(function (err) {
+      if (err) {
+        return res.status(400).send({
+          message: errorHandler.getErrorMessage(err)
+        });
+      } else {
+        Product.populate(cartUpdate, {
+          path: 'items.product'
+        }, function (err, cart) {
+          req.cart = cart;
+          next();
+        });
+      }
+    });
+  } else {
+    next();
+  }
+};
+
+//********** Create Cart **********
+
+//********** Read By User ID //**********
+
+exports.cartByUserID = function (req, res, next, userId) {
+  Cart.find({
+    user: userId
+  }).sort('-created').populate({
+    path: 'items',
+    populate: {
+      path: 'product',
+      model: 'Product'
+    }
+  }).populate('user', 'displayName').exec(function (err, carts) {
     if (err) {
       return res.status(400).send({
         message: errorHandler.getErrorMessage(err)
       });
     } else {
-      res.jsonp(cart);
+      req.cart = carts[0];
+      next();
     }
+  });
+};
+
+//********** Read By User ID //**********
+
+exports.readCart = function (req, res) {
+  res.jsonp({
+    title: 'CART',
+    cart: req.cart
   });
 };
 
 /**
  * Show the current Cart
  */
-exports.read = function(req, res) {
+exports.read = function (req, res) {
   // convert mongoose document to JSON
   var cart = req.cart ? req.cart.toJSON() : {};
 
@@ -41,32 +139,14 @@ exports.read = function(req, res) {
   res.jsonp(cart);
 };
 
-/**
- * Update a Cart
- */
-exports.update = function(req, res) {
-  var cart = req.cart;
-
-  cart = _.extend(cart, req.body);
-
-  cart.save(function(err) {
-    if (err) {
-      return res.status(400).send({
-        message: errorHandler.getErrorMessage(err)
-      });
-    } else {
-      res.jsonp(cart);
-    }
-  });
-};
 
 /**
  * Delete an Cart
  */
-exports.delete = function(req, res) {
+exports.delete = function (req, res) {
   var cart = req.cart;
 
-  cart.remove(function(err) {
+  cart.remove(function (err) {
     if (err) {
       return res.status(400).send({
         message: errorHandler.getErrorMessage(err)
@@ -80,8 +160,8 @@ exports.delete = function(req, res) {
 /**
  * List of Carts
  */
-exports.list = function(req, res) {
-  Cart.find().sort('-created').populate('user', 'displayName').exec(function(err, carts) {
+exports.list = function (req, res) {
+  Cart.find().sort('-created').populate('user', 'displayName').exec(function (err, carts) {
     if (err) {
       return res.status(400).send({
         message: errorHandler.getErrorMessage(err)
@@ -95,7 +175,7 @@ exports.list = function(req, res) {
 /**
  * Cart middleware
  */
-exports.cartByID = function(req, res, next, id) {
+exports.cartByID = function (req, res, next, id) {
 
   if (!mongoose.Types.ObjectId.isValid(id)) {
     return res.status(400).send({
