@@ -17,6 +17,11 @@ module.exports = function (app) {
     .put(products.update)
     .delete(products.delete);
 
+  app.route('/api/products/favorite/:productId').all(productsPolicy.isAllowed)
+    .post(products.createFavorite, products.updateFavoriteProduct, products.read);
+
+  app.route('/api/favoriteproductlist').all(productsPolicy.isAllowed)
+    .get(products.getFavoriteList, products.cookingFavorite, products.favorites);
   app.route('/api/products/review/:productId')
     .post(products.createReview, products.updateReviewProduct, products.productReview);
 

@@ -5,7 +5,16 @@
  */
 var mongoose = require('mongoose'),
   Schema = mongoose.Schema;
-
+var FavoriteSchema = new Schema({
+  created: {
+    type: Date,
+    default: Date.now
+  },
+  user: {
+    type: Schema.ObjectId,
+    ref: 'User'
+  }
+});
 /**
  * Product Schema
  */
@@ -36,6 +45,12 @@ var ProductSchema = new Schema({
     type: [String],
     required: 'Please fill Product images'
   },
+  favorites: {
+    type: [{
+      type: Schema.ObjectId,
+      ref: 'Favorite'
+    }]
+  },
   reviews: {
     type: [{
       type: Schema.ObjectId,
@@ -53,3 +68,4 @@ var ProductSchema = new Schema({
 });
 
 mongoose.model('Product', ProductSchema);
+mongoose.model('Favorite', FavoriteSchema);

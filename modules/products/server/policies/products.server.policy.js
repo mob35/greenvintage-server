@@ -20,6 +20,12 @@ exports.invokeRolesPolicies = function () {
     }, {
       resources: '/api/products/:productId',
       permissions: '*'
+    }, {
+      resources: '/api/products/favorite/:productId',
+      permissions: '*'
+    }, {
+      resources: '/api/favoriteproductlist',
+      permissions: ['get']
     }]
   }, {
     roles: ['user'],
@@ -29,6 +35,12 @@ exports.invokeRolesPolicies = function () {
     }, {
       resources: '/api/products/:productId',
       permissions: ['get']
+    }, {
+      resources: '/api/products/favorite/:productId',
+      permissions: '*'
+    }, {
+      resources: '/api/favoriteproductlist',
+      permissions: ['get']
     }]
   }, {
     roles: ['guest'],
@@ -37,6 +49,9 @@ exports.invokeRolesPolicies = function () {
       permissions: ['get']
     }, {
       resources: '/api/products/:productId',
+      permissions: ['get']
+    }, {
+      resources: '/api/favoriteproductlist',
       permissions: ['get']
     }]
   }]);
