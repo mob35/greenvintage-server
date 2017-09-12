@@ -9,62 +9,47 @@ var acl = require('acl');
 acl = new acl(new acl.memoryBackend());
 
 /**
- * Invoke Products Permissions
+ * Invoke Carts Permissions
  */
 exports.invokeRolesPolicies = function () {
   acl.allow([{
     roles: ['admin'],
     allows: [{
-      resources: '/api/products',
+      resources: '/api/carts',
       permissions: '*'
     }, {
-      resources: '/api/products/:productId',
+      resources: '/api/carts/:cartId',
       permissions: '*'
-    }, {
-      resources: '/api/products/favorite/:productId',
-      permissions: '*'
-    }, {
-      resources: '/api/favoriteproductlist',
-      permissions: ['get']
     }]
   }, {
     roles: ['user'],
     allows: [{
-      resources: '/api/products',
+      resources: '/api/carts',
       permissions: ['get', 'post']
     }, {
-      resources: '/api/products/:productId',
-      permissions: ['get']
-    }, {
-      resources: '/api/products/favorite/:productId',
-      permissions: '*'
-    }, {
-      resources: '/api/favoriteproductlist',
+      resources: '/api/carts/:cartId',
       permissions: ['get']
     }]
   }, {
     roles: ['guest'],
     allows: [{
-      resources: '/api/products',
+      resources: '/api/carts',
       permissions: ['get']
     }, {
-      resources: '/api/products/:productId',
-      permissions: ['get']
-    }, {
-      resources: '/api/favoriteproductlist',
+      resources: '/api/carts/:cartId',
       permissions: ['get']
     }]
   }]);
 };
 
 /**
- * Check If Products Policy Allows
+ * Check If Carts Policy Allows
  */
 exports.isAllowed = function (req, res, next) {
   var roles = (req.user) ? req.user.roles : ['guest'];
 
-  // If an Product is being processed and the current user created it then allow any manipulation
-  if (req.product && req.user && req.product.user && req.product.user.id === req.user.id) {
+  // If an Cart is being processed and the current user created it then allow any manipulation
+  if (req.cart && req.user && req.cart.user && req.cart.user.id === req.user.id) {
     return next();
   }
 

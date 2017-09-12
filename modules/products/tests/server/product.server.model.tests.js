@@ -7,12 +7,15 @@ var should = require('should'),
   mongoose = require('mongoose'),
   User = mongoose.model('User'),
   Product = mongoose.model('Product'),
+  Favorite = mongoose.model('Favorite'),
   Review = mongoose.model('Review');
 
 /**
  * Globals
  */
 var user,
+  product,
+  favorite,
   review,
   product;
 
@@ -29,6 +32,10 @@ describe('Product Model Unit Tests:', function () {
       username: 'username',
       password: 'password'
     });
+    favorite = new Favorite({
+      user: user,
+      created: new Date()
+    });
 
     review = new Review({
       topic: 'Topic',
@@ -37,19 +44,23 @@ describe('Product Model Unit Tests:', function () {
     });
 
     user.save(function () {
-      product = new Product({
-        name: 'Product Name',
-        detail: 'Product Detail',
-        price: 100,
-        promotionprice: 80,
-        percentofdiscount: 20,
-        currency: '฿',
-        images: ['https://store.storeimages.cdn-apple.com/8750/as-images.apple.com/is/image/AppleInc/aos/published/images/i/ph/iphone7/black/iphone7-black-select-2016?wid=300&hei=300&fmt=png-alpha&qlt=95&.v=1472430037379', 'https://store.storeimages.cdn-apple.com/8750/as-images.apple.com/is/image/AppleInc/aos/published/images/i/ph/iphone7/rosegold/iphone7-rosegold-select-2016?wid=300&hei=300&fmt=png-alpha&qlt=95&.v=1472430205982'],
-        reviews: [review],
-        user: user
-      });
+      favorite.save(function () {
+        review.save(function () {
+          product = new Product({
+            name: 'Product Name',
+            detail: 'Product Detail',
+            price: 100,
+            promotionprice: 80,
+            percentofdiscount: 20,
+            currency: '฿',
+            images: ['https://store.storeimages.cdn-apple.com/8750/as-images.apple.com/is/image/AppleInc/aos/published/images/i/ph/iphone7/black/iphone7-black-select-2016?wid=300&hei=300&fmt=png-alpha&qlt=95&.v=1472430037379', 'https://store.storeimages.cdn-apple.com/8750/as-images.apple.com/is/image/AppleInc/aos/published/images/i/ph/iphone7/rosegold/iphone7-rosegold-select-2016?wid=300&hei=300&fmt=png-alpha&qlt=95&.v=1472430205982'],
+            reviews: [review],
+            user: user
+          });
 
-      done();
+          done();
+        });
+      });
     });
   });
 
@@ -93,8 +104,12 @@ describe('Product Model Unit Tests:', function () {
 
   afterEach(function (done) {
     Product.remove().exec(function () {
-      User.remove().exec(function () {
-        done();
+      Review.remove().exec(function () {
+        Favorite.remove().exec(function () {
+          User.remove().exec(function () {
+            done();
+          });
+        });
       });
     });
   });
