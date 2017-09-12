@@ -5,6 +5,7 @@
  */
 var mongoose = require('mongoose'),
   Schema = mongoose.Schema;
+
 var FavoriteSchema = new Schema({
   created: {
     type: Date,
@@ -61,6 +62,12 @@ var ProductSchema = new Schema({
     type: [{
       type: Schema.ObjectId,
       ref: 'Shipping'
+    }]
+  },
+  categories:{
+    type: [{
+      type: Schema.ObjectId,
+      ref: 'Category'
     }]
   },
   created: {

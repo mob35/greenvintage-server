@@ -22,6 +22,7 @@ module.exports = function (app) {
 
   app.route('/api/favoriteproductlist').all(productsPolicy.isAllowed)
     .get(products.getFavoriteList, products.cookingFavorite, products.favorites);
+  
   app.route('/api/products/review/:productId')
     .post(products.createReview, products.updateReviewProduct, products.productReview);
 

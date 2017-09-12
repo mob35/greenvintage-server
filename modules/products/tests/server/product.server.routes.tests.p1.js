@@ -7,6 +7,7 @@ var should = require('should'),
   User = mongoose.model('User'),
   Product = mongoose.model('Product'),
   Shipping = mongoose.model('Shipping'),
+  Category = mongoose.model('Category'),
   express = require(path.resolve('./config/lib/express'));
 
 /**
@@ -17,6 +18,7 @@ var app,
   credentials,
   user,
   shipping,
+  category,
   product;
 
 /**
@@ -56,21 +58,28 @@ describe('Product CRUD tests P1', function () {
       price: 0
     });
 
+    category = new Category({
+      name: 'แฟชั่น'
+    });
+
     // Save a user to the test db and create new Product
     user.save(function () {
       shipping.save(function () {
-        product = {
-          name: 'Product Name',
-          detail: 'Product Detail',
-          price: 100,
-          promotionprice: 80,
-          percentofdiscount: 20,
-          currency: '฿',
-          shippings: [shipping],
-          images: ['https://store.storeimages.cdn-apple.com/8750/as-images.apple.com/is/image/AppleInc/aos/published/images/i/ph/iphone7/black/iphone7-black-select-2016?wid=300&hei=300&fmt=png-alpha&qlt=95&.v=1472430037379', 'https://store.storeimages.cdn-apple.com/8750/as-images.apple.com/is/image/AppleInc/aos/published/images/i/ph/iphone7/rosegold/iphone7-rosegold-select-2016?wid=300&hei=300&fmt=png-alpha&qlt=95&.v=1472430205982']
-        };
+        category.save(function () {
+          product = {
+            name: 'Product Name',
+            detail: 'Product Detail',
+            price: 100,
+            promotionprice: 80,
+            percentofdiscount: 20,
+            currency: '฿',
+            shippings: [shipping],
+            categories: [category],
+            images: ['https://store.storeimages.cdn-apple.com/8750/as-images.apple.com/is/image/AppleInc/aos/published/images/i/ph/iphone7/black/iphone7-black-select-2016?wid=300&hei=300&fmt=png-alpha&qlt=95&.v=1472430037379', 'https://store.storeimages.cdn-apple.com/8750/as-images.apple.com/is/image/AppleInc/aos/published/images/i/ph/iphone7/rosegold/iphone7-rosegold-select-2016?wid=300&hei=300&fmt=png-alpha&qlt=95&.v=1472430205982']
+          };
 
-        done();
+          done();
+        });
       });
 
     });
@@ -112,6 +121,7 @@ describe('Product CRUD tests P1', function () {
             (product.images.length).should.match(product.images.length);
             (product.images[0]).should.match(product.images[0]);
             (product.images[1]).should.match(product.images[1]);
+            (product.categories).should.be.instanceof(Array).and.have.lengthOf(1);
 
             // Call the assertion callback
             done();
@@ -298,7 +308,9 @@ describe('Product CRUD tests P1', function () {
   afterEach(function (done) {
     User.remove().exec(function () {
       Shipping.remove().exec(function () {
-        Product.remove().exec(done);
+        Category.remove().exec(function(){
+          Product.remove().exec(done);
+        });
       });
     });
   });
