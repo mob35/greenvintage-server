@@ -130,7 +130,7 @@ exports.productByID = function (req, res, next, id) {
     });
   }
 
-  Product.findById(id).populate('user', 'displayName').exec(function (err, product) {
+  Product.findById(id).populate('user', 'displayName').populate('reviews').exec(function (err, product) {
     if (err) {
       return next(err);
     } else if (!product) {
