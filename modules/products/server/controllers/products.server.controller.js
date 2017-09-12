@@ -7,6 +7,7 @@ var path = require('path'),
   mongoose = require('mongoose'),
   Product = mongoose.model('Product'),
   Favorite = mongoose.model('Favorite'),
+  Review = mongoose.model('Review'),
   errorHandler = require(path.resolve('./modules/core/server/controllers/errors.server.controller')),
   _ = require('lodash');
 
@@ -142,6 +143,37 @@ exports.productByID = function (req, res, next, id) {
   });
 };
 
+exports.createReview = function (req, res, next) {
+  var review = new Review(req.body);
+  review.save(function (err) {
+    if (err) {
+      return res.status(400).send({
+        message: errorHandler.getErrorMessage(err)
+      });
+    } else {
+      req.review = review;
+      next();
+    }
+  });
+};
+
+exports.updateReviewProduct = function (req, res, next) {
+  req.product.reviews.push(req.review);
+  req.product.save(function (err) {
+    if (err) {
+      return res.status(400).send({
+        message: errorHandler.getErrorMessage(err)
+      });
+    } else {
+      next();
+    }
+  });
+};
+
+exports.productReview = function (req, res) {
+  res.jsonp(req.product);
+};
+
 exports.createFavorite = function (req, res, next) {
   var favorite = new Favorite(req.body);
   favorite.save(function (err) {
@@ -155,6 +187,7 @@ exports.createFavorite = function (req, res, next) {
     }
   });
 };
+
 exports.updateFavoriteProduct = function (req, res, next) {
   req.product.favorites.push(req.favorite);
   req.product.save(function (err) {
@@ -167,6 +200,7 @@ exports.updateFavoriteProduct = function (req, res, next) {
     }
   });
 };
+
 exports.getFavoriteList = function (req, res, next) {
   Product.find({}, '_id name images price promotionprice percentofdiscount currency favorites').sort('-created').populate('user', 'displayName').populate('favorites').exec(function (err, products) {
     if (err) {
@@ -175,8 +209,8 @@ exports.getFavoriteList = function (req, res, next) {
       });
     } else {
       var productlist = products.filter(function (obj) {
-        var favorite = obj.favorites.filter(function (obj2) { 
-          return obj2.user.toString() === req.user._id.toString(); 
+        var favorite = obj.favorites.filter(function (obj2) {
+          return obj2.user.toString() === req.user._id.toString();
         });
         return favorite.length > 0 === true;
       });
@@ -215,4 +249,3 @@ exports.favorites = function (req, res) {
     items: req.favoritelist
   });
 };
-

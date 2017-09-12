@@ -160,6 +160,65 @@ describe('Product CRUD tests P1', function () {
   });
 
 
+  it('should be able to save a Review Product if logged in', function (done) {
+    var productObj = new Product(product);
+    productObj.save(function () {
+      agent.post('/api/auth/signin')
+        .send(credentials)
+        .expect(200)
+        .end(function (signinErr, signinRes) {
+          // Handle signin error
+          if (signinErr) {
+            return done(signinErr);
+          }
+
+          // Get the userId
+          var userId = user.id;
+
+          var review = {
+            topic: 'Topic',
+            comment: 'Comment',
+            rate: 5
+          };
+
+          agent.post('/api/products/review/' + productObj.id)
+            .send(review)
+            .expect(200)
+            .end(function (reviewErr, reviewRes) {
+              // Handle signin error
+              if (reviewErr) {
+                return done(reviewErr);
+              }
+              agent.get('/api/products/' + productObj.id)
+                .send(review)
+                .expect(200)
+                .end(function (productErr, productRes) {
+                  // Handle signin error
+                  if (productErr) {
+                    return done(productErr);
+                  }
+                  var product = productRes.body;
+
+                  (product.reviews.length).should.match(1);
+                  (product.name).should.match(productObj.name); 
+                  (product.price).should.match(productObj.price); 
+                  (product.promotionprice).should.match(productObj.promotionprice); 
+                  (product.percentofdiscount).should.match(productObj.percentofdiscount); 
+                  (product.currency).should.match(productObj.currency); 
+                  
+                  done();
+
+                });
+            });
+
+
+        });
+    });
+
+  });
+
+
+
   afterEach(function (done) {
     User.remove().exec(function () {
       Product.remove().exec(done);
