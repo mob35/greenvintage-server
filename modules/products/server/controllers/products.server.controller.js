@@ -6,6 +6,7 @@
 var path = require('path'),
   mongoose = require('mongoose'),
   Product = mongoose.model('Product'),
+  Review = mongoose.model('Review'),
   errorHandler = require(path.resolve('./modules/core/server/controllers/errors.server.controller')),
   _ = require('lodash');
 
@@ -139,4 +140,36 @@ exports.productByID = function (req, res, next, id) {
     req.product = product;
     next();
   });
+};
+
+
+exports.createReview = function (req, res, next) {
+  var review = new Review(req.body);
+  review.save(function (err) {
+    if (err) {
+      return res.status(400).send({
+        message: errorHandler.getErrorMessage(err)
+      });
+    } else {
+      req.review = review;
+      next();
+    }
+  });
+};
+
+exports.updateReviewProduct = function (req, res, next) {
+  req.product.reviews.push(req.review);
+  req.product.save(function (err) {
+    if (err) {
+      return res.status(400).send({
+        message: errorHandler.getErrorMessage(err)
+      });
+    } else {
+      next();
+    }
+  });
+};
+
+exports.productReview = function (req, res) {
+  res.jsonp(req.product);
 };

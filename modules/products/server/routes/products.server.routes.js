@@ -17,6 +17,9 @@ module.exports = function (app) {
     .put(products.update)
     .delete(products.delete);
 
+  app.route('/api/products/review/:productId')
+    .post(products.createReview, products.updateReviewProduct, products.productReview);
+
   // Finish by binding the Product middleware
   app.param('productId', products.productByID);
 };
