@@ -75,6 +75,7 @@ describe('Product CRUD tests P1', function () {
             currency: '฿',
             shippings: [shipping],
             categories: [category],
+            cod: true,
             images: ['https://store.storeimages.cdn-apple.com/8750/as-images.apple.com/is/image/AppleInc/aos/published/images/i/ph/iphone7/black/iphone7-black-select-2016?wid=300&hei=300&fmt=png-alpha&qlt=95&.v=1472430037379', 'https://store.storeimages.cdn-apple.com/8750/as-images.apple.com/is/image/AppleInc/aos/published/images/i/ph/iphone7/rosegold/iphone7-rosegold-select-2016?wid=300&hei=300&fmt=png-alpha&qlt=95&.v=1472430205982']
           };
 
@@ -122,7 +123,7 @@ describe('Product CRUD tests P1', function () {
             (product.images[0]).should.match(product.images[0]);
             (product.images[1]).should.match(product.images[1]);
             (product.categories).should.be.instanceof(Array).and.have.lengthOf(1);
-
+            (product.cod).should.match(product.cod);
             // Call the assertion callback
             done();
           });

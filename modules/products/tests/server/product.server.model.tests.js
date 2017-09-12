@@ -74,6 +74,7 @@ describe('Product Model Unit Tests:', function () {
                 reviews: [review],
                 categories: [category],
                 shippings: [shipping],
+                cod: true,
                 user: user
               });
               done();

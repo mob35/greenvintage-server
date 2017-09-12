@@ -70,6 +70,10 @@ var ProductSchema = new Schema({
       ref: 'Category'
     }]
   },
+  cod: {
+    type: Boolean,
+    default: false
+  },
   created: {
     type: Date,
     default: Date.now
