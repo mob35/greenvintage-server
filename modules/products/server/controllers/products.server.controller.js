@@ -36,6 +36,16 @@ exports.read = function (req, res) {
   // convert mongoose document to JSON
   var product = req.product ? req.product.toJSON() : {};
   product.rate = 5;
+  var shippings = [];
+  if (product.shippings && product.shippings.length > 0) {
+    product.shippings.forEach(function (shipping) {
+      shippings.push({
+        _id: shipping._id,
+        name: shipping.name
+      });
+    });
+  }
+  product.shippings = shippings;
   // Add a custom field to the Article, for determining if the current User is the "owner".
   // NOTE: This field is NOT persisted to the database, since it doesn't exist in the Article model.
   product.isCurrentUserOwner = req.user && product.user && product.user._id.toString() === req.user._id.toString();
@@ -130,7 +140,7 @@ exports.productByID = function (req, res, next, id) {
     });
   }
 
-  Product.findById(id).populate('user', 'displayName').populate('reviews').exec(function (err, product) {
+  Product.findById(id).populate('user', 'displayName').populate('reviews').populate('shippings').exec(function (err, product) {
     if (err) {
       return next(err);
     } else if (!product) {

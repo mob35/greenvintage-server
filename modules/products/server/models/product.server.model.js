@@ -57,6 +57,12 @@ var ProductSchema = new Schema({
       ref: 'Review'
     }]
   },
+  shippings: {
+    type: [{
+      type: Schema.ObjectId,
+      ref: 'Shipping'
+    }]
+  },
   created: {
     type: Date,
     default: Date.now

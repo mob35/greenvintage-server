@@ -6,6 +6,7 @@ var should = require('should'),
   mongoose = require('mongoose'),
   User = mongoose.model('User'),
   Product = mongoose.model('Product'),
+  Shipping = mongoose.model('Shipping'),
   express = require(path.resolve('./config/lib/express'));
 
 /**
@@ -15,6 +16,7 @@ var app,
   agent,
   credentials,
   user,
+  shipping,
   product;
 
 /**
@@ -48,19 +50,29 @@ describe('Product CRUD tests P1', function () {
       provider: 'local'
     });
 
+    shipping = new Shipping({
+      name: 'EMS',
+      detail: 'EMS 7 Days',
+      price: 0
+    });
+
     // Save a user to the test db and create new Product
     user.save(function () {
-      product = {
-        name: 'Product Name',
-        detail: 'Product Detail',
-        price: 100,
-        promotionprice: 80,
-        percentofdiscount: 20,
-        currency: '฿',
-        images: ['https://store.storeimages.cdn-apple.com/8750/as-images.apple.com/is/image/AppleInc/aos/published/images/i/ph/iphone7/black/iphone7-black-select-2016?wid=300&hei=300&fmt=png-alpha&qlt=95&.v=1472430037379', 'https://store.storeimages.cdn-apple.com/8750/as-images.apple.com/is/image/AppleInc/aos/published/images/i/ph/iphone7/rosegold/iphone7-rosegold-select-2016?wid=300&hei=300&fmt=png-alpha&qlt=95&.v=1472430205982']
-      };
+      shipping.save(function () {
+        product = {
+          name: 'Product Name',
+          detail: 'Product Detail',
+          price: 100,
+          promotionprice: 80,
+          percentofdiscount: 20,
+          currency: '฿',
+          shippings: [shipping],
+          images: ['https://store.storeimages.cdn-apple.com/8750/as-images.apple.com/is/image/AppleInc/aos/published/images/i/ph/iphone7/black/iphone7-black-select-2016?wid=300&hei=300&fmt=png-alpha&qlt=95&.v=1472430037379', 'https://store.storeimages.cdn-apple.com/8750/as-images.apple.com/is/image/AppleInc/aos/published/images/i/ph/iphone7/rosegold/iphone7-rosegold-select-2016?wid=300&hei=300&fmt=png-alpha&qlt=95&.v=1472430205982']
+        };
 
-      done();
+        done();
+      });
+
     });
   });
 
@@ -200,13 +212,13 @@ describe('Product CRUD tests P1', function () {
                   var product = productRes.body;
 
                   (product.reviews.length).should.match(1);
-                  (product.name).should.match(productObj.name); 
-                  (product.price).should.match(productObj.price); 
-                  (product.promotionprice).should.match(productObj.promotionprice); 
-                  (product.percentofdiscount).should.match(productObj.percentofdiscount); 
-                  (product.currency).should.match(productObj.currency); 
-                  (product.rate).should.match(5); 
-                  
+                  (product.name).should.match(productObj.name);
+                  (product.price).should.match(productObj.price);
+                  (product.promotionprice).should.match(productObj.promotionprice);
+                  (product.percentofdiscount).should.match(productObj.percentofdiscount);
+                  (product.currency).should.match(productObj.currency);
+                  (product.rate).should.match(5);
+
                   done();
 
                 });
@@ -218,11 +230,76 @@ describe('Product CRUD tests P1', function () {
 
   });
 
+  it('should be able to get Product Detail if logged in', function (done) {
+    // var shippingObj = new Shipping({
+    //   name: 'EMS',
+    //   detail: 'EMS 7 Days',
+    //   price: 0
+    // });
+    // shippingObj.save(function () {
+
+    var productObj = new Product({
+      name: 'Product Name',
+      detail: 'Product Detail',
+      price: 100,
+      promotionprice: 80,
+      percentofdiscount: 20,
+      currency: '฿',
+      shippings: [shipping],
+      images: ['https://store.storeimages.cdn-apple.com/8750/as-images.apple.com/is/image/AppleInc/aos/published/images/i/ph/iphone7/black/iphone7-black-select-2016?wid=300&hei=300&fmt=png-alpha&qlt=95&.v=1472430037379', 'https://store.storeimages.cdn-apple.com/8750/as-images.apple.com/is/image/AppleInc/aos/published/images/i/ph/iphone7/rosegold/iphone7-rosegold-select-2016?wid=300&hei=300&fmt=png-alpha&qlt=95&.v=1472430205982']
+    });
+    // productObj.shippings.push(shippingObj);
+    productObj.save(function () {
+      agent.post('/api/auth/signin')
+        .send(credentials)
+        .expect(200)
+        .end(function (signinErr, signinRes) {
+          // Handle signin error
+          if (signinErr) {
+            return done(signinErr);
+          }
+
+          // Get the userId
+          var userId = user.id;
+
+
+          agent.get('/api/products/' + productObj.id)
+            .end(function (productErr, productRes) {
+              // Handle signin error
+              if (productErr) {
+                return done(productErr);
+              }
+              var product = productRes.body;
+
+              (product.name).should.match(productObj.name);
+              (product.price).should.match(productObj.price);
+              (product.promotionprice).should.match(productObj.promotionprice);
+              (product.percentofdiscount).should.match(productObj.percentofdiscount);
+              (product.currency).should.match(productObj.currency);
+              (product.rate).should.match(5);
+              (product.shippings.length).should.match(1);
+              (product.shippings[0]._id).should.match(shipping.id);
+              (product.shippings[0].name).should.match(shipping.name);
+
+              done();
+
+            });
+
+
+        });
+    });
+    // });
+
+
+  });
+
 
 
   afterEach(function (done) {
     User.remove().exec(function () {
-      Product.remove().exec(done);
+      Shipping.remove().exec(function () {
+        Product.remove().exec(done);
+      });
     });
   });
 });
