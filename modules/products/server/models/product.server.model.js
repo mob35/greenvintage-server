@@ -26,15 +26,21 @@ var ProductSchema = new Schema({
   promotionprice: {
     type: Number
   },
-  percentofdiscount:{
+  percentofdiscount: {
     type: Number
   },
   currency: {
     type: String
   },
-  images:{
+  images: {
     type: [String],
-    required: 'Please fill Product images'    
+    required: 'Please fill Product images'
+  },
+  reviews: {
+    type: [{
+      type: Schema.ObjectId,
+      ref: 'Review'
+    }]
   },
   created: {
     type: Date,
