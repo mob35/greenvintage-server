@@ -6,13 +6,16 @@
 var should = require('should'),
   mongoose = require('mongoose'),
   User = mongoose.model('User'),
-  Product = mongoose.model('Product');
+  Product = mongoose.model('Product'),
+  Favorite = mongoose.model('Favorite');
 
 /**
  * Globals
  */
 var user,
-  product;
+  product,
+  favorite;
+
 
 /**
  * Unit tests
@@ -27,20 +30,27 @@ describe('Product Model Unit Tests:', function () {
       username: 'username',
       password: 'password'
     });
-
+    favorite = new Favorite({
+      user: user,
+      created: new Date()
+    });
     user.save(function () {
-      product = new Product({
-        name: 'Product Name',
-        detail: 'Product Detail',
-        price: 100,
-        promotionprice: 80,
-        percentofdiscount: 20,
-        currency: '฿',
-        images: ['https://store.storeimages.cdn-apple.com/8750/as-images.apple.com/is/image/AppleInc/aos/published/images/i/ph/iphone7/black/iphone7-black-select-2016?wid=300&hei=300&fmt=png-alpha&qlt=95&.v=1472430037379', 'https://store.storeimages.cdn-apple.com/8750/as-images.apple.com/is/image/AppleInc/aos/published/images/i/ph/iphone7/rosegold/iphone7-rosegold-select-2016?wid=300&hei=300&fmt=png-alpha&qlt=95&.v=1472430205982'],
-        user: user
+      favorite.save(function () {
+        product = new Product({
+          name: 'Product Name',
+          detail: 'Product Detail',
+          price: 100,
+          promotionprice: 80,
+          percentofdiscount: 20,
+          currency: '฿',
+          images: ['https://store.storeimages.cdn-apple.com/8750/as-images.apple.com/is/image/AppleInc/aos/published/images/i/ph/iphone7/black/iphone7-black-select-2016?wid=300&hei=300&fmt=png-alpha&qlt=95&.v=1472430037379', 'https://store.storeimages.cdn-apple.com/8750/as-images.apple.com/is/image/AppleInc/aos/published/images/i/ph/iphone7/rosegold/iphone7-rosegold-select-2016?wid=300&hei=300&fmt=png-alpha&qlt=95&.v=1472430205982'],
+          user: user
+        });
+
+        done();
+
       });
 
-      done();
     });
   });
 

@@ -6,6 +6,7 @@
 var path = require('path'),
   mongoose = require('mongoose'),
   Product = mongoose.model('Product'),
+  Favorite = mongoose.model('Favorite'),
   errorHandler = require(path.resolve('./modules/core/server/controllers/errors.server.controller')),
   _ = require('lodash');
 
@@ -140,3 +141,30 @@ exports.productByID = function (req, res, next, id) {
     next();
   });
 };
+
+exports.createFavorite = function (req, res, next) {
+  var favorite = new Favorite(req.body);
+  favorite.save(function (err) {
+    if (err) {
+      return res.status(400).send({
+        message: errorHandler.getErrorMessage(err)
+      });
+    } else {
+      req.favorite = favorite;
+      next();
+    }
+  });
+};
+exports.updateFavoriteProduct = function (req, res, next) {
+  req.product.favorites.push(req.favorite);
+  req.product.save(function (err) {
+    if (err) {
+      return res.status(400).send({
+        message: errorHandler.getErrorMessage(err)
+      });
+    } else {
+      next();
+    }
+  });
+};
+

@@ -6,6 +6,7 @@ var should = require('should'),
     mongoose = require('mongoose'),
     User = mongoose.model('User'),
     Product = mongoose.model('Product'),
+    Favorite = mongoose.model('Favorite'),
     express = require(path.resolve('./config/lib/express'));
 
 /**
@@ -15,6 +16,7 @@ var app,
     agent,
     credentials,
     user,
+    favorite,
     product;
 
 /**
@@ -70,99 +72,105 @@ describe('Favorite Product Get list tests ', function () {
     // });
 
     it('should be able to save a Favorite Product if logged in', function (done) {
-        agent.post('/api/auth/signin')
-          .send(credentials)
-          .expect(200)
-          .end(function (signinErr, signinRes) {
-            // Handle signin error
-            if (signinErr) {
-              return done(signinErr);
-            }
-    
-            // Get the userId
-            var userId = user.id;
-    
-            // Save a new Favorite Product
-            agent.post('/api/products/favorite')
-              .send(product)
-              .expect(200)
-              .end(function (productSaveErr, productSaveRes) {
-                // Handle Product save error
-                if (productSaveErr) {
-                  return done(productSaveErr);
-                }
-                // Get Products list
-                var product = productSaveRes.body;
-    
-                // Set assertions
-                (product.user._id).should.equal(userId);
-                (product.name).should.match(product.name);
-                (product.detail).should.match(product.detail);
-                (product.price).should.match(product.price);
-                (product.promotionprice).should.match(product.promotionprice);
-                (product.percentofdiscount).should.match(product.percentofdiscount);
-                (product.currency).should.match(product.currency);
-                (product.images.length).should.match(product.images.length);
-                (product.images[0]).should.match(product.images[0]);
-                (product.images[1]).should.match(product.images[1]);
-    
-                // Call the assertion callback
-                done();
-              });
-          });
-      });
-    
-    
-      it('should be able to save a Favorite Product and get List Favorite Product if logged in', function (done) {
-        agent.post('/api/auth/signin')
-          .send(credentials)
-          .expect(200)
-          .end(function (signinErr, signinRes) {
-            // Handle signin error
-            if (signinErr) {
-              return done(signinErr);
-            }
-    
-            // Get the userId
-            var userId = user.id;
-    
-            // Save a new Product
-            agent.post('/api/products')
-              .send(product)
-              .expect(200)
-              .end(function (productSaveErr, productSaveRes) {
-                // Handle Product save error
-                if (productSaveErr) {
-                  return done(productSaveErr);
-                }
-    
-                // Get a list of Products
-                agent.get('/api/products')
-                  .end(function (productsGetErr, productsGetRes) {
-                    // Handle Products save error
-                    if (productsGetErr) {
-                      return done(productsGetErr);
+        var productObj = new Product(product);
+        productObj.save(function () {
+            agent.post('/api/auth/signin')
+                .send(credentials)
+                .expect(200)
+                .end(function (signinErr, signinRes) {
+                    // Handle signin error
+                    if (signinErr) {
+                        return done(signinErr);
                     }
-    
-                    // Get Products list
-                    var products = productsGetRes.body;
-    
-                    // Set assertions
-                    (products.title).should.equal('Product List');
-                    (products.items[0].name).should.match(product.name);
-                    (products.items[0].image).should.match(product.images[0]);
-                    (products.items[0].price).should.match(product.price);
-                    (products.items[0].promotionprice).should.match(product.promotionprice);
-                    (products.items[0].percentofdiscount).should.match(product.percentofdiscount);
-                    (products.items[0].currency).should.match(product.currency);
-                    (products.items[0].rate).should.match(5);
-    
-                    // Call the assertion callback
-                    done();
-                  });
-              });
-          });
-      });
+
+                    // Get the userId
+                    var userId = user.id;
+                    var favorite = {
+                        user: user,
+                        created: new Date()
+                    };
+                    // Save a new Favorite Product
+                    agent.post('/api/products/favorite/' + productObj.id)
+                        .send(favorite)
+                        .expect(200)
+                        .end(function (productSaveErr, productSaveRes) {
+                            // Handle Product save error
+                            if (productSaveErr) {
+                                return done(productSaveErr);
+                            }
+                            // Get Products list
+
+                            agent.get('/api/products/' + productObj.id)
+                                .end(function (productSaveErr, productSaveRes) {
+                                    // Handle Product save error
+                                    if (productSaveErr) {
+                                        return done(productSaveErr);
+                                    }
+                                    var product = productSaveRes.body;
+
+                                    // Set assertions
+                                   product.favorites.should.be.instanceof(Array).and.have.lengthOf(1);
+
+                                    // Call the assertion callback
+                                    done();
+                                });
+                        });
+                });
+        });
+    });
+
+
+
+    it('should be able to save a Favorite Product and get List Favorite Product if logged in', function (done) {
+        agent.post('/api/auth/signin')
+            .send(credentials)
+            .expect(200)
+            .end(function (signinErr, signinRes) {
+                // Handle signin error
+                if (signinErr) {
+                    return done(signinErr);
+                }
+
+                // Get the userId
+                var userId = user.id;
+
+                // Save a new Product
+                agent.post('/api/products')
+                    .send(product)
+                    .expect(200)
+                    .end(function (productSaveErr, productSaveRes) {
+                        // Handle Product save error
+                        if (productSaveErr) {
+                            return done(productSaveErr);
+                        }
+
+                        // Get a list of Products
+                        agent.get('/api/products')
+                            .end(function (productsGetErr, productsGetRes) {
+                                // Handle Products save error
+                                if (productsGetErr) {
+                                    return done(productsGetErr);
+                                }
+
+                                // Get Products list
+                                var products = productsGetRes.body;
+
+                                // Set assertions
+                                (products.title).should.equal('Product List');
+                                (products.items[0].name).should.match(product.name);
+                                (products.items[0].image).should.match(product.images[0]);
+                                (products.items[0].price).should.match(product.price);
+                                (products.items[0].promotionprice).should.match(product.promotionprice);
+                                (products.items[0].percentofdiscount).should.match(product.percentofdiscount);
+                                (products.items[0].currency).should.match(product.currency);
+                                (products.items[0].rate).should.match(5);
+
+                                // Call the assertion callback
+                                done();
+                            });
+                    });
+            });
+    });
     afterEach(function (done) {
         User.remove().exec(function () {
             Product.remove().exec(done);

@@ -5,7 +5,16 @@
  */
 var mongoose = require('mongoose'),
   Schema = mongoose.Schema;
-
+var FavoriteSchema = new Schema({
+  created: {
+    type: Date,
+    default: Date.now
+  },
+  user: {
+    type: Schema.ObjectId,
+    ref: 'User'
+  }
+});
 /**
  * Product Schema
  */
@@ -26,15 +35,21 @@ var ProductSchema = new Schema({
   promotionprice: {
     type: Number
   },
-  percentofdiscount:{
+  percentofdiscount: {
     type: Number
   },
   currency: {
     type: String
   },
-  images:{
+  images: {
     type: [String],
-    required: 'Please fill Product images'    
+    required: 'Please fill Product images'
+  },
+  favorites: {
+    type: [{
+      type: Schema.ObjectId,
+      ref: 'Favorite'
+    }]
   },
   created: {
     type: Date,
@@ -47,3 +62,4 @@ var ProductSchema = new Schema({
 });
 
 mongoose.model('Product', ProductSchema);
+mongoose.model('Favorite', FavoriteSchema);

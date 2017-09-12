@@ -17,6 +17,8 @@ module.exports = function (app) {
     .put(products.update)
     .delete(products.delete);
 
+  app.route('/api/products/favorite/:productId').all(productsPolicy.isAllowed)
+    .post(products.createFavorite, products.updateFavoriteProduct, products.read);
   // Finish by binding the Product middleware
   app.param('productId', products.productByID);
 };
