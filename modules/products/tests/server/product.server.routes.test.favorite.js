@@ -109,7 +109,7 @@ describe('Favorite Product Get list tests ', function () {
                                     var product = productSaveRes.body;
 
                                     // Set assertions
-                                   product.favorites.should.be.instanceof(Array).and.have.lengthOf(1);
+                                    product.favorites.should.be.instanceof(Array).and.have.lengthOf(1);
 
                                     // Call the assertion callback
                                     done();
@@ -119,33 +119,65 @@ describe('Favorite Product Get list tests ', function () {
         });
     });
 
+    it('should be able to save a Favorite Product if  not logged in', function (done) {
+        var productObj = new Product(product);
+        productObj.save(function () {
 
+
+            // Get the userId
+            var userId = user.id;
+            var favorite = {
+                user: user,
+                created: new Date()
+            };
+            // Save a new Favorite Product
+            agent.post('/api/products/favorite/' + productObj.id)
+                .send(favorite)
+                .expect(403)
+                .end(function (productSaveErr, productSaveRes) {
+                    // Handle Product save error
+                    if (productSaveErr) {
+                        return done(productSaveErr);
+                    }
+                    // Get Products list
+                    done(productSaveErr);
+                });
+        });
+
+    });
 
     it('should be able to save a Favorite Product and get List Favorite Product if logged in', function (done) {
-        agent.post('/api/auth/signin')
-            .send(credentials)
-            .expect(200)
-            .end(function (signinErr, signinRes) {
-                // Handle signin error
-                if (signinErr) {
-                    return done(signinErr);
-                }
+        var favorite = new Favorite({
+            user: user,
+            created: new Date()
+        });
 
-                // Get the userId
-                var userId = user.id;
-
-                // Save a new Product
-                agent.post('/api/products')
-                    .send(product)
+        favorite.save(function () {
+            var productObj = new Product({
+                name: 'Product Name',
+                detail: 'Product Detail',
+                price: 100,
+                promotionprice: 80,
+                percentofdiscount: 20,
+                currency: '฿',
+                user: user,
+                favorites: [favorite],
+                images: ['https://store.storeimages.cdn-apple.com/8750/as-images.apple.com/is/image/AppleInc/aos/published/images/i/ph/iphone7/black/iphone7-black-select-2016?wid=300&hei=300&fmt=png-alpha&qlt=95&.v=1472430037379', 'https://store.storeimages.cdn-apple.com/8750/as-images.apple.com/is/image/AppleInc/aos/published/images/i/ph/iphone7/rosegold/iphone7-rosegold-select-2016?wid=300&hei=300&fmt=png-alpha&qlt=95&.v=1472430205982']
+            });
+            productObj.save(function () {
+                agent.post('/api/auth/signin')
+                    .send(credentials)
                     .expect(200)
-                    .end(function (productSaveErr, productSaveRes) {
-                        // Handle Product save error
-                        if (productSaveErr) {
-                            return done(productSaveErr);
+                    .end(function (signinErr, signinRes) {
+                        // Handle signin error
+                        if (signinErr) {
+                            return done(signinErr);
                         }
 
+                        // Get the userId
+                        var userId = user.id;
                         // Get a list of Products
-                        agent.get('/api/products')
+                        agent.get('/api/favoriteproductlist')
                             .end(function (productsGetErr, productsGetRes) {
                                 // Handle Products save error
                                 if (productsGetErr) {
@@ -156,20 +188,15 @@ describe('Favorite Product Get list tests ', function () {
                                 var products = productsGetRes.body;
 
                                 // Set assertions
-                                (products.title).should.equal('Product List');
-                                (products.items[0].name).should.match(product.name);
-                                (products.items[0].image).should.match(product.images[0]);
-                                (products.items[0].price).should.match(product.price);
-                                (products.items[0].promotionprice).should.match(product.promotionprice);
-                                (products.items[0].percentofdiscount).should.match(product.percentofdiscount);
-                                (products.items[0].currency).should.match(product.currency);
-                                (products.items[0].rate).should.match(5);
+                                (products.title).should.equal('Favorite List');
+                                (products.items.length).should.match(1);
 
                                 // Call the assertion callback
                                 done();
                             });
                     });
             });
+        });
     });
     afterEach(function (done) {
         User.remove().exec(function () {
