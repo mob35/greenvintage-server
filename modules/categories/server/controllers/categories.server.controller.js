@@ -6,6 +6,7 @@
 var path = require('path'),
   mongoose = require('mongoose'),
   Category = mongoose.model('Category'),
+  Product = mongoose.model('Product'),
   errorHandler = require(path.resolve('./modules/core/server/controllers/errors.server.controller')),
   _ = require('lodash');
 
@@ -114,4 +115,73 @@ exports.categoryByID = function(req, res, next, id) {
     req.category = category;
     next();
   });
+};
+
+/**
+ * listOfProducts
+ */
+exports.listOfProducts = function(req,res,next){
+  Product.find().sort('-created').populate('categories','name').exec(function(err, products) {
+    if (err) {
+      return res.status(400).send({
+        message: errorHandler.getErrorMessage(err)
+      });
+    } else {
+      req.products = products;
+      next();
+    }
+  });
+};
+
+/**
+ * listOfCategoies
+ */
+exports.listOfCategoies = function(req,res,next){
+  Category.find().sort('-created').exec(function(err, categories) {
+    if (err) {
+      return res.status(400).send({
+        message: errorHandler.getErrorMessage(err)
+      });
+    } else {
+      req.categories = categories;
+      next();
+    }
+  });
+};
+
+/**
+ * cookingDataOfCategoies
+ */
+exports.cookingDataOfCategoies = function(req,res,next){
+  var categories = [];
+  var keys = [];
+  req.products.forEach(function(product){ 
+    product.categories.forEach(function(category){
+      if(keys.indexOf(category.name) === -1){
+        keys.push(category.name);
+        categories.push({
+          name : category.name,
+          popularproducts: [product],
+          bestseller:[product],
+          lastvisit : [product],
+          popularshops:[],
+          productvoucher:[],
+          shopvoucher:[]
+        });
+        
+      }else{
+        
+        categories[keys.indexOf(category.name)].popularproducts.push(product);
+      }
+    });
+  });
+  req.dataOfCategoies = categories;
+  next();
+};
+
+/**
+ * dataOfCategoies
+ */
+exports.dataOfCategoies = function(req,res){
+  res.jsonp(req.dataOfCategoies);
 };
