@@ -64,7 +64,7 @@ var ProductSchema = new Schema({
       ref: 'Shipping'
     }]
   },
-  categories:{
+  categories: {
     type: [{
       type: Schema.ObjectId,
       ref: 'Category'
@@ -73,6 +73,10 @@ var ProductSchema = new Schema({
   cod: {
     type: Boolean,
     default: false
+  },
+  shop: {
+    type: Schema.ObjectId,
+    ref: 'Shop'
   },
   created: {
     type: Date,

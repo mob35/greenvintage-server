@@ -172,7 +172,7 @@ exports.cookingDataOfCategoies = function(req,res,next){
           popularproducts: [productItem],
           bestseller:[productItem],
           lastvisit : [productItem],
-          popularshops:[],
+          popularshops:[product.shop],
           productvoucher:[],
           shopvoucher:[]
         });
@@ -180,6 +180,7 @@ exports.cookingDataOfCategoies = function(req,res,next){
       }else{
         
         categories[keys.indexOf(category.name)].popularproducts.push(productItem);
+        categories[keys.indexOf(category.name)].popularshops.push(product.shop);
       }
     });
   });

@@ -51,7 +51,13 @@ describe('Address CRUD tests', function () {
     // Save a user to the test db and create new Address
     user.save(function () {
       address = {
-        name: 'Address name'
+        firstname: 'Address firstname',
+        lastname: 'Address lastname',
+        address: 'Address address',
+        subdistrict: 'Address subdistrict',
+        district: 'Address district',
+        province: 'Address province',
+        postcode: 'Address postcode'
       };
 
       done();
@@ -94,7 +100,13 @@ describe('Address CRUD tests', function () {
 
                 // Set assertions
                 (addresses[0].user._id).should.equal(userId);
-                (addresses[0].name).should.match('Address name');
+                (addresses[0].firstname).should.match('Address firstname');
+                (addresses[0].lastname).should.match('Address lastname');
+                (addresses[0].address).should.match('Address address');
+                (addresses[0].subdistrict).should.match('Address subdistrict');
+                (addresses[0].district).should.match('Address district');
+                (addresses[0].province).should.match('Address province');
+                (addresses[0].postcode).should.match('Address postcode');
 
                 // Call the assertion callback
                 done();
@@ -113,9 +125,9 @@ describe('Address CRUD tests', function () {
       });
   });
 
-  it('should not be able to save an Address if no name is provided', function (done) {
-    // Invalidate name field
-    address.name = '';
+  it('should not be able to save an Address if no firstname is provided', function (done) {
+    // Invalidate firstname field
+    address.firstname = '';
 
     agent.post('/api/auth/signin')
       .send(credentials)
@@ -135,7 +147,7 @@ describe('Address CRUD tests', function () {
           .expect(400)
           .end(function (addressSaveErr, addressSaveRes) {
             // Set message assertion
-            (addressSaveRes.body.message).should.match('Please fill Address name');
+            (addressSaveRes.body.message).should.match('Please fill Address firstname');
 
             // Handle Address save error
             done(addressSaveErr);
@@ -167,7 +179,7 @@ describe('Address CRUD tests', function () {
             }
 
             // Update Address name
-            address.name = 'WHY YOU GOTTA BE SO MEAN?';
+            address.firstname = 'WHY YOU GOTTA BE SO MEAN?';
 
             // Update an existing Address
             agent.put('/api/addresses/' + addressSaveRes.body._id)
@@ -181,7 +193,7 @@ describe('Address CRUD tests', function () {
 
                 // Set assertions
                 (addressUpdateRes.body._id).should.equal(addressSaveRes.body._id);
-                (addressUpdateRes.body.name).should.match('WHY YOU GOTTA BE SO MEAN?');
+                (addressUpdateRes.body.firstname).should.match('WHY YOU GOTTA BE SO MEAN?');
 
                 // Call the assertion callback
                 done();
@@ -218,7 +230,7 @@ describe('Address CRUD tests', function () {
       request(app).get('/api/addresses/' + addressObj._id)
         .end(function (req, res) {
           // Set assertion
-          res.body.should.be.instanceof(Object).and.have.property('name', address.name);
+          res.body.should.be.instanceof(Object).and.have.property('firstname', address.firstname);
 
           // Call the assertion callback
           done();
@@ -363,7 +375,7 @@ describe('Address CRUD tests', function () {
               }
 
               // Set assertions on new Address
-              (addressSaveRes.body.name).should.equal(address.name);
+              (addressSaveRes.body.firstname).should.equal(address.firstname);
               should.exist(addressSaveRes.body.user);
               should.equal(addressSaveRes.body.user._id, orphanId);
 
@@ -390,7 +402,7 @@ describe('Address CRUD tests', function () {
 
                         // Set assertions
                         (addressInfoRes.body._id).should.equal(addressSaveRes.body._id);
-                        (addressInfoRes.body.name).should.equal(address.name);
+                        (addressInfoRes.body.firstname).should.equal(address.firstname);
                         should.equal(addressInfoRes.body.user, undefined);
 
                         // Call the assertion callback
