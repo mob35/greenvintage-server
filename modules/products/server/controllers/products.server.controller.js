@@ -34,18 +34,36 @@ exports.create = function (req, res) {
  */
 exports.read = function (req, res) {
   // convert mongoose document to JSON
-  var product = req.product ? req.product.toJSON() : {};
-  product.rate = 5;
+  var productDB = req.product ? req.product.toJSON() : {};
   var shippings = [];
-  if (product.shippings && product.shippings.length > 0) {
-    product.shippings.forEach(function (shipping) {
+  if (productDB.shippings && productDB.shippings.length > 0) {
+    productDB.shippings.forEach(function (shipping) {
       shippings.push({
         _id: shipping._id,
         name: shipping.name
       });
     });
   }
-  product.shippings = shippings;
+  var shop = {
+    name: productDB.shop ? productDB.shop.name : '',
+    rate: productDB.shop ? productDB.shop.rate : null
+  };
+  var product = {
+    _id: productDB._id,
+    name: productDB.name,
+    detail: productDB.detail,
+    price: productDB.price,
+    promotionprice: productDB.promotionprice,
+    percentofdiscount: productDB.percentofdiscount,
+    currency: productDB.currency,
+    images: productDB.images,
+    rate: 5,
+    favorites: productDB.favorites,
+    reviews: productDB.reviews,
+    shippings: shippings,
+    shop: shop,
+    otherproducts: []
+  };
   // Add a custom field to the Article, for determining if the current User is the "owner".
   // NOTE: This field is NOT persisted to the database, since it doesn't exist in the Article model.
   product.isCurrentUserOwner = req.user && product.user && product.user._id.toString() === req.user._id.toString();
@@ -140,7 +158,7 @@ exports.productByID = function (req, res, next, id) {
     });
   }
 
-  Product.findById(id).populate('user', 'displayName').populate('reviews').populate('shippings').exec(function (err, product) {
+  Product.findById(id).populate('user', 'displayName').populate('shop').populate('reviews').populate('shippings').exec(function (err, product) {
     if (err) {
       return next(err);
     } else if (!product) {

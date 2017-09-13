@@ -78,6 +78,10 @@ var ProductSchema = new Schema({
     type: Boolean,
     default: false
   },
+  shop: {
+    type: Schema.ObjectId,
+    ref: 'Shop'
+  },
   created: {
     type: Date,
     default: Date.now
