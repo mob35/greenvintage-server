@@ -8,6 +8,8 @@ var should = require('should'),
   Product = mongoose.model('Product'),
   Shipping = mongoose.model('Shipping'),
   Category = mongoose.model('Category'),
+  Review = mongoose.model('Review'),
+  Shop = mongoose.model('Shop'),
   express = require(path.resolve('./config/lib/express'));
 
 /**
@@ -19,6 +21,8 @@ var app,
   user,
   shipping,
   category,
+  shop,
+  review,
   product;
 
 /**
@@ -62,27 +66,51 @@ describe('Product CRUD tests P1', function () {
       name: 'แฟชั่น'
     });
 
+    shop = new Shop({
+      name: 'Shop Name',
+      detail: 'Shop Detail',
+      email: 'Shop Email',
+      image: 'https://www.onsite.org/assets/images/teaser/online-e-shop.jpg',
+      tel: '097654321',
+      map: {
+        lat: '13.933954',
+        long: '100.7157976'
+      },
+      reviews: [review],
+      user: user
+    });
+
+    review = new Review({
+      topic: 'Topic',
+      comment: 'Comment',
+      rate: 5
+    });
+
     // Save a user to the test db and create new Product
     user.save(function () {
       shipping.save(function () {
         category.save(function () {
-          product = {
-            name: 'Product Name',
-            detail: 'Product Detail',
-            price: 100,
-            promotionprice: 80,
-            percentofdiscount: 20,
-            currency: '฿',
-            shippings: [shipping],
-            categories: [category],
-            cod: true,
-            images: ['https://store.storeimages.cdn-apple.com/8750/as-images.apple.com/is/image/AppleInc/aos/published/images/i/ph/iphone7/black/iphone7-black-select-2016?wid=300&hei=300&fmt=png-alpha&qlt=95&.v=1472430037379', 'https://store.storeimages.cdn-apple.com/8750/as-images.apple.com/is/image/AppleInc/aos/published/images/i/ph/iphone7/rosegold/iphone7-rosegold-select-2016?wid=300&hei=300&fmt=png-alpha&qlt=95&.v=1472430205982']
-          };
+          review.save(function () {
+            shop.save(function () {
+              product = {
+                name: 'Product Name',
+                detail: 'Product Detail',
+                price: 100,
+                promotionprice: 80,
+                percentofdiscount: 20,
+                currency: '฿',
+                shippings: [shipping],
+                categories: [category],
+                cod: true,
+                shop: shop,
+                images: ['https://store.storeimages.cdn-apple.com/8750/as-images.apple.com/is/image/AppleInc/aos/published/images/i/ph/iphone7/black/iphone7-black-select-2016?wid=300&hei=300&fmt=png-alpha&qlt=95&.v=1472430037379', 'https://store.storeimages.cdn-apple.com/8750/as-images.apple.com/is/image/AppleInc/aos/published/images/i/ph/iphone7/rosegold/iphone7-rosegold-select-2016?wid=300&hei=300&fmt=png-alpha&qlt=95&.v=1472430205982']
+              };
 
-          done();
+              done();
+            });
+          });
         });
       });
-
     });
   });
 
@@ -124,6 +152,7 @@ describe('Product CRUD tests P1', function () {
             (product.images[1]).should.match(product.images[1]);
             (product.categories).should.be.instanceof(Array).and.have.lengthOf(1);
             (product.cod).should.match(product.cod);
+            (product.shop).should.match(shop.id);
             // Call the assertion callback
             done();
           });
@@ -257,6 +286,7 @@ describe('Product CRUD tests P1', function () {
       percentofdiscount: 20,
       currency: '฿',
       shippings: [shipping],
+      shop: shop,
       images: ['https://store.storeimages.cdn-apple.com/8750/as-images.apple.com/is/image/AppleInc/aos/published/images/i/ph/iphone7/black/iphone7-black-select-2016?wid=300&hei=300&fmt=png-alpha&qlt=95&.v=1472430037379', 'https://store.storeimages.cdn-apple.com/8750/as-images.apple.com/is/image/AppleInc/aos/published/images/i/ph/iphone7/rosegold/iphone7-rosegold-select-2016?wid=300&hei=300&fmt=png-alpha&qlt=95&.v=1472430205982']
     });
     // productObj.shippings.push(shippingObj);
@@ -291,7 +321,8 @@ describe('Product CRUD tests P1', function () {
               (product.shippings.length).should.match(1);
               (product.shippings[0]._id).should.match(shipping.id);
               (product.shippings[0].name).should.match(shipping.name);
-
+              (product.shop.name).should.match(shop.name);         
+              
               done();
 
             });
@@ -309,8 +340,12 @@ describe('Product CRUD tests P1', function () {
   afterEach(function (done) {
     User.remove().exec(function () {
       Shipping.remove().exec(function () {
-        Category.remove().exec(function(){
-          Product.remove().exec(done);
+        Category.remove().exec(function () {
+          Review.remove().exec(function () {
+            Shop.remove().exec(function () {
+              Product.remove().exec(done);
+            });
+          });
         });
       });
     });
