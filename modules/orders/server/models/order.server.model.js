@@ -16,6 +16,10 @@ var OrderSchema = new Schema({
     required: 'Please fill Order name',
     trim: true
   },
+  shipping: {
+    type: Schema.ObjectId,
+    ref: 'Address'
+  },
   created: {
     type: Date,
     default: Date.now

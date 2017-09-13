@@ -51,9 +51,109 @@ describe('Order CRUD tests', function () {
     // Save a user to the test db and create new Order
     user.save(function () {
       order = {
-        name: 'Order name'
+        name:'Order name',
+        shipping: {
+          address: '90',
+          district: 'ลำลูกกา',
+          postcode: '12150',
+          province: 'ปทุมธานี',
+          subdistrict: 'ลำลูกกา',
+          firstname: 'amonrat',
+          lastname: 'chantawon',
+          tel: '0934524524'
+        },
+        items: [
+          {
+            product: {
+              _id: '1',
+              name: 'Crossfit WorldWide Event',
+              image: 'https://images-eu.ssl-images-amazon.com/images/G/02/AMAZON-FASHION/2016/SHOES/SPORT/MISC/Nikemobilefootball',
+              price: 20000,
+              promotionprice: 18000,
+              percentofdiscount: 10,
+              currency: 'THB',
+              shop: {
+                name: 'Shop name'
+              },
+              shippings: [
+                {
+                  shipping: {
+                    detail: 'วันอังคาร, 1 - วัน อังคาร, 2 ส.ค. 2017 ฟรี',
+                    name: 'ส่งแบบส่งด่วน',
+                    price: 0
+                  }
+                },
+                {
+                  shipping: {
+                    detail: 'วันอังคาร, 1 - วัน อังคาร, 2 ส.ค. 2017 ฟรี',
+                    name: 'ส่งแบบธรรมดา',
+                    price: 0
+                  }
+                }
+              ]
+            },
+            qty: 1,
+            amount: 20000,
+            delivery: {
+              detail: 'วันอังคาร, 1 - วัน อังคาร, 2 ส.ค. 2017 ฟรี',
+              name: 'ส่งแบบส่งด่วน',
+              price: 0
+            },
+            price: 20000,
+            discount: 2000,
+            afterdiscount: 18000
+          },
+          {
+            product: {
+              _id: '2',
+              name: 'US Open',
+              image: 'http://www.9digits.com/wp-content/uploads/2016/01/Nike-Air-Zoom-Pegasus-31-Mens-Running-Shoe-652925_801_C_PREM.jpg',
+              price: 10000,
+              currency: 'THB',
+              shop: {
+                name: 'Shop name'
+              },
+              shippings: [
+                {
+                  shipping: {
+                    detail: 'วันอังคาร, 1 - วัน อังคาร, 2 ส.ค. 2017 ฟรี',
+                    name: 'ส่งแบบส่งด่วน',
+                    price: 0
+                  }
+                },
+                {
+                  shipping: {
+                    detail: 'วันอังคาร, 1 - วัน อังคาร, 2 ส.ค. 2017 ฟรี',
+                    name: 'ส่งแบบธรรมดา',
+                    price: 0
+                  }
+                }
+              ]
+            },
+            qty: 1,
+            amount: 20000,
+            delivery: {
+              detail: 'วันอังคาร, 1 - วัน อังคาร, 2 ส.ค. 2017 ฟรี',
+              name: 'ส่งแบบส่งด่วน',
+              price: 0
+            },
+            price: 20000,
+            discount: 2000,
+            afterdiscount: 18000
+          }
+        ],
+        payment: {
+          paymenttype: 'credit',
+          creditno: '3333333333333333',
+          creditname: 'test',
+          expdate: '21/02/2002',
+          creditcvc: '333'
+        },
+        amount: 30000,
+        discount: 2000,
+        totalamount: 28000,
+        tran: 0
       };
-
       done();
     });
   });
