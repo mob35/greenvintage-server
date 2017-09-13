@@ -8,7 +8,7 @@ var productsPolicy = require('../policies/products.server.policy'),
 
 module.exports = function (app) {
   // Products Routes
-  app.route('/api/products')//.all(productsPolicy.isAllowed)
+  app.route('/api/products').all(productsPolicy.isAllowed)
     .get(products.getProductList, products.cookingProductList, products.list)
     .post(products.create);
 
@@ -17,7 +17,7 @@ module.exports = function (app) {
     .put(products.update)
     .delete(products.delete);
 
-  app.route('/api/products/favorite/:productId')//.all(productsPolicy.isAllowed)
+  app.route('/api/products/favorite/:productId').all(productsPolicy.isAllowed)
     .post(products.createFavorite, products.updateFavoriteProduct, products.read);
 
   app.route('/api/favoriteproductlist').all(productsPolicy.isAllowed)
