@@ -156,14 +156,22 @@ exports.cookingDataOfCategoies = function(req,res,next){
   var categories = [];
   var keys = [];
   req.products.forEach(function(product){ 
+    var productItem = {
+      _id: product._id,
+      name: product.name,
+      image: product.images && product.images.length > 0 ? product.images[0] : '',
+      price: product.promotionprice,
+      rate:5,
+      detail: product.detail
+    };
     product.categories.forEach(function(category){
       if(keys.indexOf(category.name) === -1){
         keys.push(category.name);
         categories.push({
           name : category.name,
-          popularproducts: [product],
-          bestseller:[product],
-          lastvisit : [product],
+          popularproducts: [productItem],
+          bestseller:[productItem],
+          lastvisit : [productItem],
           popularshops:[],
           productvoucher:[],
           shopvoucher:[]
@@ -171,7 +179,7 @@ exports.cookingDataOfCategoies = function(req,res,next){
         
       }else{
         
-        categories[keys.indexOf(category.name)].popularproducts.push(product);
+        categories[keys.indexOf(category.name)].popularproducts.push(productItem);
       }
     });
   });
@@ -183,5 +191,7 @@ exports.cookingDataOfCategoies = function(req,res,next){
  * dataOfCategoies
  */
 exports.dataOfCategoies = function(req,res){
-  res.jsonp(req.dataOfCategoies);
+  res.jsonp({
+    categories : req.dataOfCategoies
+  });
 };

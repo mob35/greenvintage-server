@@ -90,12 +90,12 @@ describe('Category Of Home tests', function () {
       var categories = categoriesGetRes.body;
 
       // Set assertions
-      (categories.length).should.equal(1);
-      (categories[0].name).should.equal(category.name);
-      (categories[0].popularproducts.length).should.equal(1);
-      (categories[0].bestseller.length).should.equal(1);
-      (categories[0].lastvisit.length).should.equal(1);
-      (categories[0].popularshops.length).should.equal(0);
+      (categories.categories.length).should.equal(1);
+      (categories.categories[0].name).should.equal(category.name);
+      (categories.categories[0].popularproducts.length).should.equal(1);
+      (categories.categories[0].bestseller.length).should.equal(1);
+      (categories.categories[0].lastvisit.length).should.equal(1);
+      (categories.categories[0].popularshops.length).should.equal(0);
       
       // Call the assertion callback
       done();
