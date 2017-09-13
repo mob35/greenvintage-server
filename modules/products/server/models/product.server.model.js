@@ -14,6 +14,10 @@ var FavoriteSchema = new Schema({
   user: {
     type: Schema.ObjectId,
     ref: 'User'
+  },
+  userproduct: {
+    type: String,
+    unique: 'Favorite is already'
   }
 });
 /**
@@ -64,7 +68,7 @@ var ProductSchema = new Schema({
       ref: 'Shipping'
     }]
   },
-  categories:{
+  categories: {
     type: [{
       type: Schema.ObjectId,
       ref: 'Category'

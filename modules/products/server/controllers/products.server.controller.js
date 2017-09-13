@@ -186,6 +186,7 @@ exports.productReview = function (req, res) {
 
 exports.createFavorite = function (req, res, next) {
   var favorite = new Favorite(req.body);
+  favorite.userproduct = favorite.user + '-'+req.product._id;
   favorite.save(function (err) {
     if (err) {
       return res.status(400).send({
