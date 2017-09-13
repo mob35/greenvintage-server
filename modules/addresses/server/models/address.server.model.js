@@ -10,11 +10,40 @@ var mongoose = require('mongoose'),
  * Address Schema
  */
 var AddressSchema = new Schema({
-  name: {
+  firstname: {
     type: String,
     default: '',
-    required: 'Please fill Address name',
-    trim: true
+    required: 'Please fill Address firstname',
+  },
+  lastname: {
+    type: String,
+    default: '',
+    required: 'Please fill Address lastname',
+  },
+  address: {
+    type: String,
+    default: '',
+    required: 'Please fill Address address',
+  },
+  subdistrict: {
+    type: String,
+    default: '',
+    required: 'Please fill Address subdistrict',
+  },
+  district: {
+    type: String,
+    default: '',
+    required: 'Please fill Address district',
+  },
+  province: {
+    type: String,
+    default: '',
+    required: 'Please fill Address province',
+  },
+  postcode: {
+    type: String,
+    default: '',
+    required: 'Please fill Address postcode',
   },
   created: {
     type: Date,
