@@ -237,13 +237,13 @@ exports.getFavoriteList = function (req, res, next) {
         message: errorHandler.getErrorMessage(err)
       });
     } else {
-      var productlist = products.filter(function (obj) {
-        var favorite = obj.favorites.filter(function (obj2) {
-          return obj2.user.toString() === req.user._id.toString();
-        });
-        return favorite.length > 0 === true;
-      });
-      req.productsfavorite = productlist;
+      // var productlist = products.filter(function (obj) {
+      //   var favorite = obj.favorites.filter(function (obj2) {
+      //     return obj2.user.toString() === req.user._id.toString();
+      //   });
+      //   return favorite.length > 0 === true;
+      // });
+      req.productsfavorite = products;
       next();
     }
   });
