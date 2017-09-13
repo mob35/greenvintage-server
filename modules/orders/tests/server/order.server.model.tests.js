@@ -108,7 +108,7 @@ describe('Order Model Unit Tests:', function () {
             payment.save(function () {
               product.save(function () {
                 order = new Order({
-                  name: 'Order name',
+                  // name: 'Order name',
                   shipping: address,
                   items: product,
                   payment: payment,
@@ -137,14 +137,14 @@ describe('Order Model Unit Tests:', function () {
       });
     });
 
-    it('should be able to show an error when try to save without name', function (done) {
-      order.name = '';
+    // it('should be able to show an error when try to save without name', function (done) {
+    //   order.name = '';
 
-      return order.save(function (err) {
-        should.exist(err);
-        done();
-      });
-    });
+    //   return order.save(function (err) {
+    //     should.exist(err);
+    //     done();
+    //   });
+    // });
     it('should be able to show an error when try to save without shipping', function (done) {
       order.shipping = null;
 

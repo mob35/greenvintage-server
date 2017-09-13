@@ -17,12 +17,12 @@ var PaymentSchema = new Schema({
  * Order Schema
  */
 var OrderSchema = new Schema({
-  name: {
-    type: String,
-    default: '',
-    required: 'Please fill Order name',
-    trim: true
-  },
+  // name: {
+  //   type: String,
+  //   default: '',
+  //   required: 'Please fill Order name',
+  //   trim: true
+  // },
   shipping: {
     required: 'Please fill Order shipping',
     type: Schema.ObjectId,
