@@ -7,6 +7,7 @@ var should = require('should'),
   User = mongoose.model('User'),
   Category = mongoose.model('Category'),
   Product = mongoose.model('Product'),
+  Shop = mongoose.model('Shop'),
   express = require(path.resolve('./config/lib/express'));
 
 /**
@@ -17,6 +18,7 @@ var app,
   credentials,
   user,
   category,
+  shop,
   product;
 
 /**
@@ -66,12 +68,28 @@ describe('Category Of Home tests', function () {
       images: ['https://store.storeimages.cdn-apple.com/8750/as-images.apple.com/is/image/AppleInc/aos/published/images/i/ph/iphone7/black/iphone7-black-select-2016?wid=300&hei=300&fmt=png-alpha&qlt=95&.v=1472430037379', 'https://store.storeimages.cdn-apple.com/8750/as-images.apple.com/is/image/AppleInc/aos/published/images/i/ph/iphone7/rosegold/iphone7-rosegold-select-2016?wid=300&hei=300&fmt=png-alpha&qlt=95&.v=1472430205982']
     });
 
+    shop = new Shop({
+      name: 'Shop Name',
+      detail: 'Shop Detail',
+      email: 'Shop Email',
+      image: 'https://www.onsite.org/assets/images/teaser/online-e-shop.jpg',
+      tel: '097654321',
+      map: {
+        lat: '13.933954',
+        long: '100.7157976'
+      },
+      user: user
+    });
+
     // Save a user to the test db and create new Category
     user.save(function () {
-      category.user=user;
-      category.save(function(){
-        product.save(function(){
-          done();
+      category.user = user;
+      category.save(function () {
+        shop.save(function () {
+          product.shop = shop;
+          product.save(function () {
+            done();
+          });
         });
       });
     });
@@ -80,33 +98,35 @@ describe('Category Of Home tests', function () {
   it('should be able to get home data of categories', function (done) {
     // Get a list of Categories
     agent.get('/api/dataofcategories')
-    .end(function (categoriesGetErr, categoriesGetRes) {
-      // Handle Categories save error
-      if (categoriesGetErr) {
-        return done(categoriesGetErr);
-      }
+      .end(function (categoriesGetErr, categoriesGetRes) {
+        // Handle Categories save error
+        if (categoriesGetErr) {
+          return done(categoriesGetErr);
+        }
 
-      // Get Categories list
-      var categories = categoriesGetRes.body;
+        // Get Categories list
+        var categories = categoriesGetRes.body;
 
-      // Set assertions
-      (categories.categories.length).should.equal(1);
-      (categories.categories[0].name).should.equal(category.name);
-      (categories.categories[0].popularproducts.length).should.equal(1);
-      (categories.categories[0].bestseller.length).should.equal(1);
-      (categories.categories[0].lastvisit.length).should.equal(1);
-      (categories.categories[0].popularshops.length).should.equal(0);
-      
-      // Call the assertion callback
-      done();
-    });
+        // Set assertions
+        (categories.categories.length).should.equal(1);
+        (categories.categories[0].name).should.equal(category.name);
+        (categories.categories[0].popularproducts.length).should.equal(1);
+        (categories.categories[0].bestseller.length).should.equal(1);
+        (categories.categories[0].lastvisit.length).should.equal(1);
+        (categories.categories[0].popularshops.length).should.equal(1);
+
+        // Call the assertion callback
+        done();
+      });
   });
 
 
   afterEach(function (done) {
     User.remove().exec(function () {
-      Category.remove().exec(function(){
-        Product.remove().exec(done);
+      Category.remove().exec(function () {
+        Shop.remove().exec(function () {
+          Product.remove().exec(done);
+        });
       });
     });
   });
