@@ -25,6 +25,11 @@ var ShippingSchema = new Schema({
     default: 0,
     required: 'Please fill Shipping price'        
   },
+  duedate:{
+    type: Number,
+    default: 1,
+    required: 'Please fill Shipping price'        
+  },
   created: {
     type: Date,
     default: Date.now

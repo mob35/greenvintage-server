@@ -53,7 +53,8 @@ describe('Shipping CRUD tests', function () {
       shipping = {
         name: 'Shipping Name',
         detail: 'Shipping Detail',
-        price: 30
+        price: 30,
+        duedate: 2
       };
 
       done();

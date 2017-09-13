@@ -33,6 +33,7 @@ describe('Shipping Model Unit Tests:', function () {
         name: 'Shipping Name',
         detail: 'Shipping Detail',
         price: 30,
+        duedate: 3,
         user: user
       });
 
