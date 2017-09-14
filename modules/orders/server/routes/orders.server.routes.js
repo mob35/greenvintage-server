@@ -8,7 +8,7 @@ var ordersPolicy = require('../policies/orders.server.policy'),
 
 module.exports = function(app) {
   // Orders Routes
-  app.route('/api/orders').all(ordersPolicy.isAllowed)
+  app.route('/api/orders')//.all(ordersPolicy.isAllowed)
     .get(orders.list)
     .post(orders.create);
 
