@@ -8,6 +8,7 @@ var path = require('path'),
   Cart = mongoose.model('Cart'),
   Product = mongoose.model('Product'),
   Shop = mongoose.model('Shop'),
+  Shipping = mongoose.model('Shipping'),
   errorHandler = require(path.resolve('./modules/core/server/controllers/errors.server.controller')),
   _ = require('lodash');
 
@@ -57,22 +58,16 @@ exports.create = function (req, res, next) {
           path: 'items.product'
         }, function (err, cart) {
           Shop.populate(cart, { path: 'items.product.shop' }, function (err, cartpopshop) {
-            req.cart = cartpopshop;
-            next();
-          })
+            Shipping.populate(cartpopshop, { path: 'items.product.shipping' }, function (err, cartpopshipping) {
+              req.cart = cartpopshipping;
+              next();
+            });
+          });
         });
       }
     });
   }
 };
-
-// populate: [{
-//   path: 'shop',
-//   model: 'Shop'
-// }, {
-//   path: 'shippings',
-//   model: 'Shipping'
-// }]
 
 /**
  * Update a Cart
@@ -93,9 +88,11 @@ exports.update = function (req, res, next) {
           path: 'items.product'
         }, function (err, cart) {
           Shop.populate(cart, { path: 'items.product.shop' }, function (err, cartpopshop) {
-            req.cart = cartpopshop;
-            next();
-          })
+            Shipping.populate(cartpopshop, { path: 'items.product.shipping' }, function (err, cartpopshipping) {
+              req.cart = cartpopshipping;
+              next();
+            });
+          });
         });
       }
     });
