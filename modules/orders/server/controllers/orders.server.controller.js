@@ -15,7 +15,6 @@ var path = require('path'),
 exports.create = function(req, res) {
   var order = new Order(req.body);
   order.user = req.user;
-
   order.save(function(err) {
     if (err) {
       return res.status(400).send({
@@ -81,7 +80,7 @@ exports.delete = function(req, res) {
  * List of Orders
  */
 exports.list = function(req, res) {
-  Order.find().sort('-created').populate('user', 'displayName').exec(function(err, orders) {
+  Order.find().sort('-created').populate('user', 'displayName').populate('shipping').populate('payment').exec(function(err, orders) {
     if (err) {
       return res.status(400).send({
         message: errorHandler.getErrorMessage(err)

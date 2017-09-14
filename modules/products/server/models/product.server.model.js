@@ -14,6 +14,10 @@ var FavoriteSchema = new Schema({
   user: {
     type: Schema.ObjectId,
     ref: 'User'
+  },
+  userproduct: {
+    type: String,
+    unique: 'Favorite is already'
   }
 });
 /**

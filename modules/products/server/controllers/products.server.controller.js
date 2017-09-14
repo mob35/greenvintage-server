@@ -204,6 +204,7 @@ exports.productReview = function (req, res) {
 
 exports.createFavorite = function (req, res, next) {
   var favorite = new Favorite(req.body);
+  favorite.userproduct = favorite.user + '-' + req.product._id;
   favorite.save(function (err) {
     if (err) {
       return res.status(400).send({
@@ -230,7 +231,8 @@ exports.updateFavoriteProduct = function (req, res, next) {
 };
 
 exports.getFavoriteList = function (req, res, next) {
-  Product.find({}, '_id name images price promotionprice percentofdiscount currency favorites').sort('-created').populate('user', 'displayName').populate('favorites').exec(function (err, products) {
+  // console.log(req.user._id);
+  Product.find({ }).sort('-created').populate('user', 'displayName').populate('favorites').exec(function (err, products) {
     if (err) {
       return res.status(400).send({
         message: errorHandler.getErrorMessage(err)
