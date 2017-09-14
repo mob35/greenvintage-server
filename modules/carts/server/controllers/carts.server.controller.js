@@ -88,11 +88,13 @@ exports.update = function (req, res, next) {
           message: errorHandler.getErrorMessage(err)
         });
       } else {
-        Product.populate(cartUpdate, {
+        Product.populate(cartCreate, {
           path: 'items.product'
         }, function (err, cart) {
-          req.cart = cart;
-          next();
+          Shop.populate(cart, { path: 'items.product.shop' }, function (err, cartpopshop) {
+            req.cart = cartpopshop;
+            next();
+          })
         });
       }
     });
