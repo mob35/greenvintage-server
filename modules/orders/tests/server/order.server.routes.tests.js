@@ -10,6 +10,7 @@ var should = require('should'),
   Product = mongoose.model('Product'),
   Shipping = mongoose.model('Shipping'),
   Shop = mongoose.model('Shop'),
+  Cart = mongoose.model('Cart'),
   express = require(path.resolve('./config/lib/express'));
 
 /**
@@ -23,6 +24,7 @@ var app,
   address,
   product,
   shipping,
+  cart,
   shop;
 
 /**
@@ -113,11 +115,26 @@ describe('Order CRUD tests', function () {
       tel: '0934524524'
     });
 
+    cart = new Cart({
+      items: {
+        product: product[0],
+        qty: 1,
+        amount: 100,
+        discount: 20,
+        totalamount: 80
+      },
+      amount: 100,
+      discount: 20,
+      totalamount: 80,
+      user: user
+    });
+
     // Save a user to the test db and create new Order
     user.save(function () {
       address.save(function () {
         shipping.save(function () {
           shop.save(function () {
+
             order = {
               // name: 'Order name',
               shipping: address,
@@ -149,7 +166,21 @@ describe('Order CRUD tests', function () {
     });
   });
 
-  it('should be able to save a Order if logged in', function (done) {
+  it('should be able to save a Order if logged in and delete carts', function (done) {
+    var cartObj = new Cart({
+      items: {
+        product: product[0],
+        qty: 1,
+        amount: 100,
+        discount: 20,
+        totalamount: 80
+      },
+      amount: 100,
+      discount: 20,
+      totalamount: 80,
+      user: user
+    });
+    cartObj.save();
     agent.post('/api/auth/signin')
       .send(credentials)
       .expect(200)
@@ -162,51 +193,77 @@ describe('Order CRUD tests', function () {
         // Get the userId
         var userId = user.id;
 
-        // Save a new Order
-        agent.post('/api/orders')
-          .send(order)
-          .expect(200)
-          .end(function (orderSaveErr, orderSaveRes) {
-            // Handle Order save error
-            if (orderSaveErr) {
-              return done(orderSaveErr);
+        agent.get('/api/carts')
+          .end(function (cartsGetErr, cartsGetRes) {
+            // Handle Orders save error
+            if (cartsGetErr) {
+              return done(cartsGetErr);
             }
 
-            // Get a list of Orders
-            agent.get('/api/orders')
-              .end(function (ordersGetErr, ordersGetRes) {
-                // Handle Orders save error
-                if (ordersGetErr) {
-                  return done(ordersGetErr);
+            var carts = cartsGetRes.body;
+
+            // Set assertions
+            (carts.length).should.equal(1);
+
+            // Save a new Order
+            agent.post('/api/orders')
+              .send(order)
+              .expect(200)
+              .end(function (orderSaveErr, orderSaveRes) {
+                // Handle Order save error
+                if (orderSaveErr) {
+                  return done(orderSaveErr);
                 }
 
-                // Get Orders list
-                var orders = ordersGetRes.body;
+                agent.get('/api/carts')
+                  .end(function (cartssGetErr, cartssGetRes) {
+                    // Handle Orders save error
+                    if (cartssGetErr) {
+                      return done(cartssGetErr);
+                    }
 
-                // Set assertions
-                (orders[0].user._id).should.equal(userId);
-                // (orders[0].name).should.match('Order name');
-                (orders[0].shipping.address).should.match('90');
-                (orders[0].shipping.district).should.match('ลำลูกกา');
-                (orders[0].shipping.firstname).should.match('amonrat');
-                (orders[0].shipping.lastname).should.match('chantawon');
-                (orders[0].shipping.postcode).should.match('12150');
-                (orders[0].shipping.province).should.match('ปทุมธานี');
-                (orders[0].shipping.subdistrict).should.match('ลำลูกกา');
-                (orders[0].items.length).should.match(1);
-                (orders[0].items[0].qty).should.match(1);
-                (orders[0].items[0].amount).should.match(20000);
-                (orders[0].items[0].delivery.detail).should.match('วันอังคาร, 1 - วัน อังคาร, 2 ส.ค. 2017 ฟรี');
-                (orders[0].items[0].delivery.name).should.match('ส่งแบบส่งด่วน');
-                (orders[0].items[0].delivery.price).should.match(0);
-                (orders[0].items[0].discount).should.match(2000);
-                (orders[0].items[0].totalamount).should.match(18000);
-                (orders[0].amount).should.match(30000);
-                (orders[0].discount).should.match(2000);
-                (orders[0].totalamount).should.match(28000);
-                (orders[0].deliveryprice).should.match(0);
-                // Call the assertion callback
-                done();
+                    var cartss = cartssGetRes.body;
+
+                    // Set assertions
+                    (cartss.length).should.equal(0);
+
+                    // Get a list of Orders
+                    agent.get('/api/orders')
+                      .end(function (ordersGetErr, ordersGetRes) {
+                        // Handle Orders save error
+                        if (ordersGetErr) {
+                          return done(ordersGetErr);
+                        }
+
+                        // Get Orders list
+                        var orders = ordersGetRes.body;
+
+                        // Set assertions
+                        (orders[0].user._id).should.equal(userId);
+                        // (orders[0].name).should.match('Order name');
+                        (orders[0].shipping.address).should.match('90');
+                        (orders[0].shipping.district).should.match('ลำลูกกา');
+                        (orders[0].shipping.firstname).should.match('amonrat');
+                        (orders[0].shipping.lastname).should.match('chantawon');
+                        (orders[0].shipping.postcode).should.match('12150');
+                        (orders[0].shipping.province).should.match('ปทุมธานี');
+                        (orders[0].shipping.subdistrict).should.match('ลำลูกกา');
+                        (orders[0].items.length).should.match(1);
+                        (orders[0].items[0].qty).should.match(1);
+                        (orders[0].items[0].amount).should.match(20000);
+                        (orders[0].items[0].delivery.detail).should.match('วันอังคาร, 1 - วัน อังคาร, 2 ส.ค. 2017 ฟรี');
+                        (orders[0].items[0].delivery.name).should.match('ส่งแบบส่งด่วน');
+                        (orders[0].items[0].delivery.price).should.match(0);
+                        (orders[0].items[0].discount).should.match(2000);
+                        (orders[0].items[0].totalamount).should.match(18000);
+                        (orders[0].amount).should.match(30000);
+                        (orders[0].discount).should.match(2000);
+                        (orders[0].totalamount).should.match(28000);
+                        (orders[0].deliveryprice).should.match(0);
+                        // Call the assertion callback
+                        done();
+                      });
+                  });
               });
           });
       });
@@ -517,7 +574,9 @@ describe('Order CRUD tests', function () {
       Shipping.remove().exec(function () {
         Address.remove().exec(function () {
           Shop.remove().exec(function () {
-            Order.remove().exec(done);
+            Cart.remove().exec(function () {
+              Order.remove().exec(done);
+            });
           });
         });
       });

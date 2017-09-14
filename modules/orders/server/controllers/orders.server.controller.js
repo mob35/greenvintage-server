@@ -6,13 +6,14 @@
 var path = require('path'),
   mongoose = require('mongoose'),
   Order = mongoose.model('Order'),
+  Cart = mongoose.model('Cart'),
   errorHandler = require(path.resolve('./modules/core/server/controllers/errors.server.controller')),
   _ = require('lodash');
 
 /**
  * Create a Order
  */
-exports.create = function (req, res) {
+exports.create = function (req, res, next) {
   var order = new Order(req.body);
   if (req.user && req.user !== undefined) {
     order.user = req.user;
@@ -23,9 +24,58 @@ exports.create = function (req, res) {
         message: errorHandler.getErrorMessage(err)
       });
     } else {
-      res.jsonp(order);
+      req.order = order;
+      next();
     }
   });
+};
+
+exports.findCart = function (req, res, next) {
+  var filter = {};
+  if (req.user && req.user !== undefined) {
+    filter = { user: { _id: req.user._id } };
+  } else {
+    filter = { user: { _id: req.order.user } };
+  }
+  Cart.find(filter).sort('-created').populate('user', 'displayName').exec(function (err, carts) {
+    if (err) {
+      return res.status(400).send({
+        message: errorHandler.getErrorMessage(err)
+      });
+    } else {
+      if (carts && carts.length > 0) {
+        req.cartId = carts[0]._id;
+        next();
+      } else {
+        next();
+      }
+    }
+  });
+};
+
+exports.clearCart = function (req, res) {
+  if (req.cartId && req.cartId !== undefined) {
+    Cart.findById(req.cartId).populate('user', 'displayName').exec(function (err, cart) {
+      if (err) {
+        return res.status(400).send({
+          message: errorHandler.getErrorMessage(err)
+        });
+      } else {
+        cart.remove(function (err2) {
+          if (err2) {
+            return res.status(400).send({
+              message: errorHandler.getErrorMessage(err2)
+            });
+          } else {
+            res.jsonp(req.order);
+          }
+        });
+      }
+    });
+  } else {
+    res.jsonp(req.order);
+  }
+
 };
 
 /**

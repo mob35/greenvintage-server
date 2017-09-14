@@ -6,11 +6,11 @@
 var ordersPolicy = require('../policies/orders.server.policy'),
   orders = require('../controllers/orders.server.controller');
 
-module.exports = function(app) {
+module.exports = function (app) {
   // Orders Routes
   app.route('/api/orders')//.all(ordersPolicy.isAllowed)
     .get(orders.list)
-    .post(orders.create);
+    .post(orders.create, orders.findCart, orders.clearCart);
 
   app.route('/api/orders/:orderId').all(ordersPolicy.isAllowed)
     .get(orders.read)
