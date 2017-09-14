@@ -102,9 +102,16 @@ exports.cartByUserID = function (req, res, next, userId) {
     path: 'items',
     populate: {
       path: 'product',
-      model: 'Product'
+      model: 'Product',
+      populate: [{
+        path: 'shop',
+        model: 'Shop'
+      }, {
+        path: 'shippings',
+        model: 'Shipping'
+      }]
     }
-  }).populate('user', 'displayName').populate('shop').populate('shippings').exec(function (err, carts) {
+  }).populate('user', 'displayName').exec(function (err, carts) {
     if (err) {
       return res.status(400).send({
         message: errorHandler.getErrorMessage(err)
