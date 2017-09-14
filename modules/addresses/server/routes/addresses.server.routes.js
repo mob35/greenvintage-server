@@ -8,7 +8,7 @@ var addressesPolicy = require('../policies/addresses.server.policy'),
 
 module.exports = function (app) {
   // Addresses Routes
-  app.route('/api/addresses').all(addressesPolicy.isAllowed)
+  app.route('/api/addresses')//.all(addressesPolicy.isAllowed)
     .get(addresses.list)
     .post(addresses.create);
 
