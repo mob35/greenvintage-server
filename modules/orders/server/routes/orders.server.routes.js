@@ -12,6 +12,11 @@ module.exports = function (app) {
     .get(orders.list)
     .post(orders.create, orders.findCart, orders.clearCart);
 
+
+  app.route('/api/getordersbyshop').all(ordersPolicy.isAllowed)
+    .get(orders.listordershop);
+
+
   app.route('/api/orders/:orderId').all(ordersPolicy.isAllowed)
     .get(orders.read)
     .put(orders.update)

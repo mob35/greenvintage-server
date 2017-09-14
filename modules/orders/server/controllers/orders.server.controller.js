@@ -144,6 +144,22 @@ exports.list = function (req, res) {
 };
 
 /**
+ * List of Orders Shop
+ */
+exports.listordershop = function (req, res) {
+  // { items: { product: { shop: _id } } }
+  Order.find({ },"items.product").sort('-created').populate('user', 'displayName').populate('shipping').populate('payment').populate('items.product').exec(function (err, orders) {
+    if (err) {
+      return res.status(400).send({
+        message: errorHandler.getErrorMessage(err)
+      });
+    } else {
+      res.jsonp(orders);
+    }
+  });
+};
+
+/**
  * Order middleware
  */
 exports.orderByID = function (req, res, next, id) {
