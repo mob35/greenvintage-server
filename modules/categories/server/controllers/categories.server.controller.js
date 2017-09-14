@@ -13,11 +13,11 @@ var path = require('path'),
 /**
  * Create a Category
  */
-exports.create = function(req, res) {
+exports.create = function (req, res) {
   var category = new Category(req.body);
   category.user = req.user;
 
-  category.save(function(err) {
+  category.save(function (err) {
     if (err) {
       return res.status(400).send({
         message: errorHandler.getErrorMessage(err)
@@ -31,7 +31,7 @@ exports.create = function(req, res) {
 /**
  * Show the current Category
  */
-exports.read = function(req, res) {
+exports.read = function (req, res) {
   // convert mongoose document to JSON
   var category = req.category ? req.category.toJSON() : {};
 
@@ -45,12 +45,12 @@ exports.read = function(req, res) {
 /**
  * Update a Category
  */
-exports.update = function(req, res) {
+exports.update = function (req, res) {
   var category = req.category;
 
   category = _.extend(category, req.body);
 
-  category.save(function(err) {
+  category.save(function (err) {
     if (err) {
       return res.status(400).send({
         message: errorHandler.getErrorMessage(err)
@@ -64,10 +64,10 @@ exports.update = function(req, res) {
 /**
  * Delete an Category
  */
-exports.delete = function(req, res) {
+exports.delete = function (req, res) {
   var category = req.category;
 
-  category.remove(function(err) {
+  category.remove(function (err) {
     if (err) {
       return res.status(400).send({
         message: errorHandler.getErrorMessage(err)
@@ -81,8 +81,8 @@ exports.delete = function(req, res) {
 /**
  * List of Categories
  */
-exports.list = function(req, res) {
-  Category.find().sort('-created').populate('user', 'displayName').exec(function(err, categories) {
+exports.list = function (req, res) {
+  Category.find().sort('-created').populate('user', 'displayName').exec(function (err, categories) {
     if (err) {
       return res.status(400).send({
         message: errorHandler.getErrorMessage(err)
@@ -96,7 +96,7 @@ exports.list = function(req, res) {
 /**
  * Category middleware
  */
-exports.categoryByID = function(req, res, next, id) {
+exports.categoryByID = function (req, res, next, id) {
 
   if (!mongoose.Types.ObjectId.isValid(id)) {
     return res.status(400).send({
@@ -120,8 +120,8 @@ exports.categoryByID = function(req, res, next, id) {
 /**
  * listOfProducts
  */
-exports.listOfProducts = function(req,res,next){
-  Product.find().sort('-created').populate('categories','name').exec(function(err, products) {
+exports.listOfProducts = function (req, res, next) {
+  Product.find().sort('-created').populate('categories', 'name').exec(function (err, products) {
     if (err) {
       return res.status(400).send({
         message: errorHandler.getErrorMessage(err)
@@ -136,8 +136,8 @@ exports.listOfProducts = function(req,res,next){
 /**
  * listOfCategoies
  */
-exports.listOfCategoies = function(req,res,next){
-  Category.find().sort('-created').exec(function(err, categories) {
+exports.listOfCategoies = function (req, res, next) {
+  Category.find().sort('-created').exec(function (err, categories) {
     if (err) {
       return res.status(400).send({
         message: errorHandler.getErrorMessage(err)
@@ -152,33 +152,36 @@ exports.listOfCategoies = function(req,res,next){
 /**
  * cookingDataOfCategoies
  */
-exports.cookingDataOfCategoies = function(req,res,next){
+exports.cookingDataOfCategoies = function (req, res, next) {
   var categories = [];
   var keys = [];
-  req.products.forEach(function(product){ 
+  req.products.forEach(function (product) {
     var productItem = {
       _id: product._id,
       name: product.name,
       image: product.images && product.images.length > 0 ? product.images[0] : '',
-      price: product.promotionprice,
-      rate:5,
+      price: product.price || 0,
+      promotionprice: product.promotionprice || 0,
+      percentofdiscount: product.percentofdiscount || 0,
+      currency: product.currency,
+      rate: 5,
       detail: product.detail
     };
-    product.categories.forEach(function(category){
-      if(keys.indexOf(category.name) === -1){
+    product.categories.forEach(function (category) {
+      if (keys.indexOf(category.name) === -1) {
         keys.push(category.name);
         categories.push({
-          name : category.name,
+          name: category.name,
           popularproducts: [productItem],
-          bestseller:[productItem],
-          lastvisit : [productItem],
-          popularshops:[product.shop],
-          productvoucher:[],
-          shopvoucher:[]
+          bestseller: [productItem],
+          lastvisit: [productItem],
+          popularshops: [product.shop],
+          productvoucher: [],
+          shopvoucher: []
         });
-        
-      }else{
-        
+
+      } else {
+
         categories[keys.indexOf(category.name)].popularproducts.push(productItem);
         categories[keys.indexOf(category.name)].popularshops.push(product.shop);
       }
@@ -191,8 +194,8 @@ exports.cookingDataOfCategoies = function(req,res,next){
 /**
  * dataOfCategoies
  */
-exports.dataOfCategoies = function(req,res){
+exports.dataOfCategoies = function (req, res) {
   res.jsonp({
-    categories : req.dataOfCategoies
+    categories: req.dataOfCategoies
   });
 };
