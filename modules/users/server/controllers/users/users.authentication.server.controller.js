@@ -7,6 +7,7 @@ var path = require('path'),
   errorHandler = require(path.resolve('./modules/core/server/controllers/errors.server.controller')),
   mongoose = require('mongoose'),
   passport = require('passport'),
+  Shop = mongoose.model('Shop'),
   User = mongoose.model('User');
 
 // URLs for which user can't be redirected on signin
@@ -68,17 +69,40 @@ exports.signin = function (req, res, next) {
         if (err) {
           res.status(400).send(err);
         } else {
-          // if (user.shop && user.shop !== undefined) {
-          //   Shopmaster.populate(user, { path: 'shop' }, function (err, users) {
-          //     res.json(users);
-          //   });
-          // } else {
-          res.json(user);
-          // }
+          res.user = user;
+          next();
         }
       });
     }
   })(req, res, next);
+};
+
+/**
+ * signin with owner shop
+ */
+exports.singninShops = function(req, res){
+  Shop.find({user: req.user}, 'name image _id').sort('-created').exec(function (err, shops) {
+    if (err) {
+      return res.status(400).send({
+        message: errorHandler.getErrorMessage(err)
+      });
+    } else {
+     
+      res.json({
+      _id: req.user._id,
+      created: req.user.created,
+      displayName: req.user.displayName,
+      email: req.user.email,
+      firstName: req.user.firstName,
+      lastName: req.user.lastName,
+      profileImageURL: req.user.profileImageURL,
+      provider: req.user.provider,
+      roles: req.user.roles,
+      username: 'username',
+      shops: shops
+    });
+    }
+  });
 };
 
 /**
