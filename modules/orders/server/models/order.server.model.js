@@ -31,6 +31,11 @@ var OrderSchema = new Schema({
         name: String,
         price: Number
       },
+      status: {
+        type: String,
+        enum: ['waiting', 'accept', 'reject', 'sent', 'unreceived', 'received', 'complete', 'return'],
+        default: 'waiting'
+      },
       qty: Number,
       amount: Number,
       discount: Number,
@@ -65,6 +70,11 @@ var OrderSchema = new Schema({
   },
   discountcode: {
     type: String
+  },
+  status: {
+    type: String,
+    enum: ['confirm', 'paid', 'prepare', 'deliver', 'complete', 'cancel'],
+    default: 'confirm'
   },
   created: {
     type: Date,
