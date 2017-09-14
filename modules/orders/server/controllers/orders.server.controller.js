@@ -148,7 +148,7 @@ exports.list = function (req, res) {
  */
 exports.listordershop = function (req, res) {
   // { items: { product: { shop: _id } } }
-  Order.find({ },"items.product").sort('-created').populate('user', 'displayName').populate('shipping').populate('payment').populate('items.product').exec(function (err, orders) {
+  Order.find({ },"items.product.shop").sort('-created').populate('user', 'displayName').populate('shipping').populate('payment').populate('items.product').exec(function (err, orders) {
     if (err) {
       return res.status(400).send({
         message: errorHandler.getErrorMessage(err)
