@@ -58,7 +58,7 @@ exports.create = function (req, res, next) {
           path: 'items.product'
         }, function (err, cart) {
           Shop.populate(cart, { path: 'items.product.shop' }, function (err, cartpopshop) {
-            Shipping.populate(cartpopshop, { path: 'items.product.shipping' }, function (err, cartpopshipping) {
+            Shipping.populate(cartpopshop, { path: 'items.product.shippings' }, function (err, cartpopshipping) {
               req.cart = cartpopshipping;
               next();
             });
@@ -88,7 +88,7 @@ exports.update = function (req, res, next) {
           path: 'items.product'
         }, function (err, cart) {
           Shop.populate(cart, { path: 'items.product.shop' }, function (err, cartpopshop) {
-            Shipping.populate(cartpopshop, { path: 'items.product.shipping' }, function (err, cartpopshipping) {
+            Shipping.populate(cartpopshop, { path: 'items.product.shippings' }, function (err, cartpopshipping) {
               req.cart = cartpopshipping;
               next();
             });
