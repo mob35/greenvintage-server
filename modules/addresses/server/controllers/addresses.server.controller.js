@@ -4,20 +4,22 @@
  * Module dependencies.
  */
 var path = require('path'),
-  mongoose = require('mongoose'),
-  Address = mongoose.model('Address'),
-  errorHandler = require(path.resolve('./modules/core/server/controllers/errors.server.controller')),
-  _ = require('lodash');
+    mongoose = require('mongoose'),
+    Address = mongoose.model('Address'),
+    errorHandler = require(path.resolve('./modules/core/server/controllers/errors.server.controller')),
+    _ = require('lodash');
 
 
 /**
  * Create a Address
  */
-exports.create = function(req, res) {
+exports.create = function (req, res) {
     var address = new Address(req.body);
-    address.user = req.user;
+    if (req.user && req.user !== undefined) {
+        address.user = req.user;
+    }
 
-    address.save(function(err) {
+    address.save(function (err) {
         if (err) {
             return res.status(400).send({
                 message: errorHandler.getErrorMessage(err)
@@ -31,7 +33,7 @@ exports.create = function(req, res) {
 /**
  * Show the current Address
  */
-exports.read = function(req, res) {
+exports.read = function (req, res) {
     // convert mongoose document to JSON
     var address = req.address ? req.address.toJSON() : {};
 
@@ -45,12 +47,12 @@ exports.read = function(req, res) {
 /**
  * Update a Address
  */
-exports.update = function(req, res) {
+exports.update = function (req, res) {
     var address = req.address;
 
     address = _.extend(address, req.body);
 
-    address.save(function(err) {
+    address.save(function (err) {
         if (err) {
             return res.status(400).send({
                 message: errorHandler.getErrorMessage(err)
@@ -64,10 +66,10 @@ exports.update = function(req, res) {
 /**
  * Delete an Address
  */
-exports.delete = function(req, res) {
+exports.delete = function (req, res) {
     var address = req.address;
 
-    address.remove(function(err) {
+    address.remove(function (err) {
         if (err) {
             return res.status(400).send({
                 message: errorHandler.getErrorMessage(err)
@@ -81,8 +83,8 @@ exports.delete = function(req, res) {
 /**
  * List of Addresses
  */
-exports.list = function(req, res) {
-    Address.find().sort('-created').populate('user', 'displayName').exec(function(err, addresses) {
+exports.list = function (req, res) {
+    Address.find().sort('-created').populate('user', 'displayName').exec(function (err, addresses) {
         if (err) {
             return res.status(400).send({
                 message: errorHandler.getErrorMessage(err)
@@ -98,7 +100,7 @@ exports.list = function(req, res) {
 /**
  * Address middleware
  */
-exports.addressByID = function(req, res, next, id) {
+exports.addressByID = function (req, res, next, id) {
 
     if (!mongoose.Types.ObjectId.isValid(id)) {
         return res.status(400).send({
@@ -106,7 +108,7 @@ exports.addressByID = function(req, res, next, id) {
         });
     }
 
-    Address.findById(id).populate('user', 'displayName').exec(function(err, address) {
+    Address.findById(id).populate('user', 'displayName').exec(function (err, address) {
         if (err) {
             return next(err);
         } else if (!address) {
@@ -116,5 +118,31 @@ exports.addressByID = function(req, res, next, id) {
         }
         req.address = address;
         next();
+    });
+};
+
+exports.addressUserId = function (req, res, next, id) {
+    req.userId = id;
+    next();
+};
+exports.listbyuser = function (req, res) {
+    var filter = {};
+    if (req.userId && req.userId !== undefined) {
+        filter = { user: { _id: req.userId } };
+    } else {
+        res.jsonp({
+            address: []
+        });
+    }
+    Address.find(filter).sort('-created').populate('user', 'displayName').exec(function (err, addresses) {
+        if (err) {
+            return res.status(400).send({
+                message: errorHandler.getErrorMessage(err)
+            });
+        } else {
+            res.jsonp({
+                address: addresses
+            });
+        }
     });
 };

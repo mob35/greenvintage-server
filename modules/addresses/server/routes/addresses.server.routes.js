@@ -6,7 +6,7 @@
 var addressesPolicy = require('../policies/addresses.server.policy'),
   addresses = require('../controllers/addresses.server.controller');
 
-module.exports = function(app) {
+module.exports = function (app) {
   // Addresses Routes
   app.route('/api/addresses').all(addressesPolicy.isAllowed)
     .get(addresses.list)
@@ -17,6 +17,10 @@ module.exports = function(app) {
     .put(addresses.update)
     .delete(addresses.delete);
 
+  app.route('/api/addressbyuser/:userId').all(addressesPolicy.isAllowed)
+    .get(addresses.listbyuser);
+
   // Finish by binding the Address middleware
   app.param('addressId', addresses.addressByID);
+  app.param('userId', addresses.addressUserId);
 };
