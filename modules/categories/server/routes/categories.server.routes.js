@@ -8,7 +8,7 @@ var categoriesPolicy = require('../policies/categories.server.policy'),
 
 module.exports = function (app) {
   // Categories Routes
-  app.route('/api/categories').all(categoriesPolicy.isAllowed)
+  app.route('/api/categories')//.all(categoriesPolicy.isAllowed)
     .get(categories.list)
     .post(categories.create);
 
