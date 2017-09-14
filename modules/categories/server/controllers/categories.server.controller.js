@@ -121,7 +121,7 @@ exports.categoryByID = function (req, res, next, id) {
  * listOfProducts
  */
 exports.listOfProducts = function (req, res, next) {
-  Product.find().sort('-created').populate('categories', 'name').exec(function (err, products) {
+  Product.find().sort('-created').populate('categories', 'name').populate('shop').exec(function (err, products) {
     if (err) {
       return res.status(400).send({
         message: errorHandler.getErrorMessage(err)
