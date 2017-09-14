@@ -79,6 +79,10 @@ describe('Get Order Shop CRUD tests', function () {
     category = new Category({
       name: 'แฟชั่น'
     });
+    shop = new Shop({
+      name: 'Shop name',
+      user: user
+    });
     product = new Product({
       name: 'Product Name',
       detail: 'Product Detail',
@@ -91,10 +95,6 @@ describe('Get Order Shop CRUD tests', function () {
       cod: true,
       shop: shop,
       images: ['https://store.storeimages.cdn-apple.com/8750/as-images.apple.com/is/image/AppleInc/aos/published/images/i/ph/iphone7/black/iphone7-black-select-2016?wid=300&hei=300&fmt=png-alpha&qlt=95&.v=1472430037379', 'https://store.storeimages.cdn-apple.com/8750/as-images.apple.com/is/image/AppleInc/aos/published/images/i/ph/iphone7/rosegold/iphone7-rosegold-select-2016?wid=300&hei=300&fmt=png-alpha&qlt=95&.v=1472430205982']
-    });
-
-    shop = new Shop({
-      name: 'Shop name'
     });
 
     address = new Address({
@@ -192,8 +192,20 @@ describe('Get Order Shop CRUD tests', function () {
                 // Get Orders list
                 var orders = ordersGetRes.body;
                 //(orders[0].user._id).should.equal(userId);
-                (orders[0]).should.match('');
-                // (orders[0].status).should.match('confirm');
+                //(orders[0].order_id).should.match(orderSaveRes._id);
+                // (orders[0].item_id).should.match(order.items[0]._id);
+                //(orders[0]).should.ha
+                orders.waiting.should.be.instanceof(Array).and.have.lengthOf(1);
+                orders.accept.should.be.instanceof(Array).and.have.lengthOf(0);
+                orders.sent.should.be.instanceof(Array).and.have.lengthOf(0);
+                orders.return.should.be.instanceof(Array).and.have.lengthOf(0);
+
+                (orders.waiting[0].name).should.match('Product Name');
+                (orders.waiting[0].price).should.match(20000);
+                (orders.waiting[0].qty).should.match(1);
+                (orders.waiting[0].rate).should.match(5);
+                (orders.waiting[0].status).should.match('waiting');
+                // (orders.shops).should.match('');
                 done();
               });
           });

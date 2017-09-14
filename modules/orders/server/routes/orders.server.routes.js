@@ -14,7 +14,7 @@ module.exports = function (app) {
 
 
   app.route('/api/getordersbyshop').all(ordersPolicy.isAllowed)
-    .get(orders.listordershop);
+    .get(orders.listshops, orders.listordershop, orders.cookinglistordershop);
 
 
   app.route('/api/orders/:orderId').all(ordersPolicy.isAllowed)

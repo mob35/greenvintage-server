@@ -7,6 +7,7 @@ var path = require('path'),
   mongoose = require('mongoose'),
   Order = mongoose.model('Order'),
   Cart = mongoose.model('Cart'),
+  Shop = mongoose.model('Shop'),
   errorHandler = require(path.resolve('./modules/core/server/controllers/errors.server.controller')),
   _ = require('lodash');
 
@@ -146,15 +147,118 @@ exports.list = function (req, res) {
 /**
  * List of Orders Shop
  */
-exports.listordershop = function (req, res) {
+exports.listordershop = function (req, res, next) {
   // { items: { product: { shop: _id } } }
-  Order.find({ },"items.product.shop").sort('-created').populate('user', 'displayName').populate('shipping').populate('payment').populate('items.product').exec(function (err, orders) {
+  Order.find({}, "shipping items._id items.amount items.qty items.status  items.product").sort('-created')
+    .populate('shipping')
+    .populate('payment')
+    .populate('items.product').exec(function (err, orders) {
+      if (err) {
+        return res.status(400).send({
+          message: errorHandler.getErrorMessage(err)
+        });
+      } else {
+        // res.jsonp(orders);
+        req.productorders = orders;
+        next();
+      }
+    });
+};
+
+/**
+ * Cooking List Order Shop
+ */
+exports.cookinglistordershop = function (req, res) {
+  var waiting = [];
+  var accept = [];
+  var sent = [];
+  var _return = [];
+
+ // req.shops.forEach(function (shop) {
+    req.productorders.forEach(function (ord) {
+      ord.items.forEach(function (itm) {
+        // if (itm.shop._id.toString() === shop._id.toString() || true) {
+          switch (itm.status) {
+            case 'waiting':
+              waiting.push({
+                order_id: ord._id,
+                item_id: itm._id,
+                name: itm.product.name,
+                price: itm.amount / itm.qty,
+                qty: itm.qty,
+                rate: 5,
+                image: itm.product.images ? itm.product.images[0] : '',
+                status: itm.status
+              });
+              break;
+            case 'accept':
+              accept.push({
+                order_id: ord._id,
+                item_id: itm._id,
+                name: itm.product.name,
+                price: itm.amount / itm.qty,
+                qty: itm.qty,
+                rate: 5,
+                image: itm.product.images ? itm.product.images[0] : '',
+                status: itm.status
+              });
+              break;
+            case 'sent':
+              sent.push({
+                order_id: ord._id,
+                item_id: itm._id,
+                name: itm.product.name,
+                price: itm.amount / itm.qty,
+                qty: itm.qty,
+                rate: 5,
+                image: itm.product.images ? itm.product.images[0] : '',
+                status: itm.status
+              });
+              break;
+            case 'return':
+              _return.push({
+                order_id: ord._id,
+                item_id: itm._id,
+                name: itm.product.name,
+                price: itm.amount / itm.qty,
+                qty: itm.qty,
+                rate: 5,
+                image: itm.product.images ? itm.product.images[0] : '',
+                status: itm.status
+              });
+              break;
+          }
+        // }
+      });
+    });
+ // });
+
+
+  res.jsonp({
+    waiting: waiting,
+    accept: accept,
+    sent: sent,
+    return: _return,
+    user: req.user,
+    shops: req.shops
+
+  });
+};
+
+/**
+ *  User Shop
+ */
+exports.listshops = function (req, res, next) {
+  // { items: { product: { shop: _id } } }
+  Shop.find({ user: req.user }, "_id").sort('-created').exec(function (err, shops) {
     if (err) {
       return res.status(400).send({
         message: errorHandler.getErrorMessage(err)
       });
     } else {
-      res.jsonp(orders);
+      // res.jsonp(orders);
+      req.shops = shops;
+      next();
     }
   });
 };
