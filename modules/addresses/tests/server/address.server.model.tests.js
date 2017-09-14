@@ -38,6 +38,7 @@ describe('Address Model Unit Tests:', function () {
         district: 'Address district',
         province: 'Address province',
         postcode: 'Address postcode',
+        tel: '0894447208',
         user: user
       });
 
@@ -103,6 +104,14 @@ describe('Address Model Unit Tests:', function () {
     });
     it('should be able to show an error when try to save without postcode', function (done) {
       address.postcode = '';
+
+      return address.save(function (err) {
+        should.exist(err);
+        done();
+      });
+    });
+    it('should be able to show an error when try to save without tel', function (done) {
+      address.tel = '';
 
       return address.save(function (err) {
         should.exist(err);

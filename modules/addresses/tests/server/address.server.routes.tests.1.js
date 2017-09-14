@@ -57,7 +57,8 @@ describe('Address By user tests', function () {
                 subdistrict: 'Address subdistrict',
                 district: 'Address district',
                 province: 'Address province',
-                postcode: 'Address postcode'
+                postcode: 'Address postcode',
+                tel: '0894447208'
             };
 
             done();
@@ -73,6 +74,7 @@ describe('Address By user tests', function () {
             district: 'Address district',
             province: 'Address province',
             postcode: 'Address postcode',
+            tel: '0894447208',
             user: user
         });
         var addressObj2 = new Address({
@@ -83,6 +85,7 @@ describe('Address By user tests', function () {
             district: 'Address district2',
             province: 'Address province2',
             postcode: 'Address postcode2',
+            tel: '0894447208',            
             user: null
         });
         addressObj.save();

@@ -57,7 +57,8 @@ describe('Address CRUD tests', function() {
                 subdistrict: 'Address subdistrict',
                 district: 'Address district',
                 province: 'Address province',
-                postcode: 'Address postcode'
+                postcode: 'Address postcode',
+                tel: '0894447208'
             };
 
             done();

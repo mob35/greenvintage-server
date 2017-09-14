@@ -45,6 +45,11 @@ var AddressSchema = new Schema({
     default: '',
     required: 'Please fill Address postcode',
   },
+  tel: {
+    type: String,
+    default: '',
+    required: 'Please fill Address tel',
+  },
   created: {
     type: Date,
     default: Date.now
