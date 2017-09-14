@@ -5,14 +5,6 @@
  */
 var mongoose = require('mongoose'),
   Schema = mongoose.Schema;
-var PaymentSchema = new Schema({
-  paymenttype: String,
-  creditno: String,
-  creditname: String,
-  expdate: String,
-  creditcvc: String,
-  counterservice: String
-});
 /**
  * Order Schema
  */
@@ -48,8 +40,12 @@ var OrderSchema = new Schema({
     required: 'Please fill Order items'
   },
   payment: {
-    type: Schema.ObjectId,
-    ref: 'Payment'
+    paymenttype: String,
+    creditno: String,
+    creditname: String,
+    expdate: String,
+    creditcvc: String,
+    counterservice: String
   },
   amount: {
     type: Number,
@@ -81,4 +77,3 @@ var OrderSchema = new Schema({
 });
 
 mongoose.model('Order', OrderSchema);
-mongoose.model('Payment', PaymentSchema);

@@ -10,7 +10,6 @@ var should = require('should'),
   Address = mongoose.model('Address'),
   Product = mongoose.model('Product'),
   Shipping = mongoose.model('Shipping'),
-  Payment = mongoose.model('Payment'),
   Shop = mongoose.model('Shop');
 
 /**
@@ -21,7 +20,6 @@ var user,
   order,
   product,
   shipping,
-  payment,
   shop;
 
 
@@ -94,33 +92,23 @@ describe('Order Model Unit Tests:', function () {
       lastname: 'chantawon',
       tel: '0934524524'
     });
-    payment = new Payment({
-      paymenttype: 'credit',
-      creditno: '3333333333333333',
-      creditname: 'test',
-      expdate: '21/02/2002',
-      creditcvc: '333'
-    });
     user.save(function () {
       address.save(function () {
         shipping.save(function () {
           shop.save(function () {
-            payment.save(function () {
-              product.save(function () {
-                order = new Order({
-                  // name: 'Order name',
-                  shipping: address,
-                  items: product,
-                  payment: payment,
-                  amount: 30000,
-                  discount: 2000,
-                  totalamount: 28000,
-                  deliveryprice: 0,
-                  user: user
-                });
-
-                done();
+            product.save(function () {
+              order = new Order({
+                // name: 'Order name',
+                shipping: address,
+                items: product,
+                amount: 30000,
+                discount: 2000,
+                totalamount: 28000,
+                deliveryprice: 0,
+                user: user
               });
+
+              done();
             });
           });
         });
@@ -201,11 +189,9 @@ describe('Order Model Unit Tests:', function () {
       Shipping.remove().exec(function () {
         Address.remove().exec(function () {
           Shop.remove().exec(function () {
-            Payment.remove().exec(function () {
-              Product.remove().exec(function () {
-                User.remove().exec(function () {
-                  done();
-                });
+            Product.remove().exec(function () {
+              User.remove().exec(function () {
+                done();
               });
             });
           });

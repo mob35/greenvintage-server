@@ -9,7 +9,6 @@ var should = require('should'),
   Address = mongoose.model('Address'),
   Product = mongoose.model('Product'),
   Shipping = mongoose.model('Shipping'),
-  Payment = mongoose.model('Payment'),
   Shop = mongoose.model('Shop'),
   express = require(path.resolve('./config/lib/express'));
 
@@ -24,7 +23,6 @@ var app,
   address,
   product,
   shipping,
-  payment,
   shop;
 
 /**
@@ -114,66 +112,37 @@ describe('Order CRUD tests', function () {
       lastname: 'chantawon',
       tel: '0934524524'
     });
-    payment = new Payment({
-      paymenttype: 'credit',
-      creditno: '3333333333333333',
-      creditname: 'test',
-      expdate: '21/02/2002',
-      creditcvc: '333'
-    });
 
     // Save a user to the test db and create new Order
     user.save(function () {
       address.save(function () {
         shipping.save(function () {
           shop.save(function () {
-            payment.save(function () {
-              order = {
-                // name: 'Order name',
-                shipping: address,
-                items: [
-                  {
-                    product: {
-                      name: "Crossfit WorldWide Event",
-                      image: "https://images-eu.ssl-images-amazon.com/images/G/02/AMAZON-FASHION/2016/SHOES/SPORT/MISC/Nikemobilefootball",
-                      price: 20000,
-                      promotionprice: 18000,
-                      percentofdiscount: 10,
-                      currency: "THB",
-                      shop: {
-                        name: "Shop name"
-                      },
-                      shippings: [
-                        {
-                          shipping: {
-                            detail: "วันอังคาร, 1 - วัน อังคาร, 2 ส.ค. 2017 ฟรี",
-                            name: "ส่งแบบส่งด่วน",
-                            price: 0
-                          }
-                        }
-                      ]
-                    },
-                    qty: 1,
-                    delivery: {
-                      detail: "วันอังคาร, 1 - วัน อังคาร, 2 ส.ค. 2017 ฟรี",
-                      name: "ส่งแบบส่งด่วน",
-                      price: 0
-                    },
-                    amount: 20000,
-                    discount: 2000,
-                    deliveryprice: 0,
-                    totalamount: 18000,
-                  }
-                ],
-                payment: payment,
-                amount: 30000,
-                discount: 2000,
-                totalamount: 28000,
-                deliveryprice: 0
+            order = {
+              // name: 'Order name',
+              shipping: address,
+              items: [
+                {
+                  product: product[0],
+                  qty: 1,
+                  delivery: {
+                    detail: "วันอังคาร, 1 - วัน อังคาร, 2 ส.ค. 2017 ฟรี",
+                    name: "ส่งแบบส่งด่วน",
+                    price: 0
+                  },
+                  amount: 20000,
+                  discount: 2000,
+                  deliveryprice: 0,
+                  totalamount: 18000,
+                }
+              ],
+              amount: 30000,
+              discount: 2000,
+              totalamount: 28000,
+              deliveryprice: 0
 
-              };
-              done();
-            });
+            };
+            done();
           });
         });
       });
@@ -225,16 +194,6 @@ describe('Order CRUD tests', function () {
                 (orders[0].shipping.province).should.match('ปทุมธานี');
                 (orders[0].shipping.subdistrict).should.match('ลำลูกกา');
                 (orders[0].items.length).should.match(1);
-                (orders[0].items[0].product.name).should.match('Crossfit WorldWide Event');
-                (orders[0].items[0].product.currency).should.match('THB');
-                (orders[0].items[0].product.image).should.match('https://images-eu.ssl-images-amazon.com/images/G/02/AMAZON-FASHION/2016/SHOES/SPORT/MISC/Nikemobilefootball');
-                (orders[0].items[0].product.percentofdiscount).should.match(10);
-                (orders[0].items[0].product.price).should.match(20000);
-                (orders[0].items[0].product.promotionprice).should.match(18000);
-                (orders[0].items[0].product.shop.name).should.match('Shop name');
-                (orders[0].items[0].product.shippings[0].shipping.detail).should.match('วันอังคาร, 1 - วัน อังคาร, 2 ส.ค. 2017 ฟรี');
-                (orders[0].items[0].product.shippings[0].shipping.name).should.match('ส่งแบบส่งด่วน');
-                (orders[0].items[0].product.shippings[0].shipping.price).should.match(0);
                 (orders[0].items[0].qty).should.match(1);
                 (orders[0].items[0].amount).should.match(20000);
                 (orders[0].items[0].delivery.detail).should.match('วันอังคาร, 1 - วัน อังคาร, 2 ส.ค. 2017 ฟรี');
@@ -242,7 +201,6 @@ describe('Order CRUD tests', function () {
                 (orders[0].items[0].delivery.price).should.match(0);
                 (orders[0].items[0].discount).should.match(2000);
                 (orders[0].items[0].totalamount).should.match(18000);
-                (orders[0].payment.paymenttype).should.match('credit');
                 (orders[0].amount).should.match(30000);
                 (orders[0].discount).should.match(2000);
                 (orders[0].totalamount).should.match(28000);
@@ -559,9 +517,7 @@ describe('Order CRUD tests', function () {
       Shipping.remove().exec(function () {
         Address.remove().exec(function () {
           Shop.remove().exec(function () {
-            Payment.remove().exec(function () {
-              Order.remove().exec(done);
-            });
+            Order.remove().exec(done);
           });
         });
       });
