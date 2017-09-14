@@ -31,24 +31,8 @@ var OrderSchema = new Schema({
   items: {
     type: [{
       product: {
-        name: String,
-        image: String,
-        price: Number,
-        promotionprice: Number,
-        percentofdiscount: Number,
-        currency: String,
-        shop: {
-          name: String
-        },
-        shippings: [
-          {
-            shipping: {
-              detail: String,
-              name: String,
-              price: Number
-            }
-          }
-        ]
+        type: Schema.ObjectId,
+        ref: 'Product'
       },
       delivery: {
         detail: String,
