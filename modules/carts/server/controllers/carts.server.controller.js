@@ -53,7 +53,14 @@ exports.create = function (req, res, next) {
         });
       } else {
         Product.populate(cartCreate, {
-          path: 'items.product'
+          path: 'items.product',
+          populate: [{
+            path: 'shop',
+            model: 'Shop'
+          }, {
+            path: 'shippings',
+            model: 'Shipping'
+          }]
         }, function (err, cart) {
           req.cart = cart;
           next();

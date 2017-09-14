@@ -48,6 +48,17 @@ exports.read = function (req, res) {
     name: productDB.shop ? productDB.shop.name : '',
     rate: productDB.shop ? productDB.shop.rate : null
   };
+  var isfavorite = false;
+  if (req.user && req.user !== undefined) {
+    if (productDB.favorites && productDB.favorites.length > 0) {
+      productDB.favorites.forEach(function (favorite) {
+        if (favorite.user.toString() === req.user._id.toString()) {
+          isfavorite = true;
+        }
+      });
+    }
+  }
+
   var product = {
     _id: productDB._id,
     name: productDB.name,
@@ -62,6 +73,7 @@ exports.read = function (req, res) {
     reviews: productDB.reviews,
     shippings: shippings,
     shop: shop,
+    isfavorite: isfavorite,
     otherproducts: []
   };
   // Add a custom field to the Article, for determining if the current User is the "owner".
@@ -158,7 +170,7 @@ exports.productByID = function (req, res, next, id) {
     });
   }
 
-  Product.findById(id).populate('user', 'displayName').populate('shop').populate('reviews').populate('shippings').exec(function (err, product) {
+  Product.findById(id).populate('user', 'displayName').populate('shop').populate('reviews').populate('shippings').populate('favorites').exec(function (err, product) {
     if (err) {
       return next(err);
     } else if (!product) {
@@ -232,7 +244,7 @@ exports.updateFavoriteProduct = function (req, res, next) {
 
 exports.getFavoriteList = function (req, res, next) {
   // console.log(req.user._id);
-  Product.find({ }).sort('-created').populate('user', 'displayName').populate('favorites').exec(function (err, products) {
+  Product.find({}).sort('-created').populate('user', 'displayName').populate('favorites').exec(function (err, products) {
     if (err) {
       return res.status(400).send({
         message: errorHandler.getErrorMessage(err)
@@ -278,4 +290,48 @@ exports.favorites = function (req, res) {
     title: 'Favorite List',
     items: req.favoritelist
   });
+};
+
+exports.sliceFavorite = function (req, res, next) {
+  var product = req.product;
+  var index = null;
+  for (var i = 0; i < product.favorites.length; i++) {
+    if (product.favorites[i].user.toString() === req.user._id.toString()) {
+      index = i;
+      req.favoriteId = product.favorites[i]._id;
+    }
+  }
+  product.favorites.splice(index, 1);
+  product.save(function (err) {
+    if (err) {
+      return res.status(400).send({
+        message: errorHandler.getErrorMessage(err)
+      });
+    } else {
+      req.product = product;
+      next();
+    }
+  });
+};
+
+exports.removeFavorite = function (req, res, next) {
+  Favorite.findById(req.favoriteId).exec(function (err, favorite) {
+    if (err) {
+      return next(err);
+    } else if (!favorite) {
+      return res.status(404).send({
+        message: 'No Product with that identifier has been found'
+      });
+    }
+    favorite.remove(function (err) {
+      if (err) {
+        return res.status(400).send({
+          message: errorHandler.getErrorMessage(err)
+        });
+      } else {
+        next();
+      }
+    });
+  });
+
 };

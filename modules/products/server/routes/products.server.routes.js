@@ -22,9 +22,12 @@ module.exports = function (app) {
 
   app.route('/api/favoriteproductlist').all(productsPolicy.isAllowed)
     .get(products.getFavoriteList, products.cookingFavorite, products.favorites);
-  
+
   app.route('/api/products/review/:productId')
     .post(products.createReview, products.updateReviewProduct, products.productReview);
+
+  app.route('/api/products/unfavorite/:productId').all(productsPolicy.isAllowed)
+    .get(products.sliceFavorite, products.removeFavorite, products.read);
 
   // Finish by binding the Product middleware
   app.param('productId', products.productByID);

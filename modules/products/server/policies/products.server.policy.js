@@ -22,9 +22,12 @@ exports.invokeRolesPolicies = function () {
       permissions: '*'
     }, {
       resources: '/api/products/favorite/:productId',
-      permissions: '*'
+      permissions: ['post']
     }, {
       resources: '/api/favoriteproductlist',
+      permissions: ['get']
+    }, {
+      resources: '/api/products/unfavorite/:productId',
       permissions: ['get']
     }]
   }, {
@@ -37,7 +40,10 @@ exports.invokeRolesPolicies = function () {
       permissions: ['get']
     }, {
       resources: '/api/products/favorite/:productId',
-      permissions: '*'
+      permissions: ['post']
+    }, {
+      resources: '/api/products/unfavorite/:productId',
+      permissions: ['get']
     }, {
       resources: '/api/favoriteproductlist',
       permissions: ['get']

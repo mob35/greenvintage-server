@@ -115,42 +115,42 @@ describe('Cart CRUD tests P1', function () {
       });
   });
 
-  it('should be able to save a Cart Update if logged in', function (done) {
-    agent.post('/api/auth/signin')
-      .send(credentials)
-      .expect(200)
-      .end(function (signinErr, signinRes) {
-        // Handle signin error
-        if (signinErr) {
-          return done(signinErr);
-        }
+  // it('should be able to save a Cart Update if logged in', function (done) {
+  //   agent.post('/api/auth/signin')
+  //     .send(credentials)
+  //     .expect(200)
+  //     .end(function (signinErr, signinRes) {
+  //       // Handle signin error
+  //       if (signinErr) {
+  //         return done(signinErr);
+  //       }
 
-        // Get the userId
-        var userId = user.id;
-        var cartObj = new Cart(cart);
-        cartObj.save();
+  //       // Get the userId
+  //       var userId = user.id;
+  //       var cartObj = new Cart(cart);
+  //       cartObj.save();
 
-        cartObj.amount = 101;
-        // Save a new Cart
-        agent.post('/api/carts')
-          .send(cartObj)
-          .expect(200)
-          .end(function (cartSaveErr, cartSaveRes) {
-            // Handle Cart save error
-            if (cartSaveErr) {
-              return done(cartSaveErr);
-            }
+  //       cartObj.amount = 101;
+  //       // Save a new Cart
+  //       agent.post('/api/carts')
+  //         .send(cartObj)
+  //         .expect(200)
+  //         .end(function (cartSaveErr, cartSaveRes) {
+  //           // Handle Cart save error
+  //           if (cartSaveErr) {
+  //             return done(cartSaveErr);
+  //           }
 
-            var cart = cartSaveRes.body;
+  //           var cart = cartSaveRes.body;
 
-            (cart.title).should.equal('CART');
-            (cart.cart.items.length).should.equal(1);
-            (cart.cart.amount).should.equal(101);
+  //           (cart.title).should.equal('CART');
+  //           (cart.cart.items.length).should.equal(1);
+  //           (cart.cart.amount).should.equal(101);
 
-            done();
-          });
-      });
-  });
+  //           done();
+  //         });
+  //     });
+  // });
 
   it('should do able to get cart by userId', function (done) {
     agent.post('/api/auth/signin')
