@@ -7,6 +7,7 @@ var path = require('path'),
   mongoose = require('mongoose'),
   Cart = mongoose.model('Cart'),
   Product = mongoose.model('Product'),
+  Shop = mongoose.model('Shop'),
   errorHandler = require(path.resolve('./modules/core/server/controllers/errors.server.controller')),
   _ = require('lodash');
 
@@ -88,7 +89,7 @@ exports.update = function (req, res, next) {
           message: errorHandler.getErrorMessage(err)
         });
       } else {
-        Product.populate(cartCreate, {
+        Product.populate(cartUpdate, {
           path: 'items.product'
         }, function (err, cart) {
           Shop.populate(cart, { path: 'items.product.shop' }, function (err, cartpopshop) {
