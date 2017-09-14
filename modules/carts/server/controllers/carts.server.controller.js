@@ -53,22 +53,25 @@ exports.create = function (req, res, next) {
         });
       } else {
         Product.populate(cartCreate, {
-          path: 'items.product',
-          populate: [{
-            path: 'shop',
-            model: 'Shop'
-          }, {
-            path: 'shippings',
-            model: 'Shipping'
-          }]
+          path: 'items.product'
         }, function (err, cart) {
-          req.cart = cart;
-          next();
+          Shop.populate(cart, { path: 'items.product.shop' }, function (err, cartpopshop) {
+            req.cart = cartpopshop;
+            next();
+          })
         });
       }
     });
   }
 };
+
+// populate: [{
+//   path: 'shop',
+//   model: 'Shop'
+// }, {
+//   path: 'shippings',
+//   model: 'Shipping'
+// }]
 
 /**
  * Update a Cart
