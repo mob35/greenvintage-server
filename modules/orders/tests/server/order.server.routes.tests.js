@@ -89,14 +89,14 @@ describe('Order CRUD tests', function () {
         },
         qty: 1,
         amount: 20000,
+        discount: 2000,
+        deliveryprice: 0,
+        totalamount: 18000,
         delivery: {
           detail: 'วันอังคาร, 1 - วัน อังคาร, 2 ส.ค. 2017 ฟรี',
           name: 'ส่งแบบส่งด่วน',
           price: 0
-        },
-        price: 20000,
-        discount: 2000,
-        afterdiscount: 18000
+        }
       },
     ]);
 
@@ -154,22 +154,22 @@ describe('Order CRUD tests', function () {
                       ]
                     },
                     qty: 1,
-                    amount: 20000,
                     delivery: {
                       detail: "วันอังคาร, 1 - วัน อังคาร, 2 ส.ค. 2017 ฟรี",
                       name: "ส่งแบบส่งด่วน",
                       price: 0
                     },
-                    price: 20000,
+                    amount: 20000,
                     discount: 2000,
-                    afterdiscount: 18000
+                    deliveryprice: 0,
+                    totalamount: 18000,
                   }
                 ],
                 payment: payment,
                 amount: 30000,
                 discount: 2000,
                 totalamount: 28000,
-                tran: 0
+                deliveryprice: 0
 
               };
               done();
@@ -240,14 +240,13 @@ describe('Order CRUD tests', function () {
                 (orders[0].items[0].delivery.detail).should.match('วันอังคาร, 1 - วัน อังคาร, 2 ส.ค. 2017 ฟรี');
                 (orders[0].items[0].delivery.name).should.match('ส่งแบบส่งด่วน');
                 (orders[0].items[0].delivery.price).should.match(0);
-                (orders[0].items[0].price).should.match(20000);
                 (orders[0].items[0].discount).should.match(2000);
-                (orders[0].items[0].afterdiscount).should.match(18000);
+                (orders[0].items[0].totalamount).should.match(18000);
                 (orders[0].payment.paymenttype).should.match('credit');
                 (orders[0].amount).should.match(30000);
                 (orders[0].discount).should.match(2000);
                 (orders[0].totalamount).should.match(28000);
-                (orders[0].tran).should.match(0);
+                (orders[0].deliveryprice).should.match(0);
                 // Call the assertion callback
                 done();
               });

@@ -69,14 +69,14 @@ describe('Order Model Unit Tests:', function () {
         },
         qty: 1,
         amount: 20000,
+        discount: 2000,
+        deliveryprice: 0,
+        totalamount: 18000,
         delivery: {
           detail: 'วันอังคาร, 1 - วัน อังคาร, 2 ส.ค. 2017 ฟรี',
           name: 'ส่งแบบส่งด่วน',
           price: 0
-        },
-        price: 20000,
-        discount: 2000,
-        afterdiscount: 18000
+        }
       },
     ]);
 
@@ -115,7 +115,7 @@ describe('Order Model Unit Tests:', function () {
                   amount: 30000,
                   discount: 2000,
                   totalamount: 28000,
-                  tran: 0,
+                  deliveryprice: 0,
                   user: user
                 });
 
@@ -186,8 +186,8 @@ describe('Order Model Unit Tests:', function () {
         done();
       });
     });
-    it('should be able to show an error when try to save without tran', function (done) {
-      order.tran = null;
+    it('should be able to show an error when try to save without deliveryprice', function (done) {
+      order.deliveryprice = null;
 
       return order.save(function (err) {
         should.exist(err);

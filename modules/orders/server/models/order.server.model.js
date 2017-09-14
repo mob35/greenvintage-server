@@ -59,8 +59,7 @@ var OrderSchema = new Schema({
       amount: Number,
       discount: Number,
       totalamount: Number,
-      price: Number,
-      afterdiscount: Number
+      deliveryprice: Number
     }],
     required: 'Please fill Order items'
   },
@@ -80,9 +79,12 @@ var OrderSchema = new Schema({
     type: Number,
     required: 'Please fill Order totalamount'
   },
-  tran: {
+  deliveryprice: {
     type: Number,
     required: 'Please fill Order tran'
+  },
+  discountcode: {
+    type: String
   },
   created: {
     type: Date,
