@@ -52,19 +52,19 @@ exports.invokeRolesPolicies = function () {
       permissions: ['get']
     }, {
       resources: '/api/updateorderaccept/:orderId',
-      permissions: ['get']
+      permissions: '*'
     }, {
       resources: '/api/updateordersent/:orderId',
-      permissions: ['get']
+      permissions: '*'
     }, {
       resources: '/api/updateordercomplete/:orderId',
-      permissions: ['get']
+      permissions: '*'
     }, {
       resources: '/api/updateorderreject/:orderId',
-      permissions: ['get']
+      permissions: '*'
     }, {
       resources: '/api/updateorderreturn/:orderId',
-      permissions: ['get']
+      permissions: '*'
     }]
   }, {
     roles: ['guest'],
