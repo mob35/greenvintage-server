@@ -8,7 +8,7 @@ var shippingsPolicy = require('../policies/shippings.server.policy'),
 
 module.exports = function(app) {
   // Shippings Routes
-  app.route('/api/shippings')//.all(shippingsPolicy.isAllowed)
+  app.route('/api/shippings').all(shippingsPolicy.isAllowed)
     .get(shippings.list)
     .post(shippings.create);
 

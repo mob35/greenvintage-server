@@ -20,6 +20,17 @@ var FavoriteSchema = new Schema({
     unique: 'Favorite is already'
   }
 });
+
+var HistorylogSchema = new Schema({
+  created: {
+    type: Date,
+    default: Date.now
+  },
+  user: {
+    type: Schema.ObjectId,
+    ref: 'User'
+  }
+});
 /**
  * Product Schema
  */
@@ -82,6 +93,12 @@ var ProductSchema = new Schema({
     type: Schema.ObjectId,
     ref: 'Shop'
   },
+  historylogs: {
+    type: [{
+      type: Schema.ObjectId,
+      ref: 'Historylog'
+    }]
+  },
   created: {
     type: Date,
     default: Date.now
@@ -94,3 +111,4 @@ var ProductSchema = new Schema({
 
 mongoose.model('Product', ProductSchema);
 mongoose.model('Favorite', FavoriteSchema);
+mongoose.model('Historylog', HistorylogSchema);

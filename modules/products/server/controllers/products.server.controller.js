@@ -8,6 +8,7 @@ var path = require('path'),
   Product = mongoose.model('Product'),
   Favorite = mongoose.model('Favorite'),
   Review = mongoose.model('Review'),
+  Historylog = mongoose.model('Historylog'),
   errorHandler = require(path.resolve('./modules/core/server/controllers/errors.server.controller')),
   _ = require('lodash');
 
@@ -32,6 +33,35 @@ exports.create = function (req, res) {
 /**
  * Show the current Product
  */
+exports.saveHistorylog = function (req, res, next) {
+  var historylog = new Historylog({
+    user: req.user ? req.user : req.body.user
+  });
+  historylog.save(function (err) {
+    if (err) {
+      return res.status(400).send({
+        message: errorHandler.getErrorMessage(err)
+      });
+    } else {
+      req.historylog = historylog;
+      next();
+    }
+  });
+};
+
+exports.updateProduct = function (req, res, next) {
+  req.product.historylogs.push(req.historylog);
+  req.product.save(function (err) {
+    if (err) {
+      return res.status(400).send({
+        message: errorHandler.getErrorMessage(err)
+      });
+    } else {
+      next();
+    }
+  });
+};
+
 exports.read = function (req, res) {
   // convert mongoose document to JSON
   var productDB = req.product ? req.product.toJSON() : {};

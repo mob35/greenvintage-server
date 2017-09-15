@@ -13,7 +13,7 @@ module.exports = function (app) {
     .post(products.create);
 
   app.route('/api/products/:productId').all(productsPolicy.isAllowed)
-    .get(products.read)
+    .get(products.saveHistorylog, products.updateProduct, products.read)
     .put(products.update)
     .delete(products.delete);
 
