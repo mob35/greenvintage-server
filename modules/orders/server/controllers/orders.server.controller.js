@@ -262,6 +262,129 @@ exports.listshops = function (req, res, next) {
 };
 
 /**
+ * Update order Accept
+ */
+exports.updateorderaccept = function (req, res) {
+  var orderitem = req.body; // สิ่งที่ส่งมา
+  var order = req.order; // Order ที่อ่าน By Id
+  order.items.forEach(function (itm) {
+    if (itm._id.toString() === orderitem.item_id.toString()) {
+      itm.status = 'accept';
+      orderitem.status = 'accept';
+    }
+
+  });
+  order.save(function (err) {
+    if (err) {
+      return res.status(400).send({
+        message: errorHandler.getErrorMessage(err)
+      });
+    } else {
+      res.jsonp(orderitem);
+    }
+  });
+};
+
+/**
+ *  update order sent
+ */
+
+exports.updateordersent = function (req, res) {
+
+  var orderitem = req.body; // สิ่งที่ส่งมา
+  var order = req.order; // Order ที่อ่าน By Id
+  order.items.forEach(function (itm) {
+    if (itm._id.toString() === orderitem.item_id.toString()) {
+      itm.status = 'sent';
+      orderitem.status = 'sent';
+    }
+
+  });
+  order.save(function (err) {
+    if (err) {
+      return res.status(400).send({
+        message: errorHandler.getErrorMessage(err)
+      });
+    } else {
+      res.jsonp(orderitem);
+    }
+  });
+
+};
+
+/**
+ * update order complete
+ */
+exports.updateordercomplete = function (req, res) {
+  var orderitem = req.body; // สิ่งที่ส่งมา
+  var order = req.order; // Order ที่อ่าน By Id
+  order.items.forEach(function (itm) {
+    if (itm._id.toString() === orderitem.item_id.toString()) {
+      itm.status = 'complete';
+      orderitem.status = 'complete';
+    }
+
+  });
+  order.save(function (err) {
+    if (err) {
+      return res.status(400).send({
+        message: errorHandler.getErrorMessage(err)
+      });
+    } else {
+      res.jsonp(orderitem);
+    }
+  });
+
+};
+
+/**
+ * update order reject
+ */
+exports.updateorderreject = function (req, res) {
+  var orderitem = req.body; // สิ่งที่ส่งมา
+  var order = req.order; // Order ที่อ่าน By Id
+  order.items.forEach(function (itm) {
+    if (itm._id.toString() === orderitem.item_id.toString()) {
+      itm.status = 'reject';
+      orderitem.status = 'reject';
+    }
+
+  });
+  order.save(function (err) {
+    if (err) {
+      return res.status(400).send({
+        message: errorHandler.getErrorMessage(err)
+      });
+    } else {
+      res.jsonp(orderitem);
+    }
+  });
+};
+
+/**
+ * update order return
+ */
+exports.updateorderreturn = function (req , res) {
+  var orderitem = req.body; // สิ่งที่ส่งมา
+  var order = req.order; // Order ที่อ่าน By Id
+  order.items.forEach(function (itm) {
+    if (itm._id.toString() === orderitem.item_id.toString()) {
+      itm.status = 'return';
+      orderitem.status = 'return';
+    }
+
+  });
+  order.save(function (err) {
+    if (err) {
+      return res.status(400).send({
+        message: errorHandler.getErrorMessage(err)
+      });
+    } else {
+      res.jsonp(orderitem);
+    }
+  });
+};
+/**
  * Order middleware
  */
 exports.orderByID = function (req, res, next, id) {

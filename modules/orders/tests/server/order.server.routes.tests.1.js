@@ -130,7 +130,6 @@ describe('Get Order Shop CRUD tests', function () {
             category.save(function () {
               product.save(function () {
                 order = {
-                  // name: 'Order name',
                   shipping: address,
                   items: [
                     {
@@ -191,10 +190,6 @@ describe('Get Order Shop CRUD tests', function () {
 
                 // Get Orders list
                 var orders = ordersGetRes.body;
-                //(orders[0].user._id).should.equal(userId);
-                //(orders[0].order_id).should.match(orderSaveRes._id);
-                // (orders[0].item_id).should.match(order.items[0]._id);
-                //(orders[0]).should.ha
                 orders.waiting.should.be.instanceof(Array).and.have.lengthOf(1);
                 orders.accept.should.be.instanceof(Array).and.have.lengthOf(0);
                 orders.sent.should.be.instanceof(Array).and.have.lengthOf(0);
@@ -205,13 +200,126 @@ describe('Get Order Shop CRUD tests', function () {
                 (orders.waiting[0].qty).should.match(1);
                 (orders.waiting[0].rate).should.match(5);
                 (orders.waiting[0].status).should.match('waiting');
-                // (orders.waiting[0].shop).should.match('');
-                // (orders.shops).should.match('');
                 done();
               });
           });
       });
   });
+
+  it('get order shop & Update status Accept', function (done) {
+    agent.post('/api/auth/signin')
+      .send(credentials)
+      .expect(200)
+      .end(function (signinErr, signinRes) {
+        // Handle signin error
+        if (signinErr) {
+          return done(signinErr);
+        }
+        var userId = user.id;
+
+        agent.post('/api/orders')
+          .send(order)
+          .expect(200)
+          .end(function (orderSaveErr, orderSaveRes) {
+            // Handle Order save error
+            if (orderSaveErr) {
+              return done(orderSaveErr);
+            }
+            agent.get('/api/getordersbyshop')
+              .end(function (ordersGetErr, ordersGetRes) {
+                // Handle Orders save error
+                if (ordersGetErr) {
+                  return done(ordersGetErr);
+                }
+                // Get Orders list
+                var orders = ordersGetRes.body;
+                orders.waiting.should.be.instanceof(Array).and.have.lengthOf(1);
+                orders.accept.should.be.instanceof(Array).and.have.lengthOf(0);
+                orders.sent.should.be.instanceof(Array).and.have.lengthOf(0);
+                orders.return.should.be.instanceof(Array).and.have.lengthOf(0);
+                (orders.waiting[0].name).should.match('Product Name');
+                (orders.waiting[0].price).should.match(20000);
+                (orders.waiting[0].qty).should.match(1);
+                (orders.waiting[0].rate).should.match(5);
+                (orders.waiting[0].status).should.match('waiting');
+
+                agent.put('/api/updateorderaccept/' + orders.waiting[0].order_id)
+                  .send(orders.waiting[0])
+                  .expect(200)
+                  .end(function (orderUpdateErr, orderUpdateRes) {
+                    // Handle Order update error
+                    if (orderUpdateErr) {
+                      return done(orderUpdateErr);
+                    }
+
+                    var orderUpdate = orderUpdateRes.body;
+                    (orderUpdate.status).should.match('accept');
+
+
+                    orders.waiting[0] = orderUpdate;
+                    agent.put('/api/updateordersent/' + orders.waiting[0].order_id)
+                      .send(orders.waiting[0])
+                      .expect(200)
+                      .end(function (orderUpdateErr, orderUpdateRes) {
+                        // Handle Order update error
+                        if (orderUpdateErr) {
+                          return done(orderUpdateErr);
+                        }
+
+                        var orderUpdate = orderUpdateRes.body;
+                        (orderUpdate.status).should.match('sent');
+
+
+                        orders.waiting[0] = orderUpdate;
+                        agent.put('/api/updateordercomplete/' + orders.waiting[0].order_id)
+                          .send(orders.waiting[0])
+                          .expect(200)
+                          .end(function (orderUpdateErr, orderUpdateRes) {
+                            // Handle Order update error
+                            if (orderUpdateErr) {
+                              return done(orderUpdateErr);
+                            }
+
+                            var orderUpdate = orderUpdateRes.body;
+                            (orderUpdate.status).should.match('complete');
+
+
+                            orders.waiting[0] = orderUpdate;
+                            agent.put('/api/updateorderreject/' + orders.waiting[0].order_id)
+                              .send(orders.waiting[0])
+                              .expect(200)
+                              .end(function (orderUpdateErr, orderUpdateRes) {
+                                // Handle Order update error
+                                if (orderUpdateErr) {
+                                  return done(orderUpdateErr);
+                                }
+
+                                var orderUpdate = orderUpdateRes.body;
+                                (orderUpdate.status).should.match('reject');
+
+                                orders.waiting[0] = orderUpdate;
+                                agent.put('/api/updateorderreturn/' + orders.waiting[0].order_id)
+                                  .send(orders.waiting[0])
+                                  .expect(200)
+                                  .end(function (orderUpdateErr, orderUpdateRes) {
+                                    // Handle Order update error
+                                    if (orderUpdateErr) {
+                                      return done(orderUpdateErr);
+                                    }
+
+                                    var orderUpdate = orderUpdateRes.body;
+                                    (orderUpdate.status).should.match('return');
+                                    done();
+                                  });
+                              });
+                          });
+                      });
+                  });
+              });
+          });
+      });
+  });
+
 
   afterEach(function (done) {
     User.remove().exec(function () {
