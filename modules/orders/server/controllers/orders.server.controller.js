@@ -149,7 +149,7 @@ exports.list = function (req, res) {
  */
 exports.listordershop = function (req, res, next) {
   // { items: { product: { shop: _id } } }
-  Order.find({}, "shipping items._id items.amount items.qty items.status  items.product").sort('-created')
+  Order.find({}, "shipping items._id items.amount items.qty items.status  items.product items.delivery").sort('-created')
     .populate('shipping')
     .populate('payment')
     .populate('items.product').exec(function (err, orders) {
@@ -174,10 +174,10 @@ exports.cookinglistordershop = function (req, res) {
   var sent = [];
   var _return = [];
 
- // req.shops.forEach(function (shop) {
+  req.shops.forEach(function (shop) {
     req.productorders.forEach(function (ord) {
       ord.items.forEach(function (itm) {
-        // if (itm.shop._id.toString() === shop._id.toString() || true) {
+        if (itm.product.shop.toString() === shop._id.toString()) {
           switch (itm.status) {
             case 'waiting':
               waiting.push({
@@ -188,7 +188,9 @@ exports.cookinglistordershop = function (req, res) {
                 qty: itm.qty,
                 rate: 5,
                 image: itm.product.images ? itm.product.images[0] : '',
-                status: itm.status
+                status: itm.status,
+                shipping: ord.shipping,
+                delivery: itm.delivery
               });
               break;
             case 'accept':
@@ -200,7 +202,9 @@ exports.cookinglistordershop = function (req, res) {
                 qty: itm.qty,
                 rate: 5,
                 image: itm.product.images ? itm.product.images[0] : '',
-                status: itm.status
+                status: itm.status,
+                shipping: ord.shipping,
+                delivery: itm.delivery
               });
               break;
             case 'sent':
@@ -212,7 +216,9 @@ exports.cookinglistordershop = function (req, res) {
                 qty: itm.qty,
                 rate: 5,
                 image: itm.product.images ? itm.product.images[0] : '',
-                status: itm.status
+                status: itm.status,
+                shipping: ord.shipping,
+                delivery: itm.delivery
               });
               break;
             case 'return':
@@ -224,23 +230,23 @@ exports.cookinglistordershop = function (req, res) {
                 qty: itm.qty,
                 rate: 5,
                 image: itm.product.images ? itm.product.images[0] : '',
-                status: itm.status
+                status: itm.status,
+                shipping: ord.shipping,
+                delivery: itm.delivery
               });
               break;
           }
-        // }
+        }
       });
     });
- // });
+  });
 
 
   res.jsonp({
     waiting: waiting,
     accept: accept,
     sent: sent,
-    return: _return,
-    user: req.user,
-    shops: req.shops
+    return: _return
 
   });
 };
@@ -263,6 +269,129 @@ exports.listshops = function (req, res, next) {
   });
 };
 
+/**
+ * Update order Accept
+ */
+exports.updateorderaccept = function (req, res) {
+  var orderitem = req.body; // สิ่งที่ส่งมา
+  var order = req.order; // Order ที่อ่าน By Id
+  order.items.forEach(function (itm) {
+    if (itm._id.toString() === orderitem.item_id.toString()) {
+      itm.status = 'accept';
+      orderitem.status = 'accept';
+    }
+
+  });
+  order.save(function (err) {
+    if (err) {
+      return res.status(400).send({
+        message: errorHandler.getErrorMessage(err)
+      });
+    } else {
+      res.jsonp(orderitem);
+    }
+  });
+};
+
+/**
+ *  update order sent
+ */
+
+exports.updateordersent = function (req, res) {
+
+  var orderitem = req.body; // สิ่งที่ส่งมา
+  var order = req.order; // Order ที่อ่าน By Id
+  order.items.forEach(function (itm) {
+    if (itm._id.toString() === orderitem.item_id.toString()) {
+      itm.status = 'sent';
+      orderitem.status = 'sent';
+    }
+
+  });
+  order.save(function (err) {
+    if (err) {
+      return res.status(400).send({
+        message: errorHandler.getErrorMessage(err)
+      });
+    } else {
+      res.jsonp(orderitem);
+    }
+  });
+
+};
+
+/**
+ * update order complete
+ */
+exports.updateordercomplete = function (req, res) {
+  var orderitem = req.body; // สิ่งที่ส่งมา
+  var order = req.order; // Order ที่อ่าน By Id
+  order.items.forEach(function (itm) {
+    if (itm._id.toString() === orderitem.item_id.toString()) {
+      itm.status = 'complete';
+      orderitem.status = 'complete';
+    }
+
+  });
+  order.save(function (err) {
+    if (err) {
+      return res.status(400).send({
+        message: errorHandler.getErrorMessage(err)
+      });
+    } else {
+      res.jsonp(orderitem);
+    }
+  });
+
+};
+
+/**
+ * update order reject
+ */
+exports.updateorderreject = function (req, res) {
+  var orderitem = req.body; // สิ่งที่ส่งมา
+  var order = req.order; // Order ที่อ่าน By Id
+  order.items.forEach(function (itm) {
+    if (itm._id.toString() === orderitem.item_id.toString()) {
+      itm.status = 'reject';
+      orderitem.status = 'reject';
+    }
+
+  });
+  order.save(function (err) {
+    if (err) {
+      return res.status(400).send({
+        message: errorHandler.getErrorMessage(err)
+      });
+    } else {
+      res.jsonp(orderitem);
+    }
+  });
+};
+
+/**
+ * update order return
+ */
+exports.updateorderreturn = function (req, res) {
+  var orderitem = req.body; // สิ่งที่ส่งมา
+  var order = req.order; // Order ที่อ่าน By Id
+  order.items.forEach(function (itm) {
+    if (itm._id.toString() === orderitem.item_id.toString()) {
+      itm.status = 'return';
+      orderitem.status = 'return';
+    }
+
+  });
+  order.save(function (err) {
+    if (err) {
+      return res.status(400).send({
+        message: errorHandler.getErrorMessage(err)
+      });
+    } else {
+      res.jsonp(orderitem);
+    }
+  });
+};
 /**
  * Order middleware
  */

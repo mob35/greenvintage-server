@@ -16,6 +16,20 @@ module.exports = function (app) {
   app.route('/api/getordersbyshop').all(ordersPolicy.isAllowed)
     .get(orders.listshops, orders.listordershop, orders.cookinglistordershop);
 
+  app.route('/api/updateorderaccept/:orderId').all(ordersPolicy.isAllowed)
+    .put(orders.updateorderaccept);
+
+  app.route('/api/updateordersent/:orderId').all(ordersPolicy.isAllowed)
+    .put(orders.updateordersent);
+
+  app.route('/api/updateordercomplete/:orderId').all(ordersPolicy.isAllowed)
+    .put(orders.updateordercomplete);
+
+  app.route('/api/updateorderreject/:orderId').all(ordersPolicy.isAllowed)
+    .put(orders.updateorderreject);
+
+  app.route('/api/updateorderreturn/:orderId').all(ordersPolicy.isAllowed)
+    .put(orders.updateorderreturn);
 
   app.route('/api/orders/:orderId').all(ordersPolicy.isAllowed)
     .get(orders.read)

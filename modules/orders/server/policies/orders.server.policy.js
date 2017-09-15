@@ -23,6 +23,21 @@ exports.invokeRolesPolicies = function () {
     }, {
       resources: '/api/getordersbyshop',
       permissions: '*'
+    }, {
+      resources: '/api/updateorderaccept/:orderId',
+      permissions: '*'
+    }, {
+      resources: '/api/updateordersent/:orderId',
+      permissions: '*'
+    }, {
+      resources: '/api/updateordercomplete/:orderId',
+      permissions: '*'
+    }, {
+      resources: '/api/updateorderreject/:orderId',
+      permissions: '*'
+    }, {
+      resources: '/api/updateorderreturn/:orderId',
+      permissions: '*'
     }]
   }, {
     roles: ['user'],
@@ -35,6 +50,21 @@ exports.invokeRolesPolicies = function () {
     }, {
       resources: '/api/getordersbyshop',
       permissions: ['get']
+    }, {
+      resources: '/api/updateorderaccept/:orderId',
+      permissions: '*'
+    }, {
+      resources: '/api/updateordersent/:orderId',
+      permissions: '*'
+    }, {
+      resources: '/api/updateordercomplete/:orderId',
+      permissions: '*'
+    }, {
+      resources: '/api/updateorderreject/:orderId',
+      permissions: '*'
+    }, {
+      resources: '/api/updateorderreturn/:orderId',
+      permissions: '*'
     }]
   }, {
     roles: ['guest'],
@@ -46,6 +76,21 @@ exports.invokeRolesPolicies = function () {
       permissions: ['get']
     }, {
       resources: '/api/getordersbyshop',
+      permissions: ['get']
+    }, {
+      resources: '/api/updateorderaccept/:orderId',
+      permissions: ['get']
+    }, {
+      resources: '/api/updateordersent/:orderId',
+      permissions: ['get']
+    }, {
+      resources: '/api/updateordercomplete/:orderId',
+      permissions: ['get']
+    }, {
+      resources: '/api/updateorderreject/:orderId',
+      permissions: ['get']
+    }, {
+      resources: '/api/updateorderreturn/:orderId',
       permissions: ['get']
     }]
   }]);
