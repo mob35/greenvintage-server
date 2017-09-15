@@ -31,6 +31,18 @@ var HistorylogSchema = new Schema({
     ref: 'User'
   }
 });
+
+var SellerlogSchema = new Schema({
+  created: {
+    type: Date,
+    default: Date.now
+  },
+  qty: Number,
+  user: {
+    type: Schema.ObjectId,
+    ref: 'User'
+  }
+});
 /**
  * Product Schema
  */
@@ -99,6 +111,12 @@ var ProductSchema = new Schema({
       ref: 'Historylog'
     }]
   },
+  sellerlogs: {
+    type: [{
+      type: Schema.ObjectId,
+      ref: 'Sellerlog'
+    }]
+  },
   created: {
     type: Date,
     default: Date.now
@@ -112,3 +130,4 @@ var ProductSchema = new Schema({
 mongoose.model('Product', ProductSchema);
 mongoose.model('Favorite', FavoriteSchema);
 mongoose.model('Historylog', HistorylogSchema);
+mongoose.model('Sellerlog', SellerlogSchema);
