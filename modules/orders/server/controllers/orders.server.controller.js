@@ -16,19 +16,6 @@ var path = require('path'),
 /**
  * Create a Order
  */
-exports.addSellerlog = function (req, res, next) {
-
-  // req.body.items.forEach(function () {
-
-  // });
-
-  // Product.update(
-  //   { _id: person._id },
-  //   { $push: { friends: friend } },
-  //   done
-  // );
-  next();
-};
 
 exports.create = function (req, res, next) {
   var order = new Order(req.body);
