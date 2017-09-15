@@ -177,7 +177,7 @@ exports.cookinglistordershop = function (req, res) {
   req.shops.forEach(function (shop) {
     req.productorders.forEach(function (ord) {
       ord.items.forEach(function (itm) {
-        // if (itm.product.shop.toString() === shop._id.toString()) {
+        if (itm.product.shop.toString() === shop._id.toString()) {
           switch (itm.status) {
             case 'waiting':
               waiting.push({
@@ -236,7 +236,7 @@ exports.cookinglistordershop = function (req, res) {
               });
               break;
           }
-        // }
+        }
       });
     });
   });
