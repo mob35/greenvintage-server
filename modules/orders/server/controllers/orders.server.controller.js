@@ -8,24 +8,40 @@ var path = require('path'),
   Order = mongoose.model('Order'),
   Cart = mongoose.model('Cart'),
   Shop = mongoose.model('Shop'),
+  Product = mongoose.model('Product'),
+  Sellerlog = mongoose.model('Sellerlog'),
   errorHandler = require(path.resolve('./modules/core/server/controllers/errors.server.controller')),
   _ = require('lodash');
 
 /**
  * Create a Order
  */
+exports.addSellerlog = function (req, res, next) {
+
+  // req.body.items.forEach(function () {
+
+  // });
+
+  // Product.update(
+  //   { _id: person._id },
+  //   { $push: { friends: friend } },
+  //   done
+  // );
+  next();
+};
+
 exports.create = function (req, res, next) {
   var order = new Order(req.body);
   if (req.user && req.user !== undefined) {
     order.user = req.user;
   }
-  order.save(function (err) {
+  order.save(function (err, orderres) {
     if (err) {
       return res.status(400).send({
         message: errorHandler.getErrorMessage(err)
       });
     } else {
-      req.order = order;
+      req.order = orderres;
       next();
     }
   });
