@@ -174,10 +174,10 @@ exports.cookinglistordershop = function (req, res) {
   var sent = [];
   var _return = [];
 
- // req.shops.forEach(function (shop) {
+  req.shops.forEach(function (shop) {
     req.productorders.forEach(function (ord) {
       ord.items.forEach(function (itm) {
-        // if (itm.shop._id.toString() === shop._id.toString() || true) {
+        if (itm.product.shop.toString() === shop._id.toString()) {
           switch (itm.status) {
             case 'waiting':
               waiting.push({
@@ -228,19 +228,17 @@ exports.cookinglistordershop = function (req, res) {
               });
               break;
           }
-        // }
+        }
       });
     });
- // });
+  });
 
 
   res.jsonp({
     waiting: waiting,
     accept: accept,
     sent: sent,
-    return: _return,
-    user: req.user,
-    shops: req.shops
+    return: _return
 
   });
 };

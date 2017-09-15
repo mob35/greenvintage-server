@@ -205,6 +205,7 @@ describe('Get Order Shop CRUD tests', function () {
                 (orders.waiting[0].qty).should.match(1);
                 (orders.waiting[0].rate).should.match(5);
                 (orders.waiting[0].status).should.match('waiting');
+                // (orders.waiting[0].shop).should.match('');
                 // (orders.shops).should.match('');
                 done();
               });
