@@ -200,6 +200,13 @@ describe('Get Order Shop CRUD tests', function () {
                 (orders.waiting[0].qty).should.match(1);
                 (orders.waiting[0].rate).should.match(5);
                 (orders.waiting[0].status).should.match('waiting');
+                (orders.waiting[0].shipping.address).should.match(address.address);
+                (orders.waiting[0].delivery).should.match({
+                  detail: "วันอังคาร, 1 - วัน อังคาร, 2 ส.ค. 2017 ฟรี",
+                  name: "ส่งแบบส่งด่วน",
+                  price: 0
+                });
+
                 done();
               });
           });

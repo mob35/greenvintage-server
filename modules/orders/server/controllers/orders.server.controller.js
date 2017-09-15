@@ -149,7 +149,7 @@ exports.list = function (req, res) {
  */
 exports.listordershop = function (req, res, next) {
   // { items: { product: { shop: _id } } }
-  Order.find({}, "shipping items._id items.amount items.qty items.status  items.product").sort('-created')
+  Order.find({}, "shipping items._id items.amount items.qty items.status  items.product items.delivery").sort('-created')
     .populate('shipping')
     .populate('payment')
     .populate('items.product').exec(function (err, orders) {
@@ -188,7 +188,9 @@ exports.cookinglistordershop = function (req, res) {
                 qty: itm.qty,
                 rate: 5,
                 image: itm.product.images ? itm.product.images[0] : '',
-                status: itm.status
+                status: itm.status,
+                shipping: ord.shipping,
+                delivery: itm.delivery
               });
               break;
             case 'accept':
@@ -200,7 +202,9 @@ exports.cookinglistordershop = function (req, res) {
                 qty: itm.qty,
                 rate: 5,
                 image: itm.product.images ? itm.product.images[0] : '',
-                status: itm.status
+                status: itm.status,
+                shipping: ord.shipping,
+                delivery: itm.delivery
               });
               break;
             case 'sent':
@@ -212,7 +216,9 @@ exports.cookinglistordershop = function (req, res) {
                 qty: itm.qty,
                 rate: 5,
                 image: itm.product.images ? itm.product.images[0] : '',
-                status: itm.status
+                status: itm.status,
+                shipping: ord.shipping,
+                delivery: itm.delivery
               });
               break;
             case 'return':
@@ -224,7 +230,9 @@ exports.cookinglistordershop = function (req, res) {
                 qty: itm.qty,
                 rate: 5,
                 image: itm.product.images ? itm.product.images[0] : '',
-                status: itm.status
+                status: itm.status,
+                shipping: ord.shipping,
+                delivery: itm.delivery
               });
               break;
           }
@@ -364,7 +372,7 @@ exports.updateorderreject = function (req, res) {
 /**
  * update order return
  */
-exports.updateorderreturn = function (req , res) {
+exports.updateorderreturn = function (req, res) {
   var orderitem = req.body; // สิ่งที่ส่งมา
   var order = req.order; // Order ที่อ่าน By Id
   order.items.forEach(function (itm) {
