@@ -29,6 +29,9 @@ module.exports = function (app) {
   app.route('/api/products/unfavorite/:productId').all(productsPolicy.isAllowed)
     .get(products.sliceFavorite, products.removeFavorite, products.read);
 
+  app.route('/api/products/updateimages/:productId').all(productsPolicy.isAllowed)
+    .post(products.updateImages);
+
   // Finish by binding the Product middleware
   app.param('productId', products.productByID);
 };

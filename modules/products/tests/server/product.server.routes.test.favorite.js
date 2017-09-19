@@ -273,6 +273,62 @@ describe('Favorite Product Get list tests ', function () {
         });
     });
 
+    it('should be able to update images', function (done) {
+        var productObj = new Product({
+            name: 'Product Name',
+            detail: 'Product Detail',
+            price: 100,
+            promotionprice: 80,
+            percentofdiscount: 20,
+            currency: '฿',
+            user: user,
+            images: ['https://store.storeimages.cdn-apple.com/8750/as-images.apple.com/is/image/AppleInc/aos/published/images/i/ph/iphone7/black/iphone7-black-select-2016?wid=300&hei=300&fmt=png-alpha&qlt=95&.v=1472430037379', 'https://store.storeimages.cdn-apple.com/8750/as-images.apple.com/is/image/AppleInc/aos/published/images/i/ph/iphone7/rosegold/iphone7-rosegold-select-2016?wid=300&hei=300&fmt=png-alpha&qlt=95&.v=1472430205982']
+        });
+        productObj.save(function () {
+            agent.post('/api/auth/signin')
+                .send(credentials)
+                .expect(200)
+                .end(function (signinErr, signinRes) {
+                    // Handle signin error
+                    if (signinErr) {
+                        return done(signinErr);
+                    }
+
+                    // Get the userId
+                    var userId = user.id;
+                    var images = ['test.jpg'];
+
+                    // Save a new Favorite Product
+                    agent.post('/api/products/updateimages/' + productObj.id)
+                        .send(images)
+                        .expect(200)
+                        .end(function (productSaveErr, productSaveRes) {
+                            // Handle Product save error
+                            if (productSaveErr) {
+                                return done(productSaveErr);
+                            }
+                            // Get a list of Products
+                            agent.get('/api/products/' + productObj.id)
+                                .end(function (productsGetErr, productsGetRes) {
+                                    // Handle Products save error
+                                    if (productsGetErr) {
+                                        return done(productsGetErr);
+                                    }
+
+                                    // Get Products list
+                                    var product = productsGetRes.body;
+
+                                    // Set assertions
+                                    (product.images.length).should.equal(3);
+
+                                    // Call the assertion callback
+                                    done();
+                                });
+                        });
+                });
+        });
+    });
+
     afterEach(function (done) {
         User.remove().exec(function () {
             Product.remove().exec(done);

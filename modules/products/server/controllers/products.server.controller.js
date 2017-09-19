@@ -213,6 +213,25 @@ exports.productByID = function (req, res, next, id) {
   });
 };
 
+exports.updateImages = function (req, res) {
+  var images = req.body;
+  var product = req.product;
+  product.images = product.images ? product.images : [];
+  for (var i = 0; i < images.length; i++) {
+    product.images.push(images[i]);
+  }
+
+  product.save(function (err) {
+    if (err) {
+      return res.status(400).send({
+        message: errorHandler.getErrorMessage(err)
+      });
+    } else {
+      res.jsonp(product);
+    }
+  });
+};
+
 exports.createReview = function (req, res, next) {
   var review = new Review(req.body);
   review.save(function (err) {

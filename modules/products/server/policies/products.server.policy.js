@@ -29,6 +29,9 @@ exports.invokeRolesPolicies = function () {
     }, {
       resources: '/api/products/unfavorite/:productId',
       permissions: ['get']
+    }, {
+      resources: '/api/products/updateimages/:productId',
+      permissions: ['post']
     }]
   }, {
     roles: ['user'],
@@ -47,6 +50,9 @@ exports.invokeRolesPolicies = function () {
     }, {
       resources: '/api/favoriteproductlist',
       permissions: ['get']
+    }, {
+      resources: '/api/products/updateimages/:productId',
+      permissions: ['post']
     }]
   }, {
     roles: ['guest'],
