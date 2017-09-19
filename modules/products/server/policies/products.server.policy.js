@@ -37,7 +37,7 @@ exports.invokeRolesPolicies = function () {
       permissions: ['get', 'post']
     }, {
       resources: '/api/products/:productId',
-      permissions: ['get']
+      permissions: '*'
     }, {
       resources: '/api/products/favorite/:productId',
       permissions: ['post']
