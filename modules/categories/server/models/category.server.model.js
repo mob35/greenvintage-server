@@ -14,7 +14,8 @@ var CategorySchema = new Schema({
     type: String,
     default: '',
     required: 'Please fill Category name',
-    trim: true
+    trim: true,
+    unique: 'Name category is already!'
   },
   created: {
     type: Date,

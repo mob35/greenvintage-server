@@ -203,6 +203,7 @@ describe('Product CRUD tests P1', function () {
                 (products.items[0].percentofdiscount).should.match(product.percentofdiscount);
                 (products.items[0].currency).should.match(product.currency);
                 (products.items[0].rate).should.match(5);
+                (products.items[0].categories[0].name).should.match(product.categories[0].name);
 
                 // Call the assertion callback
                 done();

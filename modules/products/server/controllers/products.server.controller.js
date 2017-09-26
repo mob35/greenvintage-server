@@ -153,7 +153,7 @@ exports.delete = function (req, res) {
  * List of Products
  */
 exports.getProductList = function (req, res, next) {
-  Product.find({}, '_id name images price promotionprice percentofdiscount currency').sort('-created').populate('user', 'displayName').exec(function (err, products) {
+  Product.find({}, '_id name images price promotionprice percentofdiscount currency categories').sort('-created').populate('user', 'displayName').populate('categories').exec(function (err, products) {
     if (err) {
       return res.status(400).send({
         message: errorHandler.getErrorMessage(err)
@@ -176,6 +176,7 @@ exports.cookingProductList = function (req, res, next) {
       promotionprice: element.promotionprice,
       percentofdiscount: element.percentofdiscount,
       currency: element.currency,
+      categories: element.categories,
       rate: 5
     });
   });
