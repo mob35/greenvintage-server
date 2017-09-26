@@ -168,6 +168,10 @@ exports.getProductList = function (req, res, next) {
 exports.cookingProductList = function (req, res, next) {
   var products = [];
   req.products.forEach(function (element) {
+    var categories = [];
+    element.categories.forEach(function (cate) {
+      categories.push({ name: cate.name });
+    });
     products.push({
       _id: element._id,
       name: element.name,
@@ -176,7 +180,7 @@ exports.cookingProductList = function (req, res, next) {
       promotionprice: element.promotionprice,
       percentofdiscount: element.percentofdiscount,
       currency: element.currency,
-      categories: element.categories,
+      categories: categories,
       rate: 5
     });
   });
