@@ -75,6 +75,7 @@ exports.read = function (req, res) {
     });
   }
   var shop = {
+    _id: productDB.shop ? productDB.shop._id : '',
     name: productDB.shop ? productDB.shop.name : '',
     rate: productDB.shop ? productDB.shop.rate : null
   };
