@@ -406,7 +406,7 @@ exports.orderByID = function (req, res, next, id) {
     });
   }
 
-  Order.findById(id).populate('user', 'displayName').exec(function (err, order) {
+  Order.findById(id).populate('user', 'displayName').populate('shipping').populate('items.product').exec(function (err, order) {
     if (err) {
       return next(err);
     } else if (!order) {
