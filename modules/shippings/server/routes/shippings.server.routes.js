@@ -8,11 +8,11 @@ var shippingsPolicy = require('../policies/shippings.server.policy'),
 
 module.exports = function(app) {
   // Shippings Routes
-  app.route('/api/shippings').all(shippingsPolicy.isAllowed)
+  app.route('/api/shippings')//.all(shippingsPolicy.isAllowed)
     .get(shippings.list)
     .post(shippings.create);
 
-  app.route('/api/shippings/:shippingId').all(shippingsPolicy.isAllowed)
+  app.route('/api/shippings/:shippingId')//.all(shippingsPolicy.isAllowed)
     .get(shippings.read)
     .put(shippings.update)
     .delete(shippings.delete);

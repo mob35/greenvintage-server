@@ -8,11 +8,11 @@ var shopsPolicy = require('../policies/shops.server.policy'),
 
 module.exports = function (app) {
   // Shops Routes
-  app.route('/api/shops').all(shopsPolicy.isAllowed)
+  app.route('/api/shops')//.all(shopsPolicy.isAllowed)
     .get(shops.cookingListShop, shops.list)
     .post(shops.create);
 
-  app.route('/api/shops/:shopId').all(shopsPolicy.isAllowed)
+  app.route('/api/shops/:shopId')//.all(shopsPolicy.isAllowed)
     .get(shops.cookingShopDetail, shops.read)
     .put(shops.update)
     .delete(shops.delete);

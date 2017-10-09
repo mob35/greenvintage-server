@@ -15,7 +15,7 @@ var path = require('path'),
  */
 exports.create = function (req, res) {
   var shop = new Shop(req.body);
-  shop.user = req.user;
+  shop.user = req.user ? req.user : shop.user;
 
   shop.save(function (err) {
     if (err) {

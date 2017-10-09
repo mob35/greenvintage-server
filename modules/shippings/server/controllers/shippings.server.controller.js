@@ -14,7 +14,7 @@ var path = require('path'),
  */
 exports.create = function(req, res) {
   var shipping = new Shipping(req.body);
-  shipping.user = req.user;
+  shipping.user = req.user ? req.user : shipping.user;
 
   shipping.save(function(err) {
     if (err) {

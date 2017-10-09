@@ -15,7 +15,7 @@ var path = require('path'),
  */
 exports.create = function (req, res) {
   var category = new Category(req.body);
-  category.user = req.user;
+  category.user = req.user ? req.user : category.user;
 
   category.save(function (err) {
     if (err) {

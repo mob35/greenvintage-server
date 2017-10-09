@@ -8,16 +8,16 @@ var addressesPolicy = require('../policies/addresses.server.policy'),
 
 module.exports = function (app) {
   // Addresses Routes
-  app.route('/api/addresses').all(addressesPolicy.isAllowed)
+  app.route('/api/addresses')//.all(addressesPolicy.isAllowed)
     .get(addresses.list)
     .post(addresses.create);
 
-  app.route('/api/addresses/:addressId').all(addressesPolicy.isAllowed)
+  app.route('/api/addresses/:addressId')//.all(addressesPolicy.isAllowed)
     .get(addresses.read)
     .put(addresses.update)
     .delete(addresses.delete);
 
-  app.route('/api/addressbyuser/:userId').all(addressesPolicy.isAllowed)
+  app.route('/api/addressbyuser/:userId')//.all(addressesPolicy.isAllowed)
     .get(addresses.listbyuser);
 
   // Finish by binding the Address middleware

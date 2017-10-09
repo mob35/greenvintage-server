@@ -17,7 +17,7 @@ var path = require('path'),
  */
 exports.create = function (req, res) {
   var product = new Product(req.body);
-  product.user = req.user;
+  product.user = req.user ? req.user : product.user;
 
   product.save(function (err) {
     if (err) {

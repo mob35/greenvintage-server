@@ -8,11 +8,11 @@ var categoriesPolicy = require('../policies/categories.server.policy'),
 
 module.exports = function (app) {
   // Categories Routes
-  app.route('/api/categories').all(categoriesPolicy.isAllowed)
+  app.route('/api/categories')//.all(categoriesPolicy.isAllowed)
     .get(categories.list)
     .post(categories.create);
 
-  app.route('/api/categories/:categoryId').all(categoriesPolicy.isAllowed)
+  app.route('/api/categories/:categoryId')//.all(categoriesPolicy.isAllowed)
     .get(categories.read)
     .put(categories.update)
     .delete(categories.delete);

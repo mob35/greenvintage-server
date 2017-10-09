@@ -48,6 +48,7 @@ exports.create = function (req, res, next) {
     next();
   } else {
     var cartCreate = new Cart(req.cart);
+    cartCreate.user = req.user ? req.user : cartCreate.user;
     cartCreate.save(function (err) {
       if (err) {
         return res.status(400).send({
